@@ -222,7 +222,11 @@ let mk_lbl (fn:string) (l:string) = fn ^ "." ^ l
    [fn] - the name of the function containing this terminator
 *)
 let compile_terminator (fn:string) (ctxt:ctxt) (t:Ll.terminator) : ins list =
-  failwith "compile_terminator not implemented"
+  let stack_layout = ctxt.layout in 
+  let bytes_for_slots = Int64.of_int (8*(List.length stack_layout)) in
+  match t with 
+  | Ret (Void, _) -> [(Addq, [Imm (Lit bytes_for_slots); Reg Rsp]); (Popq, [Reg Rbp]); (Retq, [])]
+  | _ -> []
 
 
 (* compiling blocks --------------------------------------------------------- *)
@@ -334,8 +338,14 @@ let compile_fdecl (tdecls:(tid * ty) list) (name:string) ({ f_ty; f_param; f_cfg
   let stack_layout = stack_layout f_param f_cfg in 
   let bytes_for_slots = Int64.of_int (8*(List.length stack_layout)) in
   let init_slots = move_args_to_slots stack_layout f_param in
-  let init_frame : ins list = [(Subq, [Imm (Lit bytes_for_slots); Reg Rsp])] @ init_slots @ [(Addq, [Imm (Lit bytes_for_slots); Reg Rsp])] in
-  let ins_list = [(Pushq, [Reg Rbp]); (Movq, [Reg Rsp; Reg Rbp])] @ init_frame @ [(Popq, [Reg Rbp]); (Retq, [])] in 
+  let setup_frame = [(Pushq, [Reg Rbp]); (Movq, [Reg Rsp; Reg Rbp])] in 
+  let alloc_frame = [(Subq, [Imm (Lit bytes_for_slots); Reg Rsp])] in 
+  let ctxt = {tdecls=tdecls; layout=stack_layout} in
+  (* let blocks = snd (List.split (snd f_cfg)) in *) 
+  (* let ins_of_blocks = concat_map (compile_block name ctxt) blocks in *) 
+  let tear_down_frame = compile_terminator name ctxt (Ret (Void, None)) in 
+  (* let ins_list = setup_frame @ alloc_frame @ init_slots @ ins_of_blocks @ tear_down_frame in *) 
+  let ins_list = setup_frame @ alloc_frame @ init_slots @ tear_down_frame in 
   [{lbl=name; global=false; asm = Text ins_list}]
 
 
