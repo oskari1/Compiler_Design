@@ -372,30 +372,20 @@ let compile_fdecl (tdecls:(tid * ty) list) (name:string) ({ f_ty; f_param; f_cfg
   let lbl_blocks = snd f_cfg in 
   let stack_layout = stack_layout f_param f_cfg in 
   let ctxt = {tdecls=tdecls; layout=stack_layout} in
+  let entry_elem = 
+    let bytes_for_slots = Int64.of_int (8*(List.length stack_layout)) in
+    let setup_frame = [(Pushq, [Reg Rbp]); (Movq, [Reg Rsp; Reg Rbp])] in 
+    let alloc_frame = [(Subq, [Imm (Lit bytes_for_slots); Reg Rsp])] in 
+    let init_slots = move_args_to_slots stack_layout f_param in
+    let exec_body = compile_block name ctxt entry_blk in 
+    let entry_ins = setup_frame @ alloc_frame @ init_slots @ exec_body in 
+    {lbl=name; global=false; asm = Text entry_ins}
+  in
   if List.length lbl_blocks = 0 then 
-    begin 
-      let bytes_for_slots = Int64.of_int (8*(List.length stack_layout)) in
-      let setup_frame = [(Pushq, [Reg Rbp]); (Movq, [Reg Rsp; Reg Rbp])] in 
-      let alloc_frame = [(Subq, [Imm (Lit bytes_for_slots); Reg Rsp])] in 
-      let init_slots = move_args_to_slots stack_layout f_param in
-      let exec_body = compile_block name ctxt entry_blk in 
-      let entry_ins = setup_frame @ alloc_frame @ init_slots @ exec_body in 
-      [{lbl=name; global=false; asm = Text entry_ins}]
-    end 
+    [entry_elem] 
   else 
-    begin
-      let entry_elem = 
-        let bytes_for_slots = Int64.of_int (8*(List.length stack_layout)) in
-        let setup_frame = [(Pushq, [Reg Rbp]); (Movq, [Reg Rsp; Reg Rbp])] in 
-        let alloc_frame = [(Subq, [Imm (Lit bytes_for_slots); Reg Rsp])] in 
-        let init_slots = move_args_to_slots stack_layout f_param in
-        let exec_body = compile_block name ctxt entry_blk in 
-        let entry_ins = setup_frame @ alloc_frame @ init_slots @ exec_body in 
-        {lbl=name; global=false; asm = Text entry_ins}
-      in
-      let lbl_block_elems = List.map (fun (lbl, blk) -> compile_lbl_block name lbl ctxt blk) lbl_blocks in 
-      entry_elem::lbl_block_elems
-    end 
+    let lbl_block_elems = List.map (fun (lbl, blk) -> compile_lbl_block name lbl ctxt blk) lbl_blocks in 
+    entry_elem::lbl_block_elems
 
 (* compile_gdecl ------------------------------------------------------------ *)
 (* Compile a global value into an X86 global data declaration and map
