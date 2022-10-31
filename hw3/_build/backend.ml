@@ -253,7 +253,7 @@ let compile_terminator (fn:string) (ctxt:ctxt) (t:Ll.terminator) : ins list =
   match t with 
   | Ret (Void, _) -> return 
   | Ret (I64, Some ll_operand) -> (compile_operand ctxt (Reg Rax) ll_operand)::return
-  | Br lbl -> [(Jmp, [(Imm (Lbl lbl))])]
+  | Br lbl -> [(Jmp, [(Imm (Lbl (mk_lbl fn lbl)))])]
   | _ -> []
 
 (* compiling blocks --------------------------------------------------------- *)
@@ -384,10 +384,17 @@ let compile_fdecl (tdecls:(tid * ty) list) (name:string) ({ f_ty; f_param; f_cfg
     end 
   else 
     begin
-(* need to treat entry block specially. We can identify it since its label is name = fn *)
-      let all_blocks = (name, entry_blk)::lbl_blocks in  
-      let lbl_block_elems = List.map (fun (lbl, blk) -> compile_lbl_block name lbl ctxt blk) all_blocks in 
-      lbl_block_elems
+      let entry_elem = 
+        let bytes_for_slots = Int64.of_int (8*(List.length stack_layout)) in
+        let setup_frame = [(Pushq, [Reg Rbp]); (Movq, [Reg Rsp; Reg Rbp])] in 
+        let alloc_frame = [(Subq, [Imm (Lit bytes_for_slots); Reg Rsp])] in 
+        let init_slots = move_args_to_slots stack_layout f_param in
+        let exec_body = compile_block name ctxt entry_blk in 
+        let entry_ins = setup_frame @ alloc_frame @ init_slots @ exec_body in 
+        {lbl=name; global=false; asm = Text entry_ins}
+      in
+      let lbl_block_elems = List.map (fun (lbl, blk) -> compile_lbl_block name lbl ctxt blk) lbl_blocks in 
+      entry_elem::lbl_block_elems
     end 
 
 (* compile_gdecl ------------------------------------------------------------ *)
