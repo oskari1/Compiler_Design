@@ -341,10 +341,7 @@ let compile_fdecl (tdecls:(tid * ty) list) (name:string) ({ f_ty; f_param; f_cfg
   let setup_frame = [(Pushq, [Reg Rbp]); (Movq, [Reg Rsp; Reg Rbp])] in 
   let alloc_frame = [(Subq, [Imm (Lit bytes_for_slots); Reg Rsp])] in 
   let ctxt = {tdecls=tdecls; layout=stack_layout} in
-  (* let blocks = snd (List.split (snd f_cfg)) in *) 
-  (* let ins_of_blocks = concat_map (compile_block name ctxt) blocks in *) 
   let tear_down_frame = compile_terminator name ctxt (Ret (Void, None)) in 
-  (* let ins_list = setup_frame @ alloc_frame @ init_slots @ ins_of_blocks @ tear_down_frame in *) 
   let ins_list = setup_frame @ alloc_frame @ init_slots @ tear_down_frame in 
   [{lbl=name; global=false; asm = Text ins_list}]
 
