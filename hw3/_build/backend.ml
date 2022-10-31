@@ -236,7 +236,8 @@ let compile_terminator (fn:string) (ctxt:ctxt) (t:Ll.terminator) : ins list =
    [ctxt] - the current context
    [blk]  - LLVM IR code for the block
 *)
-let compile_block (fn:string) (ctxt:ctxt) (blk:Ll.block) : ins list = []
+let compile_block (fn:string) (ctxt:ctxt) (blk:Ll.block) : ins list =
+  failwith "compile_block not implemented"
 
 let compile_lbl_block fn lbl ctxt blk : elem =
   Asm.text (mk_lbl fn lbl) (compile_block fn ctxt blk)
@@ -340,13 +341,12 @@ let compile_fdecl (tdecls:(tid * ty) list) (name:string) ({ f_ty; f_param; f_cfg
   let setup_frame = [(Pushq, [Reg Rbp]); (Movq, [Reg Rsp; Reg Rbp])] in 
   let alloc_frame = [(Subq, [Imm (Lit bytes_for_slots); Reg Rsp])] in 
   let ctxt = {tdecls=tdecls; layout=stack_layout} in
-  let lbl_block_pairs = snd f_cfg in
-  let lbl_blocks = List.map (fun (lbl, blk) -> compile_lbl_block name lbl ctxt blk) lbl_block_pairs in 
+  (* let blocks = snd (List.split (snd f_cfg)) in *) 
+  (* let ins_of_blocks = concat_map (compile_block name ctxt) blocks in *) 
   let tear_down_frame = compile_terminator name ctxt (Ret (Void, None)) in 
-  let entry_ins = setup_frame @ alloc_frame @ init_slots in 
-  let entry_block = [{lbl=name; global=true; asm = Text entry_ins}] in 
-  let terminate_block = [{lbl=name; global=false; asm = Text tear_down_frame}] in 
-  entry_block @ lbl_blocks @ terminate_block 
+  (* let ins_list = setup_frame @ alloc_frame @ init_slots @ ins_of_blocks @ tear_down_frame in *) 
+  let ins_list = setup_frame @ alloc_frame @ init_slots @ tear_down_frame in 
+  [{lbl=name; global=false; asm = Text ins_list}]
 
 
 (* compile_gdecl ------------------------------------------------------------ *)
