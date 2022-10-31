@@ -249,10 +249,11 @@ let mk_lbl (fn:string) (l:string) = fn ^ "." ^ l
 let compile_terminator (fn:string) (ctxt:ctxt) (t:Ll.terminator) : ins list =
   let stack_layout = ctxt.layout in 
   let bytes_for_slots = Int64.of_int (8*(List.length stack_layout)) in
+  let return = [(Addq, [Imm (Lit bytes_for_slots); Reg Rsp]); (Popq, [Reg Rbp]); (Retq, [])] in 
   match t with 
-  | Ret (Void, _) -> [(Addq, [Imm (Lit bytes_for_slots); Reg Rsp]); (Popq, [Reg Rbp]); (Retq, [])]
+  | Ret (Void, _) -> return 
+  | Ret (I64, Some ll_operand) -> (compile_operand ctxt (Reg Rax) ll_operand)::return
   | _ -> []
-
 
 (* compiling blocks --------------------------------------------------------- *)
 
@@ -366,16 +367,27 @@ let move_args_to_slots (layout:layout) (args: lbl list) : ins list =
   concat_map move_args_to_slot arg_indices
 
 let compile_fdecl (tdecls:(tid * ty) list) (name:string) ({ f_ty; f_param; f_cfg }:fdecl) : prog =
+  let entry_blk = fst f_cfg in 
+  let lbl_blocks = snd f_cfg in 
   let stack_layout = stack_layout f_param f_cfg in 
-  let bytes_for_slots = Int64.of_int (8*(List.length stack_layout)) in
-  let init_slots = move_args_to_slots stack_layout f_param in
-  let setup_frame = [(Pushq, [Reg Rbp]); (Movq, [Reg Rsp; Reg Rbp])] in 
-  let alloc_frame = [(Subq, [Imm (Lit bytes_for_slots); Reg Rsp])] in 
   let ctxt = {tdecls=tdecls; layout=stack_layout} in
-  let tear_down_frame = compile_terminator name ctxt (Ret (Void, None)) in 
-  let ins_list = setup_frame @ alloc_frame @ init_slots @ tear_down_frame in 
-  [{lbl=name; global=false; asm = Text ins_list}]
-
+  if List.length lbl_blocks = 0 then 
+    begin 
+      let bytes_for_slots = Int64.of_int (8*(List.length stack_layout)) in
+      let setup_frame = [(Pushq, [Reg Rbp]); (Movq, [Reg Rsp; Reg Rbp])] in 
+      let alloc_frame = [(Subq, [Imm (Lit bytes_for_slots); Reg Rsp])] in 
+      let init_slots = move_args_to_slots stack_layout f_param in
+      let exec_body = compile_block name ctxt entry_blk in 
+      let entry_ins = setup_frame @ alloc_frame @ init_slots @ exec_body in 
+      [{lbl=name; global=false; asm = Text entry_ins}]
+    end 
+  else 
+    begin
+(* need to treat entry block specially. We can identify it since its label is name = fn *)
+      let all_blocks = (name, entry_blk)::lbl_blocks in  
+      let lbl_block_elems = List.map (fun (lbl, blk) -> compile_lbl_block name lbl ctxt blk) all_blocks in 
+      lbl_block_elems
+    end 
 
 (* compile_gdecl ------------------------------------------------------------ *)
 (* Compile a global value into an X86 global data declaration and map
