@@ -90,7 +90,12 @@ let lookup m x = List.assoc x m
    destination (usually a register).
 *)
 let compile_operand (ctxt:ctxt) (dest:X86.operand) : Ll.operand -> ins =
-  function _ -> failwith "compile_operand unimplemented"
+  fun (ll_op: Ll.operand) -> 
+    match ll_op with 
+    | Null -> (Movq, [Imm (Lit 0L); dest])
+    | Const lit -> (Movq, [Imm (Lit lit); dest]) 
+    | Id uid -> let src = lookup ctxt.layout uid in (Movq, [src; dest])
+    | Gid gid -> (Movq, [Imm (Lit 0L); dest])
 
 
 
@@ -199,8 +204,28 @@ failwith "compile_gep not implemented"
    - Bitcast: does nothing interesting at the assembly level
 *)
 let compile_insn (ctxt:ctxt) ((uid:uid), (i:Ll.insn)) : X86.ins list =
-      failwith "compile_insn not implemented"
-
+  match i with 
+  | Binop (bop, ty, op1, op2) -> 
+    begin
+      let move_op1_to_reg = compile_operand ctxt (Reg Rdi) op1 in 
+      let move_op2_to_reg = compile_operand ctxt (Reg Rsi) op2 in 
+      let get_op bop = 
+        match bop with 
+        | Add -> Addq 
+        | Sub -> Subq
+        | Mul -> Imulq
+        | And -> Andq
+        | Or -> Orq 
+        | Xor -> Xorq
+        | _ -> Addq 
+      in 
+      let dst = lookup ctxt.layout uid in 
+      [move_op1_to_reg; 
+       move_op2_to_reg; 
+       (get_op bop, [Reg Rdi; Reg Rsi]); 
+       (Movq, [Reg Rsi; dst])]
+    end  
+  | _ -> []
 
 
 (* compiling terminators  --------------------------------------------------- *)
@@ -341,10 +366,7 @@ let compile_fdecl (tdecls:(tid * ty) list) (name:string) ({ f_ty; f_param; f_cfg
   let setup_frame = [(Pushq, [Reg Rbp]); (Movq, [Reg Rsp; Reg Rbp])] in 
   let alloc_frame = [(Subq, [Imm (Lit bytes_for_slots); Reg Rsp])] in 
   let ctxt = {tdecls=tdecls; layout=stack_layout} in
-  (* let blocks = snd (List.split (snd f_cfg)) in *) 
-  (* let ins_of_blocks = concat_map (compile_block name ctxt) blocks in *) 
   let tear_down_frame = compile_terminator name ctxt (Ret (Void, None)) in 
-  (* let ins_list = setup_frame @ alloc_frame @ init_slots @ ins_of_blocks @ tear_down_frame in *) 
   let ins_list = setup_frame @ alloc_frame @ init_slots @ tear_down_frame in 
   [{lbl=name; global=false; asm = Text ins_list}]
 

@@ -90,7 +90,12 @@ let lookup m x = List.assoc x m
    destination (usually a register).
 *)
 let compile_operand (ctxt:ctxt) (dest:X86.operand) : Ll.operand -> ins =
-  function _ -> failwith "compile_operand unimplemented"
+  fun (ll_op: Ll.operand) -> 
+    match ll_op with 
+    | Null -> (Movq, [Imm (Lit 0L); dest])
+    | Const lit -> (Movq, [Imm (Lit lit); dest]) 
+    | Id uid -> let src = lookup ctxt.layout uid in (Movq, [src; dest])
+    | Gid gid -> (Movq, [Imm (Lit 0L); dest])
 
 
 
@@ -199,8 +204,28 @@ failwith "compile_gep not implemented"
    - Bitcast: does nothing interesting at the assembly level
 *)
 let compile_insn (ctxt:ctxt) ((uid:uid), (i:Ll.insn)) : X86.ins list =
-      failwith "compile_insn not implemented"
-
+  match i with 
+  | Binop (bop, ty, op1, op2) -> 
+    begin
+      let move_op1_to_reg = compile_operand ctxt (Reg Rdi) op1 in 
+      let move_op2_to_reg = compile_operand ctxt (Reg Rsi) op2 in 
+      let get_op bop = 
+        match bop with 
+        | Add -> Addq 
+        | Sub -> Subq
+        | Mul -> Imulq
+        | And -> Andq
+        | Or -> Orq 
+        | Xor -> Xorq
+        | _ -> Addq 
+      in 
+      let dst = lookup ctxt.layout uid in 
+      [move_op1_to_reg; 
+       move_op2_to_reg; 
+       (get_op bop, [Reg Rdi; Reg Rsi]); 
+       (Movq, [Reg Rsi; dst])]
+    end  
+  | _ -> []
 
 
 (* compiling terminators  --------------------------------------------------- *)
@@ -236,8 +261,15 @@ let compile_terminator (fn:string) (ctxt:ctxt) (t:Ll.terminator) : ins list =
    [ctxt] - the current context
    [blk]  - LLVM IR code for the block
 *)
+
+let concat_map (f: 'a -> 'b list) (l : 'a list) : ('b list) = List.concat (List.map f l)
+
 let compile_block (fn:string) (ctxt:ctxt) (blk:Ll.block) : ins list =
-  failwith "compile_block not implemented"
+  let ll_insns = blk.insns in 
+  let blk_insns = concat_map (fun (uid, insn) -> compile_insn ctxt (uid, insn)) ll_insns in 
+  let terminator = snd blk.term in 
+  let terminate_ins = compile_terminator fn ctxt terminator in 
+  blk_insns @ terminate_ins 
 
 let compile_lbl_block fn lbl ctxt blk : elem =
   Asm.text (mk_lbl fn lbl) (compile_block fn ctxt blk)
@@ -274,7 +306,6 @@ let arg_loc (n : int) : operand =
 
 *)
 
-let concat_map (f: 'a -> 'b list) (l : 'a list) : ('b list) = List.concat (List.map f l)
 
 let fold_left_map (f: 'a -> 'b -> 'a * 'c) (base: 'a) (l: 'b list) : ('a * 'c list) =
   let g ((acc, res):('a * 'c list)) (el: 'b) : ('a * 'c list) =
