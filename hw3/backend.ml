@@ -253,6 +253,7 @@ let compile_terminator (fn:string) (ctxt:ctxt) (t:Ll.terminator) : ins list =
   match t with 
   | Ret (Void, _) -> return 
   | Ret (I64, Some ll_operand) -> (compile_operand ctxt (Reg Rax) ll_operand)::return
+  | Br lbl -> [(Jmp, [(Imm (Lbl lbl))])]
   | _ -> []
 
 (* compiling blocks --------------------------------------------------------- *)
