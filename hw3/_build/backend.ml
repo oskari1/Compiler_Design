@@ -125,9 +125,7 @@ let fold_left_map (f: 'a -> 'b -> 'a * 'c) (base: 'a) (l: 'b list) : ('a * 'c li
     (a, res @ [c])
   in List.fold_left g (base, []) l
 
-
-
-let compile_call (ctxt:ctxt) ((uid:uid), (i:Ll.insn)) : X86.ins list =
+let compile_call (ctxt:ctxt) (uid:uid) (ret_ty:ty) (callee_lbl:Ll.operand) (args:(Ll.ty * Ll.operand) list) : X86.ins list =
   let pass_ith_arg ((ty, opnd):(Ll.ty * Ll.operand)) (i:int) : X86.ins list = 
     let move_opnd_to_reg reg = [compile_operand ctxt (Reg reg) opnd] in
     match i with 
@@ -138,23 +136,16 @@ let compile_call (ctxt:ctxt) ((uid:uid), (i:Ll.insn)) : X86.ins list =
     | 4 -> move_opnd_to_reg R08
     | 5 -> move_opnd_to_reg R09
     | n -> move_opnd_to_reg Rax @ [(Pushq, [Reg Rax])]  
+  in
+  let pass_args = List.concat @@ snd (fold_left_map (fun i arg -> (i+1, pass_ith_arg arg i)) 0 args) in 
+  let target =
+    match callee_lbl with 
+    | Const addr -> Imm (Lit addr)
+    | Gid gid -> Imm (Lbl gid)
+    | _ -> failwith "unreachable case" 
   in 
-  match i with 
-  | Call (ret_ty, callee_lbl, args) -> 
-  begin 
-    let pass_args = List.concat @@ snd (fold_left_map (fun i arg -> (i+1, pass_ith_arg arg i)) 0 args) in 
-    let target =
-      match callee_lbl with 
-      | Const addr -> Imm (Lit addr)
-      | Gid gid -> Imm (Lbl gid)
-      | _ -> failwith "undefined" 
-    in 
-    let save_rax = let dst = lookup ctxt.layout uid in [(Movq, [Reg Rax; dst])] in 
-    pass_args @ [(Callq, [target])] @ save_rax
-  end
-  | _ -> []
-
-
+  let save_rax = let dst = lookup ctxt.layout uid in [(Movq, [Reg Rax; dst])] in 
+  pass_args @ [(Callq, [target])] @ save_rax
 
 (* compiling getelementptr (gep)  ------------------------------------------- *)
 
@@ -242,31 +233,18 @@ failwith "compile_gep not implemented"
 
    - Bitcast: does nothing interesting at the assembly level
 *)
-let compile_store (ctxt:ctxt) ((uid:uid), (i:Ll.insn)) : X86.ins list =
-  match i with 
-  | Store (ty, src, dst_addr) -> 
-    let move_src_to_reg = compile_operand ctxt (Reg Rdi) src in 
-    let move_dst_addr_to_reg = compile_operand ctxt (Reg Rsi) dst_addr in
-    [move_src_to_reg;
-     move_dst_addr_to_reg;
-     (Movq, [Reg Rdi; Ind2 Rsi])]
-  | _ -> []
+let compile_store (ctxt:ctxt) (src:Ll.operand) (dst_addr:Ll.operand) : X86.ins list =
+  let move_src_to_reg = compile_operand ctxt (Reg Rdi) src in 
+  let move_dst_addr_to_reg = compile_operand ctxt (Reg Rsi) dst_addr in
+  [move_src_to_reg;
+   move_dst_addr_to_reg;
+   (Movq, [Reg Rdi; Ind2 Rsi])]
 
 let compile_insn (ctxt:ctxt) ((uid:uid), (i:Ll.insn)) : X86.ins list =
-  let is_call i = 
-    match i with 
-    | Call (_, _, _) -> true 
-    | _ -> false
-  in
-  let is_store i = 
-    match i with 
-    | Store (_, _, _) -> true 
-    | _ -> false
-  in 
-  if is_store i then compile_store ctxt (uid, i) 
-  else 
-    if is_call i then compile_call ctxt (uid, i)
-    else 
+  match i with 
+  | Call (ret_ty, callee_lbl, args) -> compile_call ctxt uid ret_ty callee_lbl args 
+  | Store (ty, src, dst_addr) -> compile_store ctxt src dst_addr
+  | _ -> begin 
     let dst = lookup ctxt.layout uid in 
     match i with 
     | Binop (bop, ty, op1, op2) -> 
@@ -324,7 +302,7 @@ let compile_insn (ctxt:ctxt) ((uid:uid), (i:Ll.insn)) : X86.ins list =
       (Movq, [Ind2 Rdi; Reg Rsi]); 
       (Movq, [Reg Rsi; dst])]
     | _ -> []
-
+    end
 
 (* compiling terminators  --------------------------------------------------- *)
 
@@ -359,7 +337,7 @@ let compile_terminator (fn:string) (ctxt:ctxt) (t:Ll.terminator) : ins list =
      (Andq, [Imm (Lit 1L); Reg Rax]);
      (J Eq, [Imm (Lbl (mk_lbl fn lbl1))]);
      (Jmp, [Imm (Lbl (mk_lbl fn lbl2))])]
-  | _ -> []
+  | _ -> failwith "unreachable case" 
 
 (* compiling blocks --------------------------------------------------------- *)
 
