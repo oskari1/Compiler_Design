@@ -334,7 +334,7 @@ let compile_terminator (fn:string) (ctxt:ctxt) (t:Ll.terminator) : ins list =
   match t with 
   | Ret (Void, _) -> return 
   | Ret (I64, Some ll_operand) -> (compile_operand ctxt (Reg Rax) ll_operand)::return
-  | Br lbl -> [(Jmp, [(Imm (Lbl (mk_lbl fn lbl)))])]
+  | Br lbl -> [(Jmp, [Imm (Lbl (mk_lbl fn lbl))])]
   | Cbr (cond, lbl1, lbl2) -> 
     let load_cond_to_rax = compile_operand ctxt (Reg Rax) cond in 
     [load_cond_to_rax;
