@@ -289,7 +289,8 @@ let compile_insn (ctxt:ctxt) ((uid:uid), (i:Ll.insn)) : X86.ins list =
         [move_op1_to_reg; 
         move_op2_to_reg;
         (Movq, [Imm (Lit 0L); dst]);
-        (Cmpq, [Reg Rdi; Reg Rsi]);
+        (Cmpq, [Reg Rsi; Reg Rdi]);
+        (*(Cmpq, [Reg Rdi; Reg Rsi]); *)
         (Set cc, [dst])]
       end 
     | Alloca ty -> 
@@ -335,8 +336,11 @@ let compile_terminator (fn:string) (ctxt:ctxt) (t:Ll.terminator) : ins list =
     let load_cond_to_rax = compile_operand ctxt (Reg Rax) op in 
     [load_cond_to_rax;
      (Andq, [Imm (Lit 1L); Reg Rax]);
-     (J Eq, [Imm (Lbl (mk_lbl fn lbl1))]);
+     (J Neq, [Imm (Lbl (mk_lbl fn lbl1))]);
      (Jmp, [Imm (Lbl (mk_lbl fn lbl2))])]
+     (*(J Eq, [Imm (Lbl (mk_lbl fn lbl1))]);*)
+(*   (J Neq, [Imm (Lbl (mk_lbl fn lbl1))]);
+     (Jmp, [Imm (Lbl (mk_lbl fn lbl2))])] *)
   | _ -> failwith "unreachable case" 
 
 (* compiling blocks --------------------------------------------------------- *)
