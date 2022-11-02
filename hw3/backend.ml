@@ -301,6 +301,10 @@ let compile_insn (ctxt:ctxt) ((uid:uid), (i:Ll.insn)) : X86.ins list =
       [move_opnd_to_reg;
       (Movq, [Ind2 Rdi; Reg Rsi]); 
       (Movq, [Reg Rsi; dst])]
+    | Bitcast (_, opnd_addr, _) -> 
+      let move_opnd_to_reg = compile_operand ctxt (Reg Rdi) opnd_addr in 
+      [move_opnd_to_reg;
+       (Movq, [Reg Rdi; dst])]
     | _ -> []
     end
 
@@ -331,8 +335,8 @@ let compile_terminator (fn:string) (ctxt:ctxt) (t:Ll.terminator) : ins list =
   | Ret (Void, _) -> return 
   | Ret (I64, Some ll_operand) -> (compile_operand ctxt (Reg Rax) ll_operand)::return
   | Br lbl -> [(Jmp, [(Imm (Lbl (mk_lbl fn lbl)))])]
-  | Cbr (op, lbl1, lbl2) -> 
-    let load_cond_to_rax = compile_operand ctxt (Reg Rax) op in 
+  | Cbr (cond, lbl1, lbl2) -> 
+    let load_cond_to_rax = compile_operand ctxt (Reg Rax) cond in 
     [load_cond_to_rax;
      (Andq, [Imm (Lit 1L); Reg Rax]);
      (J Neq, [Imm (Lbl (mk_lbl fn lbl1))]);
