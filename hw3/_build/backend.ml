@@ -95,7 +95,7 @@ let compile_operand (ctxt:ctxt) (dest:X86.operand) : Ll.operand -> ins =
     | Null -> (Movq, [Imm (Lit 0L); dest])
     | Const lit -> (Movq, [Imm (Lit lit); dest]) 
     | Id uid -> let src = lookup ctxt.layout uid in (Movq, [src; dest])
-    | Gid gid -> (Movq, [Imm (Lit 0L); dest])
+    | Gid gid -> (Leaq, [Ind3 (Lbl gid, Rip); dest])
 
 (* compiling call  ---------------------------------------------------------- *)
 
