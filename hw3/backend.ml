@@ -97,8 +97,6 @@ let compile_operand (ctxt:ctxt) (dest:X86.operand) : Ll.operand -> ins =
     | Id uid -> let src = lookup ctxt.layout uid in (Movq, [src; dest])
     | Gid gid -> (Movq, [Imm (Lit 0L); dest])
 
-
-
 (* compiling call  ---------------------------------------------------------- *)
 
 (* You will probably find it helpful to implement a helper function that
@@ -145,7 +143,12 @@ let compile_operand (ctxt:ctxt) (dest:X86.operand) : Ll.operand -> ins =
      Your function should simply return 0 in those cases
 *)
 let rec size_ty (tdecls:(tid * ty) list) (t:Ll.ty) : int =
-failwith "size_ty not implemented"
+  match t with 
+  | Void | I8 | Fun (_, _) -> 0
+  | I1 | I64 | Ptr _ -> 8
+  | Struct ty_list -> List.fold_left (fun acc ty -> acc + (size_ty tdecls ty)) 0 ty_list 
+  | Array (len, ty) -> len * (size_ty tdecls ty) 
+  | Namedt tid -> size_ty tdecls (lookup tdecls tid) 
 
 
 
@@ -203,28 +206,80 @@ failwith "compile_gep not implemented"
 
    - Bitcast: does nothing interesting at the assembly level
 *)
+let compile_store (ctxt:ctxt) ((uid:uid), (i:Ll.insn)) : X86.ins list =
+  match i with 
+  | Store (ty, src, dst_addr) -> 
+    let move_src_to_reg = compile_operand ctxt (Reg Rdi) src in 
+    let move_dst_addr_to_reg = compile_operand ctxt (Reg Rsi) dst_addr in
+    [move_src_to_reg;
+     move_dst_addr_to_reg;
+     (Movq, [Reg Rdi; Ind2 Rsi])]
+  | _ -> []
+
 let compile_insn (ctxt:ctxt) ((uid:uid), (i:Ll.insn)) : X86.ins list =
+  let is_store i = 
+    match i with 
+    | Store (_, _, _) -> true 
+    | _ -> false
+  in 
+  if is_store i then compile_store ctxt (uid, i) 
+  else 
+  let dst = lookup ctxt.layout uid in 
   match i with 
   | Binop (bop, ty, op1, op2) -> 
     begin
-      let move_op1_to_reg = compile_operand ctxt (Reg Rdi) op1 in 
-      let move_op2_to_reg = compile_operand ctxt (Reg Rsi) op2 in 
+      let is_shift bop = 
+        match bop with 
+        | Shl | Lshr | Ashr -> true 
+        | _ -> false 
+      in 
       let get_op bop = 
         match bop with 
         | Add -> Addq 
         | Sub -> Subq
         | Mul -> Imulq
+        | Shl -> Shlq
+        | Lshr -> Shrq 
+        | Ashr -> Sarq
         | And -> Andq
         | Or -> Orq 
         | Xor -> Xorq
-        | _ -> Addq 
-      in 
-      let dst = lookup ctxt.layout uid in 
-      [move_op1_to_reg; 
-       move_op2_to_reg; 
-       (get_op bop, [Reg Rdi; Reg Rsi]); 
-       (Movq, [Reg Rsi; dst])]
+      in
+      if not @@ is_shift bop then 
+        let move_op1_to_reg = compile_operand ctxt (Reg Rdi) op1 in 
+        let move_op2_to_reg = compile_operand ctxt (Reg Rsi) op2 in 
+        [move_op1_to_reg; 
+        move_op2_to_reg; 
+        (get_op bop, [Reg Rsi; Reg Rdi]); 
+        (Movq, [Reg Rdi; dst])]
+      else
+        let move_op1_to_reg = compile_operand ctxt (Reg Rdi) op1 in 
+        let move_op2_to_reg = compile_operand ctxt (Reg Rcx) op2 in 
+        [move_op1_to_reg; 
+         move_op2_to_reg; 
+         (get_op bop, [Reg Rcx; Reg Rdi]); 
+         (Movq, [Reg Rdi; dst])]
     end  
+  | Icmp (cnd, _, op1, op2) ->  
+    begin
+      let move_op1_to_reg = compile_operand ctxt (Reg Rdi) op1 in 
+      let move_op2_to_reg = compile_operand ctxt (Reg Rsi) op2 in 
+      let cc = compile_cnd cnd in 
+      [move_op1_to_reg; 
+       move_op2_to_reg;
+       (Movq, [Imm (Lit 0L); dst]);
+       (Cmpq, [Reg Rdi; Reg Rsi]);
+       (Set cc, [dst])]
+    end 
+  | Alloca ty -> 
+    let size = Int64.of_int (size_ty ctxt.tdecls ty) in  
+    [(Subq, [Imm (Lit size); Reg Rsp]);
+    (Movq, [Reg Rsp; dst])]
+  | Load (ty, src_addr) ->
+    let move_opnd_to_reg = compile_operand ctxt (Reg Rdi) src_addr in 
+    [move_opnd_to_reg;
+     (Movq, [Ind2 Rdi; Reg Rsi]); 
+     (Movq, [Reg Rsi; dst])]
   | _ -> []
 
 
@@ -254,6 +309,15 @@ let compile_terminator (fn:string) (ctxt:ctxt) (t:Ll.terminator) : ins list =
   | Ret (Void, _) -> return 
   | Ret (I64, Some ll_operand) -> (compile_operand ctxt (Reg Rax) ll_operand)::return
   | Br lbl -> [(Jmp, [(Imm (Lbl (mk_lbl fn lbl)))])]
+  | Cbr (op, lbl1, lbl2) -> 
+    (* note that for this case it is important to see how Icmp is implemented. If the condition
+       holds, then op evaluates to 1, else to 0. Thus, to check the result of the comparison
+       we just need to And op with 1L to see if it was 1L = true or 0L = false *)
+    let load_cond_to_rax = compile_operand ctxt (Reg Rax) op in 
+    [load_cond_to_rax;
+     (Andq, [Imm (Lit 1L); Reg Rax]);
+     (J Eq, [Imm (Lbl (mk_lbl fn lbl1))]);
+     (Jmp, [Imm (Lbl (mk_lbl fn lbl2))])]
   | _ -> []
 
 (* compiling blocks --------------------------------------------------------- *)
@@ -268,7 +332,7 @@ let concat_map (f: 'a -> 'b list) (l : 'a list) : ('b list) = List.concat (List.
 
 let compile_block (fn:string) (ctxt:ctxt) (blk:Ll.block) : ins list =
   let ll_insns = blk.insns in 
-  let blk_insns = concat_map (fun (uid, insn) -> compile_insn ctxt (uid, insn)) ll_insns in 
+  let blk_insns = concat_map (compile_insn ctxt) ll_insns in 
   let terminator = snd blk.term in 
   let terminate_ins = compile_terminator fn ctxt terminator in 
   blk_insns @ terminate_ins 
@@ -379,7 +443,7 @@ let compile_fdecl (tdecls:(tid * ty) list) (name:string) ({ f_ty; f_param; f_cfg
     let init_slots = move_args_to_slots stack_layout f_param in
     let exec_body = compile_block name ctxt entry_blk in 
     let entry_ins = setup_frame @ alloc_frame @ init_slots @ exec_body in 
-    {lbl=name; global=false; asm = Text entry_ins}
+    {lbl=name; global=true; asm = Text entry_ins}
   in
   if List.length lbl_blocks = 0 then 
     [entry_elem] 
