@@ -117,6 +117,42 @@ let compile_operand (ctxt:ctxt) (dest:X86.operand) : Ll.operand -> ins =
    needed). ]
 *)
 
+let fold_left_map (f: 'a -> 'b -> 'a * 'c) (base: 'a) (l: 'b list) : ('a * 'c list) =
+  let g ((acc, res):('a * 'c list)) (el: 'b) : ('a * 'c list) =
+    let a_c = f acc el in 
+    let a = fst a_c in
+    let c = snd a_c in 
+    (a, res @ [c])
+  in List.fold_left g (base, []) l
+
+
+
+let compile_call (ctxt:ctxt) ((uid:uid), (i:Ll.insn)) : X86.ins list =
+  let pass_ith_arg ((ty, opnd):(Ll.ty * Ll.operand)) (i:int) : X86.ins list = 
+    let move_opnd_to_reg reg = [compile_operand ctxt (Reg reg) opnd] in
+    match i with 
+    | 0 -> move_opnd_to_reg Rdi
+    | 1 -> move_opnd_to_reg Rsi
+    | 2 -> move_opnd_to_reg Rdx
+    | 3 -> move_opnd_to_reg Rcx 
+    | 4 -> move_opnd_to_reg R08
+    | 5 -> move_opnd_to_reg R09
+    | n -> move_opnd_to_reg Rax @ [(Pushq, [Reg Rax])]  
+  in 
+  match i with 
+  | Call (ret_ty, callee_lbl, args) -> 
+  begin 
+    let pass_args = List.concat @@ snd (fold_left_map (fun i arg -> (i+1, pass_ith_arg arg i)) 0 args) in 
+    let target =
+      match callee_lbl with 
+      | Const addr -> Imm (Lit addr)
+      | Gid gid -> Imm (Lbl gid)
+      | _ -> failwith "undefined" 
+    in 
+    let save_rax = let dst = lookup ctxt.layout uid in [(Movq, [Reg Rax; dst])] in 
+    pass_args @ [(Callq, [target])] @ save_rax
+  end
+  | _ -> []
 
 
 
@@ -217,6 +253,11 @@ let compile_store (ctxt:ctxt) ((uid:uid), (i:Ll.insn)) : X86.ins list =
   | _ -> []
 
 let compile_insn (ctxt:ctxt) ((uid:uid), (i:Ll.insn)) : X86.ins list =
+  let is_call i = 
+    match i with 
+    | Call (_, _, _) -> true 
+    | _ -> false
+  in
   let is_store i = 
     match i with 
     | Store (_, _, _) -> true 
@@ -224,63 +265,65 @@ let compile_insn (ctxt:ctxt) ((uid:uid), (i:Ll.insn)) : X86.ins list =
   in 
   if is_store i then compile_store ctxt (uid, i) 
   else 
-  let dst = lookup ctxt.layout uid in 
-  match i with 
-  | Binop (bop, ty, op1, op2) -> 
-    begin
-      let is_shift bop = 
-        match bop with 
-        | Shl | Lshr | Ashr -> true 
-        | _ -> false 
-      in 
-      let get_op bop = 
-        match bop with 
-        | Add -> Addq 
-        | Sub -> Subq
-        | Mul -> Imulq
-        | Shl -> Shlq
-        | Lshr -> Shrq 
-        | Ashr -> Sarq
-        | And -> Andq
-        | Or -> Orq 
-        | Xor -> Xorq
-      in
-      if not @@ is_shift bop then 
+    if is_call i then compile_call ctxt (uid, i)
+    else 
+    let dst = lookup ctxt.layout uid in 
+    match i with 
+    | Binop (bop, ty, op1, op2) -> 
+      begin
+        let is_shift bop = 
+          match bop with 
+          | Shl | Lshr | Ashr -> true 
+          | _ -> false 
+        in 
+        let get_op bop = 
+          match bop with 
+          | Add -> Addq 
+          | Sub -> Subq
+          | Mul -> Imulq
+          | Shl -> Shlq
+          | Lshr -> Shrq 
+          | Ashr -> Sarq
+          | And -> Andq
+          | Or -> Orq 
+          | Xor -> Xorq
+        in
+        if not @@ is_shift bop then 
+          let move_op1_to_reg = compile_operand ctxt (Reg Rdi) op1 in 
+          let move_op2_to_reg = compile_operand ctxt (Reg Rsi) op2 in 
+          [move_op1_to_reg; 
+          move_op2_to_reg; 
+          (get_op bop, [Reg Rsi; Reg Rdi]); 
+          (Movq, [Reg Rdi; dst])]
+        else
+          let move_op1_to_reg = compile_operand ctxt (Reg Rdi) op1 in 
+          let move_op2_to_reg = compile_operand ctxt (Reg Rcx) op2 in 
+          [move_op1_to_reg; 
+          move_op2_to_reg; 
+          (get_op bop, [Reg Rcx; Reg Rdi]); 
+          (Movq, [Reg Rdi; dst])]
+      end  
+    | Icmp (cnd, _, op1, op2) ->  
+      begin
         let move_op1_to_reg = compile_operand ctxt (Reg Rdi) op1 in 
         let move_op2_to_reg = compile_operand ctxt (Reg Rsi) op2 in 
+        let cc = compile_cnd cnd in 
         [move_op1_to_reg; 
-        move_op2_to_reg; 
-        (get_op bop, [Reg Rsi; Reg Rdi]); 
-        (Movq, [Reg Rdi; dst])]
-      else
-        let move_op1_to_reg = compile_operand ctxt (Reg Rdi) op1 in 
-        let move_op2_to_reg = compile_operand ctxt (Reg Rcx) op2 in 
-        [move_op1_to_reg; 
-         move_op2_to_reg; 
-         (get_op bop, [Reg Rcx; Reg Rdi]); 
-         (Movq, [Reg Rdi; dst])]
-    end  
-  | Icmp (cnd, _, op1, op2) ->  
-    begin
-      let move_op1_to_reg = compile_operand ctxt (Reg Rdi) op1 in 
-      let move_op2_to_reg = compile_operand ctxt (Reg Rsi) op2 in 
-      let cc = compile_cnd cnd in 
-      [move_op1_to_reg; 
-       move_op2_to_reg;
-       (Movq, [Imm (Lit 0L); dst]);
-       (Cmpq, [Reg Rdi; Reg Rsi]);
-       (Set cc, [dst])]
-    end 
-  | Alloca ty -> 
-    let size = Int64.of_int (size_ty ctxt.tdecls ty) in  
-    [(Subq, [Imm (Lit size); Reg Rsp]);
-    (Movq, [Reg Rsp; dst])]
-  | Load (ty, src_addr) ->
-    let move_opnd_to_reg = compile_operand ctxt (Reg Rdi) src_addr in 
-    [move_opnd_to_reg;
-     (Movq, [Ind2 Rdi; Reg Rsi]); 
-     (Movq, [Reg Rsi; dst])]
-  | _ -> []
+        move_op2_to_reg;
+        (Movq, [Imm (Lit 0L); dst]);
+        (Cmpq, [Reg Rdi; Reg Rsi]);
+        (Set cc, [dst])]
+      end 
+    | Alloca ty -> 
+      let size = Int64.of_int (size_ty ctxt.tdecls ty) in  
+      [(Subq, [Imm (Lit size); Reg Rsp]);
+      (Movq, [Reg Rsp; dst])]
+    | Load (ty, src_addr) ->
+      let move_opnd_to_reg = compile_operand ctxt (Reg Rdi) src_addr in 
+      [move_opnd_to_reg;
+      (Movq, [Ind2 Rdi; Reg Rsi]); 
+      (Movq, [Reg Rsi; dst])]
+    | _ -> []
 
 
 (* compiling terminators  --------------------------------------------------- *)
@@ -311,9 +354,6 @@ let compile_terminator (fn:string) (ctxt:ctxt) (t:Ll.terminator) : ins list =
   | Ret (I64, Some ll_operand) -> (compile_operand ctxt (Reg Rax) ll_operand)::return
   | Br lbl -> [(Jmp, [(Imm (Lbl (mk_lbl fn lbl)))])]
   | Cbr (op, lbl1, lbl2) -> 
-    (* note that for this case it is important to see how Icmp is implemented. If the condition
-       holds, then op evaluates to 1, else to 0. Thus, to check the result of the comparison
-       we just need to And op with 1L to see if it was 1L = true or 0L = false *)
     let load_cond_to_rax = compile_operand ctxt (Reg Rax) op in 
     [load_cond_to_rax;
      (Andq, [Imm (Lit 1L); Reg Rax]);
@@ -371,15 +411,6 @@ let arg_loc (n : int) : operand =
    - see the discussion about locals
 
 *)
-
-
-let fold_left_map (f: 'a -> 'b -> 'a * 'c) (base: 'a) (l: 'b list) : ('a * 'c list) =
-  let g ((acc, res):('a * 'c list)) (el: 'b) : ('a * 'c list) =
-    let a_c = f acc el in 
-    let a = fst a_c in
-    let c = snd a_c in 
-    (a, res @ [c])
-  in List.fold_left g (base, []) l
 
 let get_uids (entry:block) (lbl_blocks:(lbl * block) list) : (uid list) = 
   let get_insns (block:block) : (lbl * insn) list = 
