@@ -301,10 +301,11 @@ let mk_lbl (fn:string) (l:string) = fn ^ "." ^ l
 
    [fn] - the name of the function containing this terminator
 *)
+
+let concat_map (f: 'a -> 'b list) (l : 'a list) : ('b list) = List.concat (List.map f l)
+
 let compile_terminator (fn:string) (ctxt:ctxt) (t:Ll.terminator) : ins list =
-  let stack_layout = ctxt.layout in 
-  let bytes_for_slots = Int64.of_int (8*(List.length stack_layout)) in
-  let return = [(Addq, [Imm (Lit bytes_for_slots); Reg Rsp]); (Popq, [Reg Rbp]); (Retq, [])] in 
+  let return = [(Movq, [Reg Rbp; Reg Rsp]); (Popq, [Reg Rbp]); (Retq, [])] in 
   match t with 
   | Ret (Void, _) -> return 
   | Ret (I64, Some ll_operand) -> (compile_operand ctxt (Reg Rax) ll_operand)::return
@@ -328,7 +329,6 @@ let compile_terminator (fn:string) (ctxt:ctxt) (t:Ll.terminator) : ins list =
    [blk]  - LLVM IR code for the block
 *)
 
-let concat_map (f: 'a -> 'b list) (l : 'a list) : ('b list) = List.concat (List.map f l)
 
 let compile_block (fn:string) (ctxt:ctxt) (blk:Ll.block) : ins list =
   let ll_insns = blk.insns in 
@@ -381,13 +381,13 @@ let fold_left_map (f: 'a -> 'b -> 'a * 'c) (base: 'a) (l: 'b list) : ('a * 'c li
     (a, res @ [c])
   in List.fold_left g (base, []) l
 
-let get_uids (entry:block) (lbled_blocks:(lbl * block) list) : (uid list) = 
+let get_uids (entry:block) (lbl_blocks:(lbl * block) list) : (uid list) = 
   let get_insns (block:block) : (lbl * insn) list = 
     match block with 
     | {insns = insns; term = _} -> insns 
   in
   let entry_insns = get_insns entry in 
-  let other_insns = concat_map (fun (_, block) -> get_insns block) lbled_blocks in
+  let other_insns = concat_map (fun (_, block) -> get_insns block) lbl_blocks in
   let is_not_store_or_call ((_,insn):lbl * insn) : bool = 
     match insn with
     | Store (_, _, _) | Call (Void, _, _) -> false
@@ -397,11 +397,12 @@ let get_uids (entry:block) (lbled_blocks:(lbl * block) list) : (uid list) =
   fst (List.split no_call_or_store_ins) 
   
 
-let stack_layout (args : uid list) ((block, lbled_blocks):cfg) : layout =
+let stack_layout (args : uid list) ((block, lbl_blocks):cfg) : layout =
   let get_indexed_list (uids : uid list) : (int * uid) list = snd (fold_left_map (fun acc uid -> (acc + 1, (acc + 1, uid))) 0 uids) in 
-  let block_uids : uid list = get_uids block lbled_blocks in  
+  let block_uids : uid list = get_uids block lbl_blocks in  
   let uid_idx_pairs = get_indexed_list (args @ block_uids) in 
   List.map (fun (idx, uid) -> (uid, Ind3 (Lit (Int64.of_int (-8 * idx)), Rbp))) uid_idx_pairs
+
 
 (* The code for the entry-point of a function must do several things:
 
