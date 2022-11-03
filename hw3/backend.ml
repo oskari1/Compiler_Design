@@ -144,12 +144,12 @@ let compile_call (ctxt:ctxt) (uid:uid) (ret_ty:ty) (callee_lbl:Ll.operand) (args
     | Gid gid -> Imm (Lbl (Platform.mangle gid))
     | _ -> failwith "unreachable case 1" 
   in 
-  let align_stack = [(Andq, [Imm (Lit (-16L)); Reg Rsp])] in 
+  let align_stack = let nr_args = List.length args in if nr_args mod 2 = 1 || nr_args < 7 then [(Andq, [Imm (Lit (-16L)); Reg Rsp])] else [] in 
   if List.mem uid (fst (List.split ctxt.layout)) then begin 
     let save_rax = let dst = lookup ctxt.layout uid in [(Movq, [Reg Rax; dst])] in 
-    pass_args @ align_stack @ [(Callq, [target])] @ save_rax 
+    align_stack @ pass_args @ [(Callq, [target])] @ save_rax 
   end else
-    pass_args @ align_stack @ [(Callq, [target])] 
+    align_stack @ pass_args @ [(Callq, [target])] 
 
 (* compiling getelementptr (gep)  ------------------------------------------- *)
 
