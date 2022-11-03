@@ -95,7 +95,7 @@ let compile_operand (ctxt:ctxt) (dest:X86.operand) : Ll.operand -> ins =
     | Null -> (Movq, [Imm (Lit 0L); dest])
     | Const lit -> (Movq, [Imm (Lit lit); dest]) 
     | Id uid -> let src = lookup ctxt.layout uid in (Movq, [src; dest])
-    | Gid gid -> (Leaq, [Ind3 (Lbl gid, Rip); dest])
+    | Gid gid -> (Leaq, [Ind3 (Lbl (Platform.mangle gid), Rip); dest])
 
 (* compiling call  ---------------------------------------------------------- *)
 
@@ -141,11 +141,14 @@ let compile_call (ctxt:ctxt) (uid:uid) (ret_ty:ty) (callee_lbl:Ll.operand) (args
   let target =
     match callee_lbl with 
     | Const addr -> Imm (Lit addr)
-    | Gid gid -> Imm (Lbl gid)
+    | Gid gid -> Imm (Lbl (Platform.mangle gid))
     | _ -> failwith "unreachable case" 
   in 
-  let save_rax = let dst = lookup ctxt.layout uid in [(Movq, [Reg Rax; dst])] in 
-  pass_args @ [(Callq, [target])] @ save_rax
+  if List.mem uid (fst (List.split ctxt.layout)) then begin 
+    let save_rax = let dst = lookup ctxt.layout uid in [(Movq, [Reg Rax; dst])] in 
+    pass_args @ [(Callq, [target])] @ save_rax
+  end else
+    pass_args @ [(Callq, [target])]
 
 (* compiling getelementptr (gep)  ------------------------------------------- *)
 
@@ -205,10 +208,51 @@ let rec size_ty (tdecls:(tid * ty) list) (t:Ll.ty) : int =
       in (4), but relative to the type f the sub-element picked out
       by the path so far
 *)
+
+let head (len:int) (l:'a list) = 
+  let rec aux (i:int) (l:'a list) (acc:'a list) =
+    match i with 
+    | i when i < len -> aux (i+1) (List.tl l) (acc @ [List.hd l])
+    | _ -> acc
+  in aux 0 l []
+
+let compile_array_index (i:Ll.operand) (arr_ty:Ll.ty) (ctxt:ctxt) : (X86.ins list)  = 
+    let move_arr_index_to_rsi = compile_operand ctxt (Reg Rsi) i in
+    let elem_size = Int64.of_int (size_ty ctxt.tdecls arr_ty) in 
+    let compute_arr_offset_in_rsi = (Imulq, [Imm (Lit elem_size); Reg Rsi]) in
+    let accumulate_in_rax = (Addq, [Reg Rsi; Reg Rax]) in 
+    [move_arr_index_to_rsi; compute_arr_offset_in_rsi; accumulate_in_rax]
+
+let rec acc_offsets (ty:Ll.ty) (indices:Ll.operand list) (acc : X86.ins list) (ctxt:ctxt): (X86.ins list) = 
+    match indices with 
+    | [] -> acc 
+    | i::rest ->  
+      match ty with 
+      | Array (len, arr_ty) -> acc_offsets arr_ty rest (acc @ (compile_array_index i arr_ty ctxt)) ctxt 
+      | Struct ty_list -> 
+        begin
+        match i with 
+        | Const idx -> 
+          let n = Int64.to_int idx in 
+          let type_sizes = List.map (size_ty ctxt.tdecls) (head n ty_list) in
+          let struct_offset = Int64.of_int (List.fold_left (+) 0 type_sizes) in
+          acc_offsets (List.nth ty_list n) rest (acc @ [(Addq, [Imm (Lit struct_offset); Reg Rax])]) ctxt 
+        | _ -> failwith "invalid path format"
+        end
+      | _ -> failwith "invalid path format" 
+
 let compile_gep (ctxt:ctxt) (op : Ll.ty * Ll.operand) (path: Ll.operand list) : ins list =
-failwith "compile_gep not implemented"
-
-
+  let ty = fst op in
+  let ptr = snd op in   
+  let move_base_addr_to_rax = [compile_operand ctxt (Reg Rax) ptr] in 
+  let accumulate_offset_in_rax =
+    match path with 
+    | [] -> failwith "invalid path format"
+    | i::indices -> 
+      let compile_fst_index = compile_array_index i ty ctxt in  
+      compile_fst_index @ (acc_offsets ty indices [] ctxt)
+  in  
+  move_base_addr_to_rax @ accumulate_offset_in_rax
 
 (* compiling instructions  -------------------------------------------------- *)
 
@@ -305,7 +349,10 @@ let compile_insn (ctxt:ctxt) ((uid:uid), (i:Ll.insn)) : X86.ins list =
       let move_opnd_to_reg = compile_operand ctxt (Reg Rdi) opnd_addr in 
       [move_opnd_to_reg;
        (Movq, [Reg Rdi; dst])]
-    | _ -> []
+    | Gep (Ptr (Namedt tid), opnd, path) -> 
+      let ty = lookup ctxt.tdecls tid, opnd in
+      (compile_gep ctxt ty path) @ [(Movq, [Reg Rax; dst])]
+    | _ -> failwith "unreachable case" 
     end
 
 (* compiling terminators  --------------------------------------------------- *)
