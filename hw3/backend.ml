@@ -142,7 +142,7 @@ let compile_call (ctxt:ctxt) (uid:uid) (ret_ty:ty) (callee_lbl:Ll.operand) (args
     match callee_lbl with 
     | Const addr -> Imm (Lit addr)
     | Gid gid -> Imm (Lbl (Platform.mangle gid))
-    | _ -> failwith "unreachable case" 
+    | _ -> failwith "unreachable case 1" 
   in 
   if List.mem uid (fst (List.split ctxt.layout)) then begin 
     let save_rax = let dst = lookup ctxt.layout uid in [(Movq, [Reg Rax; dst])] in 
@@ -352,7 +352,9 @@ let compile_insn (ctxt:ctxt) ((uid:uid), (i:Ll.insn)) : X86.ins list =
     | Gep (Ptr (Namedt tid), opnd, path) -> 
       let ty = lookup ctxt.tdecls tid, opnd in
       (compile_gep ctxt ty path) @ [(Movq, [Reg Rax; dst])]
-    | _ -> failwith "unreachable case" 
+    | Gep (Ptr ty, opnd, path) -> 
+      (compile_gep ctxt (ty, opnd) path) @ [(Movq, [Reg Rax; dst])] 
+    | _ -> failwith "unreachable case 2" 
     end
 
 (* compiling terminators  --------------------------------------------------- *)
@@ -388,7 +390,7 @@ let compile_terminator (fn:string) (ctxt:ctxt) (t:Ll.terminator) : ins list =
      (Andq, [Imm (Lit 1L); Reg Rax]);
      (J Neq, [Imm (Lbl (mk_lbl fn lbl1))]);
      (Jmp, [Imm (Lbl (mk_lbl fn lbl2))])]
-  | _ -> failwith "unreachable case" 
+  | _ -> failwith "unreachable case 3" 
 
 (* compiling blocks --------------------------------------------------------- *)
 
