@@ -229,6 +229,7 @@ let rec acc_offsets (ty:Ll.ty) (indices:Ll.operand list) (acc : X86.ins list) (c
     | [] -> acc 
     | i::rest ->  
       match ty with 
+      | Namedt tid -> let ty = lookup ctxt.tdecls tid, i in acc_offsets (fst ty) indices acc ctxt  
       | Array (len, arr_ty) -> acc_offsets arr_ty rest (acc @ (compile_array_index i arr_ty ctxt)) ctxt 
       | Struct ty_list -> 
         begin
@@ -238,9 +239,9 @@ let rec acc_offsets (ty:Ll.ty) (indices:Ll.operand list) (acc : X86.ins list) (c
           let type_sizes = List.map (size_ty ctxt.tdecls) (head n ty_list) in
           let struct_offset = Int64.of_int (List.fold_left (+) 0 type_sizes) in
           acc_offsets (List.nth ty_list n) rest (acc @ [(Addq, [Imm (Lit struct_offset); Reg Rax])]) ctxt 
-        | _ -> failwith "invalid path format"
+        | _ -> failwith "invalid path format 1"
         end
-      | _ -> failwith "invalid path format" 
+      | _ -> print_endline (Llutil.string_of_ty ty); failwith "invalid path format 2" 
 
 let compile_gep (ctxt:ctxt) (op : Ll.ty * Ll.operand) (path: Ll.operand list) : ins list =
   let ty = fst op in
