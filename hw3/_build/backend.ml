@@ -137,7 +137,8 @@ let compile_call (ctxt:ctxt) (uid:uid) (ret_ty:ty) (callee_lbl:Ll.operand) (args
     | 5 -> move_opnd_to_reg R09
     | n -> move_opnd_to_reg Rax @ [(Pushq, [Reg Rax])]  
   in
-  let pass_args = List.concat @@ snd (fold_left_map (fun i arg -> (i+1, pass_ith_arg arg i)) 0 args) in 
+  (*let pass_args = List.concat @@ snd (fold_left_map (fun i arg -> (i+1, pass_ith_arg arg i)) 0 args) in*)
+  let pass_args = List.concat @@ snd (fold_left_map (fun i arg -> (i-1, pass_ith_arg arg (i-1))) (List.length args) (List.rev args)) in
   let target =
     match callee_lbl with 
     | Const addr -> Imm (Lit addr)
@@ -383,7 +384,7 @@ let compile_terminator (fn:string) (ctxt:ctxt) (t:Ll.terminator) : ins list =
   let return = [(Movq, [Reg Rbp; Reg Rsp]); (Popq, [Reg Rbp]); (Retq, [])] in 
   match t with 
   | Ret (Void, _) -> return 
-  | Ret (I64, Some ll_operand) -> (compile_operand ctxt (Reg Rax) ll_operand)::return
+  | Ret (I64, Some ll_operand) | Ret (I1, Some ll_operand) | Ret (Ptr _, Some ll_operand) -> (compile_operand ctxt (Reg Rax) ll_operand)::return
   | Br lbl -> [(Jmp, [Imm (Lbl (mk_lbl fn lbl))])]
   | Cbr (cond, lbl1, lbl2) -> 
     let load_cond_to_rax = compile_operand ctxt (Reg Rax) cond in 
