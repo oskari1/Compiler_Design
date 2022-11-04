@@ -5,5 +5,7 @@ S ll
 S llprograms
 S Int64_overflow
 S .
+S sharedtests/**
 
 B _build/**
+B _build/sharedtests/**
