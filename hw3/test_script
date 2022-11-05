@@ -1,0 +1,1 @@
+for i in llprograms/*.ll; do echo "$i"; ./main.native cinterop.c $i --execute-x86; ./main.native cinterop.c --clang $i --execute-x86; echo ""; done
