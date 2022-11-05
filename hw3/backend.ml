@@ -137,19 +137,22 @@ let compile_call (ctxt:ctxt) (uid:uid) (ret_ty:ty) (callee_lbl:Ll.operand) (args
     | 5 -> move_opnd_to_reg R09
     | n -> move_opnd_to_reg Rax @ [(Pushq, [Reg Rax])]  
   in
-  let pass_args = List.concat @@ snd (fold_left_map (fun i arg -> (i-1, pass_ith_arg arg (i-1))) (List.length args) (List.rev args)) in
+  let nr_args = List.length args in
+  let pass_args = List.concat @@ snd (fold_left_map (fun i arg -> (i-1, pass_ith_arg arg (i-1))) nr_args (List.rev args)) in
   let target =
     match callee_lbl with 
     | Const addr -> Imm (Lit addr)
-    | Gid gid -> Imm (Lbl (Platform.mangle gid))
-    | _ -> failwith "unreachable case 1" 
+    | Gid gid -> Imm (Lbl (Platform.mangle gid)) 
+    | Id uid -> Imm (Lbl uid)
+    | _ -> failwith "unreachable case" 
   in 
-  let align_stack = let nr_args = List.length args in if nr_args mod 2 = 1 || nr_args < 7 then [(Andq, [Imm (Lit (-16L)); Reg Rsp])] else [] in 
+  let align_stack = if nr_args mod 2 = 1 || nr_args < 7 then [(Andq, [Imm (Lit (-16L)); Reg Rsp])] else [] in 
+  let clean_up_stack = if nr_args > 6 then let excess = Int64.of_int (8*(nr_args - 6)) in [(Addq, [Imm (Lit excess); Reg Rsp])] else [] in
   if List.mem uid (fst (List.split ctxt.layout)) then begin 
     let save_rax = let dst = lookup ctxt.layout uid in [(Movq, [Reg Rax; dst])] in 
-    align_stack @ pass_args @ [(Callq, [target])] @ save_rax 
+    align_stack @ pass_args @ [(Callq, [target])] @ clean_up_stack @ save_rax 
   end else
-    align_stack @ pass_args @ [(Callq, [target])] 
+    align_stack @ pass_args @ [(Callq, [target])] @ clean_up_stack
 
 (* compiling getelementptr (gep)  ------------------------------------------- *)
 
@@ -239,9 +242,9 @@ let rec acc_offsets (ty:Ll.ty) (indices:Ll.operand list) (acc : X86.ins list) (c
           let type_sizes = List.map (size_ty ctxt.tdecls) (head n ty_list) in
           let struct_offset = Int64.of_int (List.fold_left (+) 0 type_sizes) in
           acc_offsets (List.nth ty_list n) rest (acc @ [(Addq, [Imm (Lit struct_offset); Reg Rax])]) ctxt 
-        | _ -> failwith "invalid path format 1"
+        | _ -> failwith "invalid path format"
         end
-      | _ -> print_endline (Llutil.string_of_ty ty); failwith "invalid path format 2" 
+      | _ -> failwith "invalid path format" 
 
 let compile_gep (ctxt:ctxt) (op : Ll.ty * Ll.operand) (path: Ll.operand list) : ins list =
   let ty = fst op in
@@ -356,7 +359,7 @@ let compile_insn (ctxt:ctxt) ((uid:uid), (i:Ll.insn)) : X86.ins list =
       (compile_gep ctxt ty path) @ [(Movq, [Reg Rax; dst])]
     | Gep (Ptr ty, opnd, path) -> 
       (compile_gep ctxt (ty, opnd) path) @ [(Movq, [Reg Rax; dst])] 
-    | _ -> failwith "unreachable case 2" 
+    | _ -> failwith "unreachable case" 
     end
 
 (* compiling terminators  --------------------------------------------------- *)
@@ -392,7 +395,7 @@ let compile_terminator (fn:string) (ctxt:ctxt) (t:Ll.terminator) : ins list =
      (Andq, [Imm (Lit 1L); Reg Rax]);
      (J Neq, [Imm (Lbl (mk_lbl fn lbl1))]);
      (Jmp, [Imm (Lbl (mk_lbl fn lbl2))])]
-  | _ -> failwith "unreachable case 3" 
+  | _ -> failwith "unreachable case" 
 
 (* compiling blocks --------------------------------------------------------- *)
 
