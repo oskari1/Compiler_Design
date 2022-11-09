@@ -12,8 +12,11 @@ let loc (startpos:Lexing.position) (endpos:Lexing.position) (elt:'a) : 'a node =
 %token NULL
 %token <string> STRING
 %token <string> IDENT
+%token TRUE 
+%token FALSE 
 
 %token TINT     /* int */
+%token TBOOL    /* bool */
 %token TVOID    /* void */
 %token TSTRING  /* string */
 %token IF       /* if */
@@ -21,6 +24,7 @@ let loc (startpos:Lexing.position) (endpos:Lexing.position) (elt:'a) : 'a node =
 %token WHILE    /* while */
 %token RETURN   /* return */
 %token VAR      /* var */
+%token FOR      /* for */
 %token SEMI     /* ; */
 %token COMMA    /* , */
 %token LBRACE   /* { */
@@ -28,7 +32,19 @@ let loc (startpos:Lexing.position) (endpos:Lexing.position) (elt:'a) : 'a node =
 %token PLUS     /* + */
 %token DASH     /* - */
 %token STAR     /* * */
+%token SHL      /* << */
+%token SHR      /* >> */
+%token SAR      /* >>> */
+%token LT       /* < */
+%token LE       /* <= */
+%token GT       /* > */
+%token GE       /* >= */
 %token EQEQ     /* == */
+%token NEQ      /* != */
+%token AND      /* & */
+%token OR       /* | */
+%token BITAND   /* [&] */
+%token BITOR    /* [|] */
 %token EQ       /* = */
 %token LPAREN   /* ( */
 %token RPAREN   /* ) */
@@ -37,6 +53,7 @@ let loc (startpos:Lexing.position) (endpos:Lexing.position) (elt:'a) : 'a node =
 %token TILDE    /* ~ */
 %token BANG     /* ! */
 %token GLOBAL   /* global */
+%token NEW      /* new */ 
 
 %left PLUS DASH
 %left STAR
@@ -81,6 +98,7 @@ arglist:
 ty:
   | TINT   { TInt }
   | r=rtyp { TRef r } 
+  | TBOOL  { TBool }
 
 %inline ret_ty:
   | TVOID  { RetVoid }
@@ -94,7 +112,19 @@ ty:
   | PLUS   { Add }
   | DASH   { Sub }
   | STAR   { Mul }
+  | SHL    { Shl }
+  | SHR    { Shr }
+  | SAR    { Sar }
+  | LT     { Lt }
+  | LE     { Lte }
+  | GT     { Gt }
+  | GE     { Gte }
   | EQEQ   { Eq }
+  | NEQ    { Neq }
+  | AND    { And }
+  | OR     { Or }
+  | BITAND { IAnd }
+  | BITOR  { IOr }
 
 %inline uop:
   | DASH  { Neg }
@@ -104,6 +134,11 @@ ty:
 gexp:
   | t=rtyp NULL  { loc $startpos $endpos @@ CNull t }
   | i=INT      { loc $startpos $endpos @@ CInt i }
+  | str=STRING      { loc $startpos $endpos @@ CStr str }
+  | TRUE      { loc $startpos $endpos @@ CBool true }
+  | FALSE      { loc $startpos $endpos @@ CBool false }
+  | NEW t=ty LBRACKET RBRACKET LBRACE gexplist=separated_list(COMMA, gexp) RBRACE 
+    { loc $startpos $endpos @@ CArr (t, gexplist)}
 
 lhs:  
   | id=IDENT            { loc $startpos $endpos @@ Id id }
@@ -121,9 +156,19 @@ exp:
   | e=exp LPAREN es=separated_list(COMMA, exp) RPAREN
                         { loc $startpos $endpos @@ Call (e,es) }
   | LPAREN e=exp RPAREN { e } 
+  | str=STRING  { loc $startpos $endpos @@ CStr str }
+  | TRUE      { loc $startpos $endpos @@ CBool true }
+  | FALSE      { loc $startpos $endpos @@ CBool false }
+  | NEW t=ty LBRACKET RBRACKET LBRACE explist=separated_list(COMMA, exp) RBRACE 
+    { loc $startpos $endpos @@ CArr (t, explist)}
+  | NEW TINT LBRACKET e=exp RBRACKET { loc $startpos $endpos @@ NewArr (TInt, e) }
+  | NEW TBOOL LBRACKET e=exp RBRACKET { loc $startpos $endpos @@ NewArr (TBool, e) }
 
 vdecl:
   | VAR id=IDENT EQ init=exp { (id, init) }
+
+vdecls:
+  | vdecllist=separated_list(COMMA, vdecl) {vdecllist}
 
 stmt: 
   | d=vdecl SEMI        { loc $startpos $endpos @@ Decl(d) }
@@ -135,6 +180,14 @@ stmt:
   | RETURN e=exp SEMI   { loc $startpos $endpos @@ Ret(Some e) }
   | WHILE LPAREN e=exp RPAREN b=block  
                         { loc $startpos $endpos @@ While(e, b) } 
+  | FOR LPAREN vdecllist=vdecls SEMI SEMI RPAREN b=block 
+    { loc $startpos $endpos @@ For (vdecllist, None, None, b) }
+  | FOR LPAREN vdecllist=vdecls SEMI SEMI s=stmt RPAREN b=block 
+    { loc $startpos $endpos @@ For (vdecllist, None, Some s, b) }
+  | FOR LPAREN vdecllist=vdecls SEMI e=exp SEMI RPAREN b=block 
+    { loc $startpos $endpos @@ For (vdecllist, Some e, None, b) }
+  | FOR LPAREN vdecllist=vdecls SEMI e=exp SEMI s=stmt RPAREN b=block 
+    { loc $startpos $endpos @@ For (vdecllist, Some e, Some s, b) }
 
 block:
   | LBRACE stmts=list(stmt) RBRACE { stmts }
