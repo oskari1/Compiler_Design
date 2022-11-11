@@ -70,6 +70,7 @@
   ( "|", OR);
   ( "[&]", BITAND);
   ( "[|]", BITOR);
+  ( "[]", EMPTYBRACKETS);
   ]
 
 let (symbol_table : (string, Parser.token) Hashtbl.t) = Hashtbl.create 1024
@@ -145,7 +146,7 @@ rule token = parse
 
   | ';' | ',' | '{' | '}' | '+' | '-' | '*' | '=' | "==" 
   | "!=" | '!' | '~' | '(' | ')' | '[' | ']' | '>' | '<' | '|' | '&' | "<<" 
-  | ">>>" | ">>" | "[&]" | "[|]" | ">=" | "<="
+  | ">>>" | ">>" | "[&]" | "[|]" | ">=" | "<=" | "[]" 
     { create_token lexbuf }
 
   | _ as c { unexpected_char lexbuf c }
