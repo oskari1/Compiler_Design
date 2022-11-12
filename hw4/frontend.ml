@@ -460,8 +460,19 @@ let cmp_global_ctxt (c:Ctxt.t) (p:Ast.prog) : Ctxt.t =
 let cmp_fdecl (c:Ctxt.t) (f:Ast.fdecl node) : Ll.fdecl * (Ll.gid * Ll.gdecl) list =
   let {elt={frtyp; fname; args; body}; loc=_} = f in
   let rt = cmp_ret_ty frtyp in 
+  let process_args = 
+    let alloc_stack_for_arg (s, c) (ty, oat_arg_id):(stream * Ctxt.t) =
+      let ll_arg_id = gensym "" in
+      let ll_ty = cmp_ty ty in
+      let c = Ctxt.add c oat_arg_id (Ll.Ptr ll_ty, Ll.Id ll_arg_id) in
+      let ll_dst = snd @@ Ctxt.lookup oat_arg_id c in  
+      s >@ [(E (ll_arg_id, Alloca (cmp_ty ty)))] >@ [(E ("", Store (cmp_ty ty, Ll.Id oat_arg_id, ll_dst)))], c 
+    in 
+    List.fold_left alloc_stack_for_arg ([],c) args 
+  in
+  let alloc_stack_for_args = fst process_args in 
   let compiled_body = cmp_block c rt body in 
-  let cfg = cfg_of_stream (snd compiled_body) in  
+  let cfg = cfg_of_stream (alloc_stack_for_args >@ (snd compiled_body)) in  
   let f_ty = cmp_fty (fst @@ List.split args, frtyp) in 
   let f_param = snd @@ List.split args in 
   let fdecl = {f_ty=f_ty; f_param=f_param; f_cfg=fst cfg} in 
