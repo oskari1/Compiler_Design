@@ -305,7 +305,10 @@ let oat_alloc_array (t:Ast.ty) (size:Ll.operand) : Ll.ty * operand * stream =
 *)
 
 let rec cmp_exp (c:Ctxt.t) (exp:Ast.exp node) : Ll.ty * Ll.operand * stream =
-  failwith "cmp_exp unimplemented"
+  match exp.elt with 
+  | CInt i -> I64, Const i, []
+  | _ -> failwith "cmp_exp unimplemented"
+
 
 (* Compile a statement in context c with return typ rt. Return a new context, 
    possibly extended with new local bindings, and the instruction stream
@@ -335,7 +338,15 @@ let rec cmp_exp (c:Ctxt.t) (exp:Ast.exp node) : Ll.ty * Ll.operand * stream =
  *)
 
 let rec cmp_stmt (c:Ctxt.t) (rt:Ll.ty) (stmt:Ast.stmt node) : Ctxt.t * stream =
-  failwith "cmp_stmt not implemented"
+  match stmt.elt with 
+  | Ret None -> c, (T (Ll.Ret (rt, None)))::[]
+  | Ret (Some exp) ->
+    begin
+      let exp_ty, ll_op, init_op = cmp_exp c exp in 
+      let ret_op = (T (Ll.Ret (exp_ty, Some ll_op)))::[] in
+      c, init_op >@ ret_op
+    end
+  | _ -> failwith "unimplemented case cmp_stmt"
 
 (* Compile a series of statements *)
 and cmp_block (c:Ctxt.t) (rt:Ll.ty) (stmts:Ast.block) : Ctxt.t * stream =
@@ -366,8 +377,21 @@ let cmp_function_ctxt (c:Ctxt.t) (p:Ast.prog) : Ctxt.t =
    in well-formed programs. (The constructors starting with C). 
 *)
 let cmp_global_ctxt (c:Ctxt.t) (p:Ast.prog) : Ctxt.t =
-  failwith "cmp_global_ctxt unimplemented"
-
+  List.fold_left (fun c -> function 
+    | Ast.Gvdecl { elt={ name; init={elt=exp}}} -> 
+        let vt = 
+          match exp with 
+          | CNull rty -> TRef rty 
+          | CBool _ -> TBool 
+          | CInt _ -> TInt
+          | CStr _ -> TRef RString
+          | CArr (ty, _) -> TRef (RArray ty)
+          | _ -> failwith "invalid global initializer"
+       in 
+        Ctxt.add c name (cmp_ty vt, Gid name)
+    | _ -> c 
+  ) c p
+  
 (* Compile a function declaration in global context c. Return the LLVMlite cfg
    and a list of global declarations containing the string literals appearing
    in the function.
@@ -381,7 +405,14 @@ let cmp_global_ctxt (c:Ctxt.t) (p:Ast.prog) : Ctxt.t =
  *)
 
 let cmp_fdecl (c:Ctxt.t) (f:Ast.fdecl node) : Ll.fdecl * (Ll.gid * Ll.gdecl) list =
-  failwith "cmp_fdecl not implemented"
+  let {elt={frtyp; fname; args; body}; loc=_} = f in
+  let rt = cmp_ret_ty frtyp in 
+  let compiled_body = cmp_block c rt body in 
+  let cfg = cfg_of_stream (snd compiled_body) in  
+  let f_ty = cmp_fty (fst @@ List.split args, frtyp) in 
+  let f_param = snd @@ List.split args in 
+  let fdecl = {f_ty=f_ty; f_param=f_param; f_cfg=fst cfg} in 
+  fdecl, snd cfg
 
 (* Compile a global initializer, returning the resulting LLVMlite global
    declaration, and a list of additional global declarations.
@@ -396,7 +427,16 @@ let cmp_fdecl (c:Ctxt.t) (f:Ast.fdecl node) : Ll.fdecl * (Ll.gid * Ll.gdecl) lis
 *)
 
 let rec cmp_gexp c (e:Ast.exp node) : Ll.gdecl * (Ll.gid * Ll.gdecl) list =
-  failwith "cmp_gexp not implemented"
+  let gdecl = 
+    let exp = e.elt in 
+    match exp with 
+    | CNull rty -> (cmp_ty (Ast.TRef rty), GNull)
+    | CBool b -> (cmp_ty Ast.TBool, GInt (if b then 1L else 0L))
+    | CInt i -> (cmp_ty (Ast.TInt), GInt i)
+    | CStr str -> (cmp_ty (Ast.TRef RString), GString str)
+    | _ -> failwith "invalid global initializer"
+  in 
+  (gdecl, [])
 
 (* Oat internals function context ------------------------------------------- *)
 let internals = [
