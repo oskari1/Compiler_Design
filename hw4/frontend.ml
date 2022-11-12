@@ -304,9 +304,53 @@ let oat_alloc_array (t:Ast.ty) (size:Ll.operand) : Ll.ty * operand * stream =
 
 *)
 
+let ll_bop_of (binop:Ast.binop) : Ll.bop = 
+  match binop with 
+  | Add -> Ll.Add
+  | Sub -> Ll.Sub
+  | Mul -> Ll.Mul
+  | Shl -> Ll.Shl
+  | Shr -> Ll.Lshr
+  | Sar -> Ll.Ashr
+  | And -> Ll.And
+  | Or -> Ll.Or
+  | _ -> failwith "unimplemented" 
+
 let rec cmp_exp (c:Ctxt.t) (exp:Ast.exp node) : Ll.ty * Ll.operand * stream =
   match exp.elt with 
   | CInt i -> I64, Const i, []
+  | CBool b -> let b_int = if b then 1L else 0L in I64, Const b_int, []
+  | Bop (binop, oat_e1, oat_e2) -> 
+    begin
+      let e1_ty, ll_e1_val, load_e1 = cmp_exp c oat_e1 in 
+      let e2_ty, ll_e2_val, load_e2 = cmp_exp c oat_e2 in 
+      let _, _, ret_ty = typ_of_binop binop in
+      let ll_ret_ty = cmp_ty ret_ty in 
+      let dst_uid = gensym "" in
+      let binop_e1_e2 = (I (dst_uid, Binop (ll_bop_of binop, ll_ret_ty, ll_e1_val, ll_e2_val)))::[] in 
+      ll_ret_ty, Ll.Id dst_uid, load_e1 @ load_e2 @ binop_e1_e2     
+    end  
+  | Uop (unop, e) -> 
+    begin 
+      let e_ty, ll_e, load_e = cmp_exp c e in 
+      let _, ret_ty = typ_of_unop unop in 
+      let ll_ret_ty = cmp_ty ret_ty in 
+      let res_uid = gensym "" in 
+      let ll_insn =  
+        match unop with 
+        | Neg -> Binop (Ll.Sub, ll_ret_ty, Const 0L, ll_e)
+        | Lognot -> Binop (Ll.And, ll_ret_ty, Const 1L, ll_e) 
+        | Bitnot -> Binop (Ll.Xor, ll_ret_ty, Const (Int64.max_int), ll_e) 
+      in 
+      ll_ret_ty, Id res_uid, (I (res_uid, ll_insn))::[] 
+    end 
+  | Id oat_id -> 
+    begin
+      let ll_ty, ll_src = Ctxt.lookup oat_id c in 
+      let dst_uid = gensym "" in
+      let load_id_to_dst = (I (dst_uid, Load (ll_ty, ll_src)))::[] in
+      ll_ty, Ll.Id dst_uid, load_id_to_dst  
+    end 
   | _ -> failwith "cmp_exp unimplemented"
 
 
@@ -324,7 +368,7 @@ let rec cmp_exp (c:Ctxt.t) (exp:Ast.exp node) : Ll.ty * Ll.operand * stream =
 
    - don't forget to add a bindings to the context for local variable 
      declarations
-   
+
    - you can avoid some work by translating For loops to the corresponding
      While loop, building the AST and recursively calling cmp_stmt
 
@@ -342,10 +386,19 @@ let rec cmp_stmt (c:Ctxt.t) (rt:Ll.ty) (stmt:Ast.stmt node) : Ctxt.t * stream =
   | Ret None -> c, (T (Ll.Ret (rt, None)))::[]
   | Ret (Some exp) ->
     begin
-      let exp_ty, ll_op, init_op = cmp_exp c exp in 
-      let ret_op = (T (Ll.Ret (exp_ty, Some ll_op)))::[] in
-      c, init_op >@ ret_op
+      let exp_ty, ll_src, init_op = cmp_exp c exp in 
+      let ret_op = (T (Ll.Ret (exp_ty, Some ll_src)))::[] in
+      c, init_op @ ret_op
     end
+  | Decl (oat_id, exp) -> 
+    begin 
+      let ll_uid = gensym "" in
+      let exp_ty, ll_exp_src, cmp_exp = cmp_exp c exp in
+      let alloc_var = (E (ll_uid, Alloca exp_ty))::[] in
+      let init_var = (E ("", Store (exp_ty, ll_exp_src, Id ll_uid)))::[] in 
+      let c = Ctxt.add c oat_id (exp_ty, Id ll_uid) in  
+      c, alloc_var @ cmp_exp @ init_var
+    end 
   | _ -> failwith "unimplemented case cmp_stmt"
 
 (* Compile a series of statements *)

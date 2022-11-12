@@ -5,30 +5,43 @@ open Driver
 
 (* These tests are provided by you *)
 
-(* You should also add additional test cases here to help you   *)
-(* debug your program.                                          *)
-(*
-let assert_eq_ast (f: 'a -> 'a -> bool) (print : 'a -> string) (x: 'a) (y: unit -> 'a)  : assertion =
-  fun () ->
-  let result = y () in
-  if f x result then () else
-      let msg = Printf.sprintf "EXPECTED: %s\nGOT: %s\n" (print x) (print result) in
-      failwith msg
+let easiest_tests = [
+  (*("oatprograms/easyrun1.oat", "", "17");*)
+  ("oatprograms/easyrun2.oat", "", "35");(*
+  ("oatprograms/easyrun3.oat", "", "73");
+  ("oatprograms/easyrun4.oat", "", "6");
+  ("oatprograms/easyrun5.oat", "", "212");
+  ("oatprograms/easyrun6.oat", "", "9");
+  ("oatprograms/easyrun7.oat", "", "23");
+  ("oatprograms/easyrun8.oat", "", "96");
+  ("oatprograms/easyrun9.oat", "", "236");
+  ("oatprograms/easyrun10.oat", "", "254");*)
+]
+let oat_file_test path args =
+  let () = Platform.verb @@ Printf.sprintf "** Processing: %s\n" path in
 
-let parse_test parse (compare : 'a -> 'a -> bool) (printer : 'a -> string) (code : string) (ast : 'a)  : assertion =
-  let lexbuf = Lexing.from_string code in
-  let result = Lexer.token lexbuf in
-  assert_eq_ast compare printer ast (fun () -> result)
+  let output_path = !Platform.output_path in
+  let dot_ll_file = Platform.gen_name output_path "test" ".ll" in
+  let exec_file = Platform.gen_name output_path "exec" "" in
+  let tmp_file = Platform.gen_name output_path "tmp" ".txt" in
 
-let exp_test code ast = parse_test Parser.exp_top eq_exp string_of_exp code ast
+  let oat_ast = parse_oat_file path in
+  let ll_ast = Frontend.cmp_prog oat_ast in
+  let ll_str = Driver.string_of_ll_ast path ll_ast in
+  let () = write_file dot_ll_file ll_str in
+  let () = Platform.link (dot_ll_file::["runtime.c"]) exec_file in
 
-let parse_consts =
-  [ ("parse consts test one", exp_test "bool[] null" (no_loc (CNull (RArray TBool))))
-  ; ("parse consts test two", exp_test "42" (no_loc (CInt 42L)))
-  ; ("parse consts test three", exp_test "true" (no_loc (CBool true)))
-  ; ("parse consts test four", exp_test "false" (no_loc (CBool false)))
-  ; ("parse consts test five", exp_test "\"hello world\"" (no_loc (CStr "hello world")))
-  ; ("parse consts test six", exp_test "new int[]{1, 2, 3}" (no_loc (CArr (TInt, [no_loc (CInt 1L); no_loc (CInt 2L); no_loc (CInt 3L)]))))
-  ]*)
+  let result = Driver.run_program_error args exec_file tmp_file in
+  (*  let () = Platform.sh (Printf.sprintf "rm -f %s %s %s" dot_ll_file exec_file tmp_file) Platform.ignore_error in *)
+  let () = Platform.verb @@ Printf.sprintf "** Executable output:\n%s\n" result in
+  result
+
+
+let executed_oat_file tests =
+  List.map (fun (path, args, ans) ->
+      (path ^ " args: " ^ args), assert_eqfs (fun () -> oat_file_test path args) ans)
+    tests
+
 let provided_tests : suite = [
+    GradedTest("easiest tests", 15, executed_oat_file easiest_tests);
 ] 
