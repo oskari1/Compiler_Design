@@ -327,8 +327,8 @@ let rec cmp_exp (c:Ctxt.t) (exp:Ast.exp node) : Ll.ty * Ll.operand * stream =
       let _, _, ret_ty = typ_of_binop binop in
       let ll_ret_ty = cmp_ty ret_ty in 
       let dst_uid = gensym "" in
-      let binop_e1_e2 = (I (dst_uid, Binop (ll_bop_of binop, ll_ret_ty, ll_e1_val, ll_e2_val)))::[] in 
-      ll_ret_ty, Ll.Id dst_uid, load_e1 @ load_e2 @ binop_e1_e2     
+      let binop_e1_e2 = [(I (dst_uid, Binop (ll_bop_of binop, ll_ret_ty, ll_e1_val, ll_e2_val)))] in 
+      ll_ret_ty, Ll.Id dst_uid, load_e1 >@ load_e2 >@ binop_e1_e2     
     end  
   | Uop (unop, e) -> 
     begin 
@@ -342,13 +342,13 @@ let rec cmp_exp (c:Ctxt.t) (exp:Ast.exp node) : Ll.ty * Ll.operand * stream =
         | Lognot -> Binop (Ll.And, ll_ret_ty, Const 1L, ll_e) 
         | Bitnot -> Binop (Ll.Xor, ll_ret_ty, Const (Int64.max_int), ll_e) 
       in 
-      ll_ret_ty, Id res_uid, (I (res_uid, ll_insn))::[] 
+      ll_ret_ty, Id res_uid, [(I (res_uid, ll_insn))] 
     end 
   | Id oat_id -> 
     begin
       let ll_ty, ll_src = Ctxt.lookup oat_id c in 
       let dst_uid = gensym "" in
-      let load_id_to_dst = (I (dst_uid, Load (ll_ty, ll_src)))::[] in
+      let load_id_to_dst = [(I (dst_uid, Load (ll_ty, ll_src)))] in
       ll_ty, Ll.Id dst_uid, load_id_to_dst  
     end 
   | _ -> failwith "cmp_exp unimplemented"
@@ -383,21 +383,21 @@ let rec cmp_exp (c:Ctxt.t) (exp:Ast.exp node) : Ll.ty * Ll.operand * stream =
 
 let rec cmp_stmt (c:Ctxt.t) (rt:Ll.ty) (stmt:Ast.stmt node) : Ctxt.t * stream =
   match stmt.elt with 
-  | Ret None -> c, (T (Ll.Ret (rt, None)))::[]
+  | Ret None -> c, [(T (Ll.Ret (rt, None)))]
   | Ret (Some exp) ->
     begin
       let exp_ty, ll_src, init_op = cmp_exp c exp in 
-      let ret_op = (T (Ll.Ret (exp_ty, Some ll_src)))::[] in
-      c, init_op @ ret_op
+      let ret_op = [(T (Ll.Ret (exp_ty, Some ll_src)))] in
+      c, init_op >@ ret_op
     end
   | Decl (oat_id, exp) -> 
     begin 
       let ll_uid = gensym "" in
       let exp_ty, ll_exp_src, cmp_exp = cmp_exp c exp in
-      let alloc_var = (E (ll_uid, Alloca exp_ty))::[] in
-      let init_var = (E ("", Store (exp_ty, ll_exp_src, Id ll_uid)))::[] in 
+      let alloc_var = [(E (ll_uid, Alloca exp_ty))] in
+      let init_var = [(E ("", Store (exp_ty, ll_exp_src, Id ll_uid)))] in 
       let c = Ctxt.add c oat_id (exp_ty, Id ll_uid) in  
-      c, alloc_var @ cmp_exp @ init_var
+      c, alloc_var >@ cmp_exp >@ init_var
     end 
   | _ -> failwith "unimplemented case cmp_stmt"
 
