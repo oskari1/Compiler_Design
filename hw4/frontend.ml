@@ -314,7 +314,7 @@ let ll_bop_of (binop:Ast.binop) : Ll.bop =
   | Sar -> Ll.Ashr
   | And -> Ll.And
   | Or -> Ll.Or
-  | _ -> failwith "unimplemented" 
+  | _ -> failwith "unimplemented binop" 
 
 let rec cmp_exp (c:Ctxt.t) (exp:Ast.exp node) : Ll.ty * Ll.operand * stream =
   match exp.elt with 
@@ -399,6 +399,25 @@ let rec cmp_stmt (c:Ctxt.t) (rt:Ll.ty) (stmt:Ast.stmt node) : Ctxt.t * stream =
       let c = Ctxt.add c oat_id (exp_ty, Id ll_uid) in  
       c, alloc_var >@ cmp_exp >@ init_var
     end 
+  | If (bexp, then_block, else_block) ->
+    begin
+      let _, ll_bexp_src, cmp_bexp = cmp_exp c bexp in
+      let then_lbl = gensym "" in 
+      let else_lbl = gensym "" in 
+      let join_lbl = gensym "" in
+      let branch = [(T (Cbr (ll_bexp_src, then_lbl, else_lbl)))] in 
+      let then_L = [(L then_lbl)] in  
+      let c, then_block_stream = cmp_block c rt then_block in
+      let then_T = [(T (Br join_lbl))] in
+      let else_L = [(L else_lbl)] in  
+      let c, else_block_stream = cmp_block c rt else_block in
+      let else_T = [(T (Br join_lbl))] in
+      let join_L = [(L join_lbl)] in
+      c, cmp_bexp >@ branch 
+                  >@ then_L >@ then_block_stream >@ then_T
+                  >@ else_L >@ else_block_stream >@ else_T
+                  >@ join_L
+    end
   | _ -> failwith "unimplemented case cmp_stmt"
 
 (* Compile a series of statements *)
