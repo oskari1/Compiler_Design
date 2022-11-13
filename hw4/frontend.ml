@@ -433,6 +433,33 @@ let rec cmp_stmt (c:Ctxt.t) (rt:Ll.ty) (stmt:Ast.stmt node) : Ctxt.t * stream =
                   >@ else_L >@ else_block_stream >@ else_T
                   >@ join_L
     end
+  | While (bexp, body_block) -> 
+    begin
+      let _, ll_bexp_src, cmp_bexp = cmp_exp c bexp in
+      let loop_lbl = gensym "" in
+      let body_lbl = gensym "" in
+      let post_lbl = gensym "" in
+      let branch_loop = [(T (Br loop_lbl))] in
+      let loop_L = [(L loop_lbl)] in
+      let branch_body_post = [(T (Cbr (ll_bexp_src, body_lbl, post_lbl)))] in
+      let body_L = [(L body_lbl)] in
+      let c, body_block_stream = cmp_block c rt body_block in
+      let post_L = [(L post_lbl)] in
+      c, branch_loop >@ loop_L >@ cmp_bexp >@ branch_body_post 
+                     >@ body_L >@ body_block_stream >@ branch_loop 
+                     >@ post_L 
+    end
+  | Assn (lhs, exp) ->
+    begin 
+      let exp_ty, ll_exp_src, cmp_exp = cmp_exp c exp in
+      let ll_dst = 
+        match lhs.elt with 
+        | (Id oat_id) -> Ctxt.lookup oat_id c 
+        | _ -> failwith "unimplemented case for Assn"
+      in
+      let init_var = (I ("", Store (exp_ty, ll_exp_src, snd ll_dst))) in 
+      c, cmp_exp >@ [init_var] 
+    end
   | _ -> failwith "unimplemented case cmp_stmt"
 
 (* Compile a series of statements *)
