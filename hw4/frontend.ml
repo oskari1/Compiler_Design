@@ -334,16 +334,7 @@ let rec cmp_exp (c:Ctxt.t) (exp:Ast.exp node) : Ll.ty * Ll.operand * stream =
   match exp.elt with 
   | CInt i -> I64, Const i, []
   | CBool b -> let b_int = if b then 1L else 0L in I64, Const b_int, []
-  | Bop (binop, oat_e1, oat_e2) -> (* 
-    begin
-      let e1_ty, ll_e1_val, load_e1 = cmp_exp c oat_e1 in 
-      let e2_ty, ll_e2_val, load_e2 = cmp_exp c oat_e2 in 
-      let _, _, ret_ty = typ_of_binop binop in
-      let ll_ret_ty = cmp_ty ret_ty in 
-      let dst_uid = gensym "" in
-      let binop_e1_e2 = [(I (dst_uid, Binop (ll_bop_of binop, ll_ret_ty, ll_e1_val, ll_e2_val)))] in 
-      ll_ret_ty, Ll.Id dst_uid, load_e1 >@ load_e2 >@ binop_e1_e2     
-    end *) 
+  | Bop (binop, oat_e1, oat_e2) -> 
     begin
       let e1_ty, ll_e1_val, load_e1 = cmp_exp c oat_e1 in 
       let e2_ty, ll_e2_val, load_e2 = cmp_exp c oat_e2 in 
@@ -366,7 +357,7 @@ let rec cmp_exp (c:Ctxt.t) (exp:Ast.exp node) : Ll.ty * Ll.operand * stream =
         | Lognot -> Binop (Ll.And, ll_ret_ty, Const 1L, ll_e) 
         | Bitnot -> Binop (Ll.Xor, ll_ret_ty, Const (Int64.max_int), ll_e) 
       in 
-      ll_ret_ty, Id res_uid, [(I (res_uid, ll_insn))] 
+      ll_ret_ty, Id res_uid, load_e >@ [(I (res_uid, ll_insn))] 
     end 
   | Id oat_id -> 
     begin
@@ -418,14 +409,10 @@ let rec cmp_stmt (c:Ctxt.t) (rt:Ll.ty) (stmt:Ast.stmt node) : Ctxt.t * stream =
     begin 
       let ll_uid = gensym "" in
       let exp_ty, ll_exp_src, cmp_exp = cmp_exp c exp in
-      (*let alloc_var = [(E (ll_uid, Alloca exp_ty))] in
-      let init_var = [(E ("", Store (exp_ty, ll_exp_src, Id ll_uid)))] in 
-      let c = Ctxt.add c oat_id (exp_ty, Id ll_uid) in  
-      c, alloc_var >@ cmp_exp >@ init_var *)
       let alloc_var = (E (ll_uid, Alloca exp_ty)) in
-      let init_var = (E ("", Store (exp_ty, ll_exp_src, Id ll_uid))) in 
+      let init_var = (I ("", Store (exp_ty, ll_exp_src, Id ll_uid))) in 
       let c = Ctxt.add c oat_id (exp_ty, Id ll_uid) in  
-      c, [alloc_var] @ cmp_exp @ [init_var] 
+      c, [alloc_var] >@ cmp_exp >@ [init_var] 
     end 
   | If (bexp, then_block, else_block) ->
     begin
@@ -506,24 +493,26 @@ let cmp_global_ctxt (c:Ctxt.t) (p:Ast.prog) : Ctxt.t =
 
 let cmp_fdecl (c:Ctxt.t) (f:Ast.fdecl node) : Ll.fdecl * (Ll.gid * Ll.gdecl) list =
   let {elt={frtyp; fname; args; body}; loc=_} = f in
-  let rt = cmp_ret_ty frtyp in 
-  let process_args = 
-    let alloc_stack_for_arg (s, c) (ty, oat_arg_id):(stream * Ctxt.t) =
+  (* steps 1 to 3 *)
+  let alloc_stack_for_args, c_extended = 
+    let process_arg (s, c) (arg_ty, oat_arg_id):(stream * Ctxt.t) =
       let ll_arg_id = gensym "" in
-      let ll_ty = cmp_ty ty in
-      let c = Ctxt.add c oat_arg_id (Ll.Ptr ll_ty, Ll.Id ll_arg_id) in
-      let ll_dst = snd @@ Ctxt.lookup oat_arg_id c in  
-      s >@ [(E (ll_arg_id, Alloca (cmp_ty ty)))] >@ [(E ("", Store (cmp_ty ty, Ll.Id oat_arg_id, ll_dst)))], c 
+      let ll_arg_ty = cmp_ty arg_ty in
+      let ll_arg = Ll.Id ll_arg_id in
+      let c = Ctxt.add c oat_arg_id (Ll.Ptr ll_arg_ty, ll_arg) in 
+      s >@ [(E (ll_arg_id, Alloca ll_arg_ty))] >@ [(E ("", Store (ll_arg_ty, Ll.Id oat_arg_id, ll_arg)))], c 
     in 
-    List.fold_left alloc_stack_for_arg ([],c) args 
+    List.fold_left process_arg ([],c) args 
   in
-  let alloc_stack_for_args = fst process_args in 
-  let compiled_body = cmp_block c rt body in 
+  (* step 4 *)
+  let rt = cmp_ret_ty frtyp in 
+  let compiled_body = cmp_block c_extended rt body in 
+  (* step 5 *)
   let cfg = cfg_of_stream (alloc_stack_for_args >@ (snd compiled_body)) in  
   let f_ty = cmp_fty (fst @@ List.split args, frtyp) in 
   let f_param = snd @@ List.split args in 
   let fdecl = {f_ty=f_ty; f_param=f_param; f_cfg=fst cfg} in 
-  fdecl, snd cfg
+  fdecl, (snd cfg)
 
 (* Compile a global initializer, returning the resulting LLVMlite global
    declaration, and a list of additional global declarations.
