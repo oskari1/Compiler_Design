@@ -337,13 +337,23 @@ let rec cmp_exp (c:Ctxt.t) (exp:Ast.exp node) : Ll.ty * Ll.operand * stream =
   | CStr str -> 
     begin
       let str_len = String.length str + 1 in
+      let gid = gensym "" in
+      let gty = Array (str_len, I8) in
+      let ginit = G (gid, (gty, GString str)) in
+      let dst_uid = gensym "" in
+      let gep = I(dst_uid, Gep (Ptr gty, Gid gid, [Const 0L; Const 0L])) in 
+      Ptr I8, Id dst_uid, [ginit] >@ [gep]
+      (*
+      let str_len = String.length str + 1 in
       let gid1 = gensym "" in
       let gty1 = Array (str_len, I8) in
       let ginit1 = G (gid1, (gty1, GString str)) in
       let gid2 = gensym "" in
       let gty2 = cmp_ty @@ Ast.TRef RString in
       let ginit2 = G (gid2, (gty2, GBitcast (Ptr gty1, GGid gid1, Ll.Ptr I8))) in
-      Ptr gty2, Gid gid2, [ginit1] >@ [ginit2] 
+      let dst_uid = gensym "" in
+      let gep = I(dst_uid, Gep (Ptr gty2, Gid gid2, [Const 0L; Const 0L])) in 
+      Ptr I8, Id dst_uid, [ginit1] >@ [ginit2] >@ [gep]*) 
     end 
   | Bop (binop, oat_e1, oat_e2) -> 
     begin
