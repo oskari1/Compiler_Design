@@ -305,7 +305,7 @@ let oat_alloc_array (t:Ast.ty) (size:Ll.operand) : Ll.ty * operand * stream =
 *)
 
 let ll_binop_insn (ast_binop:Ast.binop) (rt:Ll.ty) (op1:Ll.operand) (op2:Ll.operand) : Ll.insn = 
-  if List.mem ast_binop [Add; Sub; Mul; Shl; Shr; Sar; And; Or] then 
+  if List.mem ast_binop [Add; Sub; Mul; Shl; Shr; Sar; And; Or; IAnd; IOr] then 
     let ll_binop = 
       match ast_binop with 
       | Add -> Ll.Add
@@ -314,8 +314,8 @@ let ll_binop_insn (ast_binop:Ast.binop) (rt:Ll.ty) (op1:Ll.operand) (op2:Ll.oper
       | Shl -> Ll.Shl
       | Shr -> Ll.Lshr
       | Sar -> Ll.Ashr
-      | And -> Ll.And
-      | Or -> Ll.Or
+      | And | IAnd -> Ll.And
+      | Or | IOr -> Ll.Or
       | _ -> failwith "unreachable binop" 
     in Binop (ll_binop, rt, op1, op2)
   else
@@ -334,6 +334,13 @@ let rec cmp_exp (c:Ctxt.t) (exp:Ast.exp node) : Ll.ty * Ll.operand * stream =
   match exp.elt with 
   | CInt i -> I64, Const i, []
   | CBool b -> let b_int = if b then 1L else 0L in I64, Const b_int, []
+  | CStr str -> 
+    begin
+       let gid = gensym "" in
+       let gdecl = Ptr I8, GString str in 
+       let ginit = [(G (gid, gdecl))] in
+       Ptr I8, Gid gid, ginit 
+    end  
   | Bop (binop, oat_e1, oat_e2) -> 
     begin
       let e1_ty, ll_e1_val, load_e1 = cmp_exp c oat_e1 in 
@@ -366,6 +373,23 @@ let rec cmp_exp (c:Ctxt.t) (exp:Ast.exp node) : Ll.ty * Ll.operand * stream =
       let load_id_to_dst = [(I (dst_uid, Load (Ll.Ptr ll_ty, ll_src)))] in
       ll_ty, Ll.Id dst_uid, load_id_to_dst  
     end 
+  | Call ({elt=Id id}, args) ->
+    begin 
+      (* see semantics of lookup_function, the output type always has this form *)
+      (* see semantics of cmp_function_ctxt, second output always has this form*)
+      let Ptr (Fun (arg_tys, ret_ty)), ll_fun = Ctxt.lookup_function id c in
+      let dst_uid = gensym "" in
+      let load_args, ll_args = 
+        let load_arg (s, arg_acc) (arg:Ast.exp Ast.node) : (stream * Ll.operand list) = 
+          let _, ll_arg, load = cmp_exp c arg in 
+          s >@ load, arg_acc @ [ll_arg] 
+        in
+        List.fold_left load_arg ([],[]) args
+      in
+      let ll_ty_args = List.combine arg_tys ll_args in
+      let call_func = [(I (dst_uid, Call (ret_ty, ll_fun, ll_ty_args)))] in
+      ret_ty, Ll.Id dst_uid, load_args >@ call_func
+    end
   | _ -> failwith "cmp_exp unimplemented"
 
 
@@ -458,12 +482,12 @@ let rec cmp_stmt (c:Ctxt.t) (rt:Ll.ty) (stmt:Ast.stmt node) : Ctxt.t * stream =
   | Assn (lhs, exp) ->
     begin 
       let exp_ty, ll_exp_src, cmp_exp = cmp_exp c exp in
-      let ll_dst = 
+      let _, ll_dst = 
         match lhs.elt with 
         | (Id oat_id) -> Ctxt.lookup oat_id c 
         | _ -> failwith "unimplemented case for Assn"
       in
-      let init_var = (I ("", Store (exp_ty, ll_exp_src, snd ll_dst))) in 
+      let init_var = (I ("", Store (exp_ty, ll_exp_src, ll_dst))) in 
       c, cmp_exp >@ [init_var] 
     end
   | _ -> failwith "unimplemented case cmp_stmt"
