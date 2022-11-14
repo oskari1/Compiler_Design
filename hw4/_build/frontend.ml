@@ -327,7 +327,7 @@ let ll_binop_insn (ast_binop:Ast.binop) (rt:Ll.ty) (op1:Ll.operand) (op2:Ll.oper
       | Lte -> Ll.Sle
       | Gt -> Ll.Sgt
       | Gte -> Ll.Sge
-      | _ -> failwith "unimplemented binop"
+      | _ -> failwith "unreachable binop"
     in Icmp (cnd, rt, op1, op2) 
 
 let rec cmp_exp (c:Ctxt.t) (exp:Ast.exp node) : Ll.ty * Ll.operand * stream =
@@ -336,11 +336,15 @@ let rec cmp_exp (c:Ctxt.t) (exp:Ast.exp node) : Ll.ty * Ll.operand * stream =
   | CBool b -> let b_int = if b then 1L else 0L in I64, Const b_int, []
   | CStr str -> 
     begin
-       let gid = gensym "" in
-       let gdecl = Ptr I8, GString str in 
-       let ginit = [(G (gid, gdecl))] in
-       Ptr I8, Gid gid, ginit 
-    end  
+      let str_len = String.length str + 1 in
+      let gid1 = gensym "" in
+      let gty1 = Array (str_len, I8) in
+      let ginit1 = G (gid1, (gty1, GString str)) in
+      let gid2 = gensym "" in
+      let gty2 = cmp_ty @@ Ast.TRef RString in
+      let ginit2 = G (gid2, (gty2, GBitcast (Ptr gty1, GGid gid1, Ll.Ptr I8))) in
+      Ptr gty2, Gid gid2, [ginit1] >@ [ginit2] 
+    end 
   | Bop (binop, oat_e1, oat_e2) -> 
     begin
       let e1_ty, ll_e1_val, load_e1 = cmp_exp c oat_e1 in 
@@ -490,6 +494,9 @@ let rec cmp_stmt (c:Ctxt.t) (rt:Ll.ty) (stmt:Ast.stmt node) : Ctxt.t * stream =
       let init_var = (I ("", Store (exp_ty, ll_exp_src, ll_dst))) in 
       c, cmp_exp >@ [init_var] 
     end
+  | SCall (id, args) -> 
+    let _, _, call_fun = cmp_exp c (no_loc (Call (id, args))) in 
+    c, call_fun
   | _ -> failwith "unimplemented case cmp_stmt"
 
 (* Compile a series of statements *)
@@ -584,16 +591,21 @@ let cmp_fdecl (c:Ctxt.t) (f:Ast.fdecl node) : Ll.fdecl * (Ll.gid * Ll.gdecl) lis
 *)
 
 let rec cmp_gexp c (e:Ast.exp node) : Ll.gdecl * (Ll.gid * Ll.gdecl) list =
-  let gdecl = 
-    let exp = e.elt in 
-    match exp with 
-    | CNull rty -> (cmp_ty (Ast.TRef rty), GNull)
-    | CBool b -> (cmp_ty Ast.TBool, GInt (if b then 1L else 0L))
-    | CInt i -> (cmp_ty (Ast.TInt), GInt i)
-    | CStr str -> (cmp_ty (Ast.TRef RString), GString str)
-    | _ -> failwith "invalid global initializer"
-  in 
-  (gdecl, [])
+  match e.elt with 
+  | CNull rty -> (cmp_ty (Ast.TRef rty), GNull), []
+  | CBool b -> (cmp_ty Ast.TBool, GInt (if b then 1L else 0L)), []
+  | CInt i -> (cmp_ty (Ast.TInt), GInt i), []
+  | CStr str -> 
+    begin
+      let str_len = String.length str + 1 in
+      let gty1 = Array (str_len, I8) in
+      let ginit1 = GString str in
+      let gid = gensym  "" in
+      let gty2 = cmp_ty @@ Ast.TRef RString in
+      let ginit2 = GBitcast (Ptr gty1, GGid gid, Ll.Ptr I8) in
+      (gty2, ginit2), (gid, (gty1, ginit1))::[] 
+    end
+  | _ -> failwith "invalid global initializer"
 
 (* Oat internals function context ------------------------------------------- *)
 let internals = [

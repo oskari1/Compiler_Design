@@ -1,70 +1,51 @@
-; generated from: oatprograms/gcd.oat
+; generated from: oatprograms/run2.oat
 target triple = "x86_64-unknown-linux"
-define i64 @gcd(i64 %a, i64 %b) {
-  %_742 = alloca i64
-  store i64 %a, i64* %_742
-  %_743 = alloca i64
-  store i64 %b, i64* %_743
-  %_749 = alloca i64
-  br label %_746
-_746:
-  %_744 = load i64, i64* %_743
-  %_745 = icmp ne i64 %_744, 0
-  br i1 %_745, label %_747, label %_748
-_747:
-  %_750 = load i64, i64* %_743
-  store i64 %_750, i64* %_749
-  %_752 = load i64, i64* %_742
-  %_753 = load i64, i64* %_743
-  %_751 = call i64 @mod(i64 %_752, i64 %_753)
-  store i64 %_751, i64* %_743
-  %_754 = load i64, i64* %_749
-  store i64 %_754, i64* %_742
-  br label %_746
-_748:
-  %_755 = load i64, i64* %_742
-  ret i64 %_755
-}
+@i = global i64 0
 
-define i64 @mod(i64 %a, i64 %b) {
-  %_727 = alloca i64
-  store i64 %a, i64* %_727
-  %_728 = alloca i64
-  store i64 %b, i64* %_728
-  %_729 = alloca i64
-  %_730 = load i64, i64* %_727
-  store i64 %_730, i64* %_729
-  br label %_735
-_735:
-  %_731 = load i64, i64* %_729
-  %_732 = load i64, i64* %_728
-  %_733 = sub i64 %_731, %_732
-  %_734 = icmp sge i64 %_733, 0
-  br i1 %_734, label %_736, label %_737
-_736:
-  %_738 = load i64, i64* %_729
-  %_739 = load i64, i64* %_728
-  %_740 = sub i64 %_738, %_739
-  store i64 %_740, i64* %_729
-  br label %_735
-_737:
-  %_741 = load i64, i64* %_729
-  ret i64 %_741
+define i64 @f(i64 %x, i64 %y) {
+  %_346 = alloca i64
+  store i64 %x, i64* %_346
+  %_347 = alloca i64
+  store i64 %y, i64* %_347
+  %_348 = alloca i64
+  store i64 0, i64* %_348
+  %_349 = load i64, i64* %_346
+  %_350 = icmp sge i64 %_349, 1
+  br i1 %_350, label %_351, label %_352
+_351:
+  %_355 = load i64, i64* %_346
+  %_356 = sub i64 %_355, 1
+  %_357 = load i64, i64* %_347
+  %_354 = call i64 @f(i64 %_356, i64 %_357)
+  %_358 = add i64 1, %_354
+  store i64 %_358, i64* %_348
+  br label %_353
+_352:
+  %_359 = load i64, i64* %_346
+  %_360 = load i64, i64* %_347
+  %_361 = add i64 %_359, %_360
+  store i64 %_361, i64* %_348
+  br label %_353
+_353:
+  %_362 = load i64, i64* %_348
+  ret i64 %_362
 }
 
 define i64 @program(i64 %argc, { i64, [0 x i8*] }* %argv) {
-  %_720 = alloca i64
-  store i64 %argc, i64* %_720
-  %_721 = alloca { i64, [0 x i8*] }*
-  store { i64, [0 x i8*] }* %argv, { i64, [0 x i8*] }** %_721
-  %_722 = alloca i64
-  %_723 = alloca i64
-  store i64 64, i64* %_722
-  store i64 48, i64* %_723
-  %_725 = load i64, i64* %_722
-  %_726 = load i64, i64* %_723
-  %_724 = call i64 @gcd(i64 %_725, i64 %_726)
-  ret i64 %_724
+  %_337 = alloca i64
+  store i64 %argc, i64* %_337
+  %_338 = alloca { i64, [0 x i8*] }*
+  store { i64, [0 x i8*] }* %argv, { i64, [0 x i8*] }** %_338
+  %_339 = alloca i64
+  %_340 = alloca i64
+  store i64 3, i64* %_339
+  store i64 3, i64* %_340
+  %_342 = load i64, i64* %_339
+  %_343 = load i64, i64* %_340
+  %_341 = call i64 @f(i64 %_342, i64 %_343)
+  %_344 = load i64, i64* @i
+  %_345 = add i64 %_341, %_344
+  ret i64 %_345
 }
 
 
