@@ -556,7 +556,7 @@ let cmp_fdecl (c:Ctxt.t) (f:Ast.fdecl node) : Ll.fdecl * (Ll.gid * Ll.gdecl) lis
       let ll_arg_id = gensym "" in
       let ll_arg_ty = cmp_ty arg_ty in
       let ll_arg = Ll.Id ll_arg_id in
-      let c = Ctxt.add c oat_arg_id (Ll.Ptr ll_arg_ty, ll_arg) in 
+      let c = Ctxt.add c oat_arg_id (ll_arg_ty, ll_arg) in 
       s >@ [(E (ll_arg_id, Alloca ll_arg_ty))] >@ [(E ("", Store (ll_arg_ty, Ll.Id oat_arg_id, ll_arg)))], c 
     in 
     List.fold_left process_arg ([],c) args 

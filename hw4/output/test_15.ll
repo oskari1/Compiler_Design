@@ -5,8 +5,8 @@ define i64 @f(i64 %x, i64 %y) {
   store i64 %x, i64* %_146
   %_147 = alloca i64
   store i64 %y, i64* %_147
-  %_148 = load i64*, i64** %_146
-  ret i64* %_148
+  %_148 = load i64, i64* %_146
+  ret i64 %_148
 }
 
 define i64 @program(i64 %argc, { i64, [0 x i8*] }* %argv) {
