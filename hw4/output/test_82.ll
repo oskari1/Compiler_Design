@@ -1,58 +1,58 @@
 ; generated from: oatprograms/lib11.oat
 target triple = "x86_64-unknown-linux"
-@_1841 = global [11 x i8] c"1234967890\00"
+@_2197 = global [11 x i8] c"1234967890\00"
 
 define i64 @program(i64 %argc, { i64, [0 x i8*] }* %argv) {
-  %_1837 = alloca i64
-  store i64 %argc, i64* %_1837
-  %_1838 = alloca { i64, [0 x i8*] }*
-  store { i64, [0 x i8*] }* %argv, { i64, [0 x i8*] }** %_1838
-  %_1839 = alloca { i64, [0 x i64] }*
-  %_1843 = alloca i64
-  %_1844 = alloca i64
-  %_1856 = alloca i64
-  %_1842 = getelementptr [11 x i8], [11 x i8]* @_1841, i32 0, i32 0
-  %_1840 = call { i64, [0 x i64] }* @array_of_string(i8* %_1842)
-  store { i64, [0 x i64] }* %_1840, { i64, [0 x i64] }** %_1839
-  store i64 0, i64* %_1843
-  store i64 0, i64* %_1844
-  br label %_1847
-_1847:
-  %_1845 = load i64, i64* %_1844
-  %_1846 = icmp slt i64 %_1845, 10
-  br i1 %_1846, label %_1848, label %_1849
-_1848:
-  %_1850 = load i64, i64* %_1844
-  %_1852 = load { i64, [0 x i64] }*, { i64, [0 x i64] }** %_1839
-  %_1853 = load i64, i64* %_1844
-  %_1851 = getelementptr { i64, [0 x i64] }, { i64, [0 x i64] }* %_1852, i32 0, i32 1, i64 %_1853
-  store i64 %_1850, i64* %_1851
-  %_1854 = load i64, i64* %_1844
-  %_1855 = add i64 %_1854, 1
-  store i64 %_1855, i64* %_1844
-  br label %_1847
-_1849:
-  store i64 0, i64* %_1856
-  br label %_1859
-_1859:
-  %_1857 = load i64, i64* %_1856
-  %_1858 = icmp slt i64 %_1857, 10
-  br i1 %_1858, label %_1860, label %_1861
-_1860:
-  %_1862 = load i64, i64* %_1843
-  %_1863 = load { i64, [0 x i64] }*, { i64, [0 x i64] }** %_1839
-  %_1864 = load i64, i64* %_1856
-  %_1865 = getelementptr { i64, [0 x i64] }, { i64, [0 x i64] }* %_1863, i32 0, i32 1, i64 %_1864
-  %_1866 = load i64, i64* %_1865
-  %_1867 = add i64 %_1862, %_1866
-  store i64 %_1867, i64* %_1843
-  %_1868 = load i64, i64* %_1856
-  %_1869 = add i64 %_1868, 1
-  store i64 %_1869, i64* %_1856
-  br label %_1859
-_1861:
-  %_1870 = load i64, i64* %_1843
-  ret i64 %_1870
+  %_2193 = alloca i64
+  store i64 %argc, i64* %_2193
+  %_2194 = alloca { i64, [0 x i8*] }*
+  store { i64, [0 x i8*] }* %argv, { i64, [0 x i8*] }** %_2194
+  %_2195 = alloca { i64, [0 x i64] }*
+  %_2199 = alloca i64
+  %_2200 = alloca i64
+  %_2212 = alloca i64
+  %_2198 = getelementptr [11 x i8], [11 x i8]* @_2197, i32 0, i32 0
+  %_2196 = call { i64, [0 x i64] }* @array_of_string(i8* %_2198)
+  store { i64, [0 x i64] }* %_2196, { i64, [0 x i64] }** %_2195
+  store i64 0, i64* %_2199
+  store i64 0, i64* %_2200
+  br label %_2203
+_2203:
+  %_2201 = load i64, i64* %_2200
+  %_2202 = icmp slt i64 %_2201, 10
+  br i1 %_2202, label %_2204, label %_2205
+_2204:
+  %_2206 = load i64, i64* %_2200
+  %_2208 = load { i64, [0 x i64] }*, { i64, [0 x i64] }** %_2195
+  %_2209 = load i64, i64* %_2200
+  %_2207 = getelementptr { i64, [0 x i64] }, { i64, [0 x i64] }* %_2208, i32 0, i32 1, i64 %_2209
+  store i64 %_2206, i64* %_2207
+  %_2210 = load i64, i64* %_2200
+  %_2211 = add i64 %_2210, 1
+  store i64 %_2211, i64* %_2200
+  br label %_2203
+_2205:
+  store i64 0, i64* %_2212
+  br label %_2215
+_2215:
+  %_2213 = load i64, i64* %_2212
+  %_2214 = icmp slt i64 %_2213, 10
+  br i1 %_2214, label %_2216, label %_2217
+_2216:
+  %_2218 = load i64, i64* %_2199
+  %_2219 = load { i64, [0 x i64] }*, { i64, [0 x i64] }** %_2195
+  %_2220 = load i64, i64* %_2212
+  %_2221 = getelementptr { i64, [0 x i64] }, { i64, [0 x i64] }* %_2219, i32 0, i32 1, i64 %_2220
+  %_2222 = load i64, i64* %_2221
+  %_2223 = add i64 %_2218, %_2222
+  store i64 %_2223, i64* %_2199
+  %_2224 = load i64, i64* %_2212
+  %_2225 = add i64 %_2224, 1
+  store i64 %_2225, i64* %_2212
+  br label %_2215
+_2217:
+  %_2226 = load i64, i64* %_2199
+  ret i64 %_2226
 }
 
 

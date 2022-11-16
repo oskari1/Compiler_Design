@@ -3,12 +3,12 @@ target triple = "x86_64-unknown-linux"
 @x = global i64 42
 
 define i64 @program(i64 %argc, { i64, [0 x i8*] }* %args) {
-  %_158 = alloca i64
-  store i64 %argc, i64* %_158
-  %_159 = alloca { i64, [0 x i8*] }*
-  store { i64, [0 x i8*] }* %args, { i64, [0 x i8*] }** %_159
-  %_160 = load i64, i64* @x
-  ret i64 %_160
+  %_170 = alloca i64
+  store i64 %argc, i64* %_170
+  %_171 = alloca { i64, [0 x i8*] }*
+  store { i64, [0 x i8*] }* %args, { i64, [0 x i8*] }** %_171
+  %_172 = load i64, i64* @x
+  ret i64 %_172
 }
 
 

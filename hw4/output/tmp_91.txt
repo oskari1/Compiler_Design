@@ -1,2 +1,1 @@
-timeout: the monitored command dumped core
-Segmentation fault
+19 16 13 23 	5 6 7 6 	19 16 13 23 	5 6 7 6 	

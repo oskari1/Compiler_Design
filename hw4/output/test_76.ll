@@ -1,43 +1,43 @@
 ; generated from: oatprograms/lib4.oat
 target triple = "x86_64-unknown-linux"
-@str = global i8* bitcast ([6 x i8]* @_1732 to i8*)
-@_1732 = global [6 x i8] c"hello\00"
+@str = global i8* bitcast ([6 x i8]* @_2078 to i8*)
+@_2078 = global [6 x i8] c"hello\00"
 
 define i64 @program(i64 %argc, { i64, [0 x i8*] }* %argv) {
-  %_1709 = alloca i64
-  store i64 %argc, i64* %_1709
-  %_1710 = alloca { i64, [0 x i8*] }*
-  store { i64, [0 x i8*] }* %argv, { i64, [0 x i8*] }** %_1710
-  %_1711 = alloca { i64, [0 x i64] }*
-  %_1714 = alloca i64
-  %_1715 = alloca i64
-  %_1713 = load i8*, i8** @str
-  %_1712 = call { i64, [0 x i64] }* @array_of_string(i8* %_1713)
-  store { i64, [0 x i64] }* %_1712, { i64, [0 x i64] }** %_1711
-  store i64 0, i64* %_1714
-  store i64 0, i64* %_1715
-  br label %_1718
-_1718:
-  %_1716 = load i64, i64* %_1715
-  %_1717 = icmp slt i64 %_1716, 5
-  br i1 %_1717, label %_1719, label %_1720
-_1719:
-  %_1721 = load i64, i64* %_1714
-  %_1722 = load { i64, [0 x i64] }*, { i64, [0 x i64] }** %_1711
-  %_1723 = load i64, i64* %_1715
-  %_1724 = getelementptr { i64, [0 x i64] }, { i64, [0 x i64] }* %_1722, i32 0, i32 1, i64 %_1723
-  %_1725 = load i64, i64* %_1724
-  %_1726 = add i64 %_1721, %_1725
-  store i64 %_1726, i64* %_1714
-  %_1727 = load i64, i64* %_1715
-  %_1728 = add i64 %_1727, 1
-  store i64 %_1728, i64* %_1715
-  br label %_1718
-_1720:
-  %_1730 = load i64, i64* %_1714
-  call void @print_int(i64 %_1730)
-  %_1731 = load i64, i64* %_1714
-  ret i64 %_1731
+  %_2055 = alloca i64
+  store i64 %argc, i64* %_2055
+  %_2056 = alloca { i64, [0 x i8*] }*
+  store { i64, [0 x i8*] }* %argv, { i64, [0 x i8*] }** %_2056
+  %_2057 = alloca { i64, [0 x i64] }*
+  %_2060 = alloca i64
+  %_2061 = alloca i64
+  %_2059 = load i8*, i8** @str
+  %_2058 = call { i64, [0 x i64] }* @array_of_string(i8* %_2059)
+  store { i64, [0 x i64] }* %_2058, { i64, [0 x i64] }** %_2057
+  store i64 0, i64* %_2060
+  store i64 0, i64* %_2061
+  br label %_2064
+_2064:
+  %_2062 = load i64, i64* %_2061
+  %_2063 = icmp slt i64 %_2062, 5
+  br i1 %_2063, label %_2065, label %_2066
+_2065:
+  %_2067 = load i64, i64* %_2060
+  %_2068 = load { i64, [0 x i64] }*, { i64, [0 x i64] }** %_2057
+  %_2069 = load i64, i64* %_2061
+  %_2070 = getelementptr { i64, [0 x i64] }, { i64, [0 x i64] }* %_2068, i32 0, i32 1, i64 %_2069
+  %_2071 = load i64, i64* %_2070
+  %_2072 = add i64 %_2067, %_2071
+  store i64 %_2072, i64* %_2060
+  %_2073 = load i64, i64* %_2061
+  %_2074 = add i64 %_2073, 1
+  store i64 %_2074, i64* %_2061
+  br label %_2064
+_2066:
+  %_2076 = load i64, i64* %_2060
+  call void @print_int(i64 %_2076)
+  %_2077 = load i64, i64* %_2060
+  ret i64 %_2077
 }
 
 

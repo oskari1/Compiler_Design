@@ -5,7 +5,7 @@ define i64 @program(i64 %argc, { i64, [0 x i8*] }* %argv) {
   store i64 %argc, i64* %_70
   %_71 = alloca { i64, [0 x i8*] }*
   store { i64, [0 x i8*] }* %argv, { i64, [0 x i8*] }** %_71
-  %_72 = xor i64 9223372036854775807, 5
+  %_72 = xor i64 -1, 5
   %_73 = and i64 %_72, 6
   %_74 = or i64 2, 0
   %_75 = icmp sge i64 %_73, %_74

@@ -376,7 +376,7 @@ let rec cmp_exp (c:Ctxt.t) (exp:Ast.exp node) : Ll.ty * Ll.operand * stream =
         match unop with 
         | Neg -> Binop (Ll.Sub, ll_ret_ty, Const 0L, ll_e)
         | Lognot -> Binop (Ll.And, ll_ret_ty, Const 1L, ll_e) 
-        | Bitnot -> Binop (Ll.Xor, ll_ret_ty, Const (Int64.max_int), ll_e) 
+        | Bitnot -> Binop (Ll.Xor, ll_ret_ty, Const (-1L), ll_e) 
       in 
       ll_ret_ty, Id res_uid, load_e >@ [(I (res_uid, ll_insn))] 
     end 
@@ -429,12 +429,15 @@ let rec cmp_exp (c:Ctxt.t) (exp:Ast.exp node) : Ll.ty * Ll.operand * stream =
     begin
       let size_src = Const (Int64.of_int (List.length exp_list)) in
       let ans_ty, ans, alloc_arr = oat_alloc_array elt_ty size_src in
-      let init_arr = 
-        let cmp_arg decl_acc exp = 
-          let _, _, init_elt = cmp_exp c exp in
-          decl_acc @ init_elt
-         in
-        List.fold_left cmp_arg [] exp_list
+      let init_arr, _ = 
+        let cmp_arg (acc, idx) exp = 
+          let _, src_val, cmp_elt = cmp_exp c exp in
+          let dst_uid = gensym "" in
+          let compute_ptr = I (dst_uid, Gep (ans_ty, ans, [Const 0L; Const 1L; Const (Int64.of_int idx)])) in
+          let store_elt = I ("", Store (cmp_ty elt_ty, src_val, Ll.Id dst_uid)) in 
+          acc @ (cmp_elt >@ [compute_ptr] >@ [store_elt]), idx + 1 
+        in
+        List.fold_left cmp_arg ([], 0) exp_list
       in
       ans_ty, ans, alloc_arr >@ init_arr 
     end

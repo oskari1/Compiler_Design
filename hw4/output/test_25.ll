@@ -1,18 +1,22 @@
 ; generated from: oatprograms/run21.oat
 target triple = "x86_64-unknown-linux"
 define i64 @program(i64 %argc, { i64, [0 x i8*] }* %argv) {
-  %_338 = alloca i64
-  store i64 %argc, i64* %_338
-  %_339 = alloca { i64, [0 x i8*] }*
-  store { i64, [0 x i8*] }* %argv, { i64, [0 x i8*] }** %_339
-  %_340 = alloca { i64, [0 x i64] }*
-  %_raw_array341 = call i64* @oat_alloc_array(i64 2)
-  %_array342 = bitcast i64* %_raw_array341 to { i64, [0 x i64] }*
-  store { i64, [0 x i64] }* %_array342, { i64, [0 x i64] }** %_340
-  %_343 = load { i64, [0 x i64] }*, { i64, [0 x i64] }** %_340
-  %_344 = getelementptr { i64, [0 x i64] }, { i64, [0 x i64] }* %_343, i32 0, i32 1, i32 0
-  %_345 = load i64, i64* %_344
-  ret i64 %_345
+  %_350 = alloca i64
+  store i64 %argc, i64* %_350
+  %_351 = alloca { i64, [0 x i8*] }*
+  store { i64, [0 x i8*] }* %argv, { i64, [0 x i8*] }** %_351
+  %_352 = alloca { i64, [0 x i64] }*
+  %_raw_array353 = call i64* @oat_alloc_array(i64 2)
+  %_array354 = bitcast i64* %_raw_array353 to { i64, [0 x i64] }*
+  %_356 = getelementptr { i64, [0 x i64] }, { i64, [0 x i64] }* %_array354, i32 0, i32 1, i32 1
+  store i64 0, i64* %_356
+  %_355 = getelementptr { i64, [0 x i64] }, { i64, [0 x i64] }* %_array354, i32 0, i32 1, i32 0
+  store i64 99, i64* %_355
+  store { i64, [0 x i64] }* %_array354, { i64, [0 x i64] }** %_352
+  %_357 = load { i64, [0 x i64] }*, { i64, [0 x i64] }** %_352
+  %_358 = getelementptr { i64, [0 x i64] }, { i64, [0 x i64] }* %_357, i32 0, i32 1, i32 0
+  %_359 = load i64, i64* %_358
+  ret i64 %_359
 }
 
 

@@ -5,18 +5,24 @@ define i64 @f() {
 }
 
 define i64 @program(i64 %argc, { i64, [0 x i8*] }* %argv) {
-  %_1174 = alloca i64
-  store i64 %argc, i64* %_1174
-  %_1175 = alloca { i64, [0 x i8*] }*
-  store { i64, [0 x i8*] }* %argv, { i64, [0 x i8*] }** %_1175
-  %_1176 = alloca { i64, [0 x i64] }*
-  %_raw_array1177 = call i64* @oat_alloc_array(i64 3)
-  %_array1178 = bitcast i64* %_raw_array1177 to { i64, [0 x i64] }*
-  store { i64, [0 x i64] }* %_array1178, { i64, [0 x i64] }** %_1176
-  %_1179 = load { i64, [0 x i64] }*, { i64, [0 x i64] }** %_1176
-  %_1180 = getelementptr { i64, [0 x i64] }, { i64, [0 x i64] }* %_1179, i32 0, i32 1, i32 2
-  %_1181 = load i64, i64* %_1180
-  ret i64 %_1181
+  %_1403 = alloca i64
+  store i64 %argc, i64* %_1403
+  %_1404 = alloca { i64, [0 x i8*] }*
+  store { i64, [0 x i8*] }* %argv, { i64, [0 x i8*] }** %_1404
+  %_1405 = alloca { i64, [0 x i64] }*
+  %_raw_array1406 = call i64* @oat_alloc_array(i64 3)
+  %_array1407 = bitcast i64* %_raw_array1406 to { i64, [0 x i64] }*
+  %_1410 = getelementptr { i64, [0 x i64] }, { i64, [0 x i64] }* %_array1407, i32 0, i32 1, i32 2
+  store i64 19, i64* %_1410
+  %_1409 = getelementptr { i64, [0 x i64] }, { i64, [0 x i64] }* %_array1407, i32 0, i32 1, i32 1
+  store i64 100, i64* %_1409
+  %_1408 = getelementptr { i64, [0 x i64] }, { i64, [0 x i64] }* %_array1407, i32 0, i32 1, i32 0
+  store i64 1, i64* %_1408
+  store { i64, [0 x i64] }* %_array1407, { i64, [0 x i64] }** %_1405
+  %_1411 = load { i64, [0 x i64] }*, { i64, [0 x i64] }** %_1405
+  %_1412 = getelementptr { i64, [0 x i64] }, { i64, [0 x i64] }* %_1411, i32 0, i32 1, i32 2
+  %_1413 = load i64, i64* %_1412
+  ret i64 %_1413
 }
 
 

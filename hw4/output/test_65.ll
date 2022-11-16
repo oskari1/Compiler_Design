@@ -1,23 +1,27 @@
 ; generated from: oatprograms/run22.oat
 target triple = "x86_64-unknown-linux"
-@_1189 = global [4 x i8] c"def\00"
-@_1187 = global [4 x i8] c"abc\00"
+@_1422 = global [4 x i8] c"def\00"
+@_1419 = global [4 x i8] c"abc\00"
 
 define i64 @program(i64 %argc, { i64, [0 x i8*] }* %argv) {
-  %_1182 = alloca i64
-  store i64 %argc, i64* %_1182
-  %_1183 = alloca { i64, [0 x i8*] }*
-  store { i64, [0 x i8*] }* %argv, { i64, [0 x i8*] }** %_1183
-  %_1184 = alloca { i64, [0 x i8*] }*
-  %_raw_array1185 = call i64* @oat_alloc_array(i64 2)
-  %_array1186 = bitcast i64* %_raw_array1185 to { i64, [0 x i8*] }*
-  %_1190 = getelementptr [4 x i8], [4 x i8]* @_1189, i32 0, i32 0
-  %_1188 = getelementptr [4 x i8], [4 x i8]* @_1187, i32 0, i32 0
-  store { i64, [0 x i8*] }* %_array1186, { i64, [0 x i8*] }** %_1184
-  %_1192 = load { i64, [0 x i8*] }*, { i64, [0 x i8*] }** %_1184
-  %_1193 = getelementptr { i64, [0 x i8*] }, { i64, [0 x i8*] }* %_1192, i32 0, i32 1, i32 0
-  %_1194 = load i8*, i8** %_1193
-  call void @print_string(i8* %_1194)
+  %_1414 = alloca i64
+  store i64 %argc, i64* %_1414
+  %_1415 = alloca { i64, [0 x i8*] }*
+  store { i64, [0 x i8*] }* %argv, { i64, [0 x i8*] }** %_1415
+  %_1416 = alloca { i64, [0 x i8*] }*
+  %_raw_array1417 = call i64* @oat_alloc_array(i64 2)
+  %_array1418 = bitcast i64* %_raw_array1417 to { i64, [0 x i8*] }*
+  %_1423 = getelementptr [4 x i8], [4 x i8]* @_1422, i32 0, i32 0
+  %_1424 = getelementptr { i64, [0 x i8*] }, { i64, [0 x i8*] }* %_array1418, i32 0, i32 1, i32 1
+  store i8* %_1423, i8** %_1424
+  %_1420 = getelementptr [4 x i8], [4 x i8]* @_1419, i32 0, i32 0
+  %_1421 = getelementptr { i64, [0 x i8*] }, { i64, [0 x i8*] }* %_array1418, i32 0, i32 1, i32 0
+  store i8* %_1420, i8** %_1421
+  store { i64, [0 x i8*] }* %_array1418, { i64, [0 x i8*] }** %_1416
+  %_1426 = load { i64, [0 x i8*] }*, { i64, [0 x i8*] }** %_1416
+  %_1427 = getelementptr { i64, [0 x i8*] }, { i64, [0 x i8*] }* %_1426, i32 0, i32 1, i32 0
+  %_1428 = load i8*, i8** %_1427
+  call void @print_string(i8* %_1428)
   ret i64 0
 }
 

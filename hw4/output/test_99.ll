@@ -2,165 +2,165 @@
 target triple = "x86_64-unknown-linux"
 @lfsr_iterations = global i64 5
 @lfsr_length = global i64 4
-@lfsr_init_values = global { i64, [0 x i1] }* bitcast ({ i64, [4 x i1] }* @_3559 to { i64, [0 x i1] }*)
-@_3559 = global { i64, [4 x i1] } { i64 4, [4 x i1] [ i1 1, i1 0, i1 1, i1 0 ] }
-@_3544 = global [2 x i8] c"T\00"
-@_3546 = global [2 x i8] c"F\00"
-@_3517 = global [2 x i8] c" \00"
+@lfsr_init_values = global { i64, [0 x i1] }* bitcast ({ i64, [4 x i1] }* @_4026 to { i64, [0 x i1] }*)
+@_4026 = global { i64, [4 x i1] } { i64 4, [4 x i1] [ i1 1, i1 0, i1 1, i1 0 ] }
+@_4011 = global [2 x i8] c"T\00"
+@_4013 = global [2 x i8] c"F\00"
+@_3984 = global [2 x i8] c" \00"
 
 define i1 @xor(i1 %x, i1 %y) {
-  %_3548 = alloca i1
-  store i1 %x, i1* %_3548
-  %_3549 = alloca i1
-  store i1 %y, i1* %_3549
-  %_3550 = load i1, i1* %_3548
-  %_3551 = load i1, i1* %_3549
-  %_3552 = and i1 1, %_3551
-  %_3553 = and i1 %_3550, %_3552
-  %_3554 = load i1, i1* %_3548
-  %_3555 = and i1 1, %_3554
-  %_3556 = load i1, i1* %_3549
-  %_3557 = and i1 %_3555, %_3556
-  %_3558 = or i1 %_3553, %_3557
-  ret i1 %_3558
+  %_4015 = alloca i1
+  store i1 %x, i1* %_4015
+  %_4016 = alloca i1
+  store i1 %y, i1* %_4016
+  %_4017 = load i1, i1* %_4015
+  %_4018 = load i1, i1* %_4016
+  %_4019 = and i1 1, %_4018
+  %_4020 = and i1 %_4017, %_4019
+  %_4021 = load i1, i1* %_4015
+  %_4022 = and i1 1, %_4021
+  %_4023 = load i1, i1* %_4016
+  %_4024 = and i1 %_4022, %_4023
+  %_4025 = or i1 %_4020, %_4024
+  ret i1 %_4025
 }
 
 define i8* @string_of_bool(i1 %b) {
-  %_3539 = alloca i1
-  store i1 %b, i1* %_3539
-  %_3540 = load i1, i1* %_3539
-  br i1 %_3540, label %_3541, label %_3542
-_3541:
-  %_3545 = getelementptr [2 x i8], [2 x i8]* @_3544, i32 0, i32 0
-  ret i8* %_3545
-_3542:
-  %_3547 = getelementptr [2 x i8], [2 x i8]* @_3546, i32 0, i32 0
-  ret i8* %_3547
+  %_4006 = alloca i1
+  store i1 %b, i1* %_4006
+  %_4007 = load i1, i1* %_4006
+  br i1 %_4007, label %_4008, label %_4009
+_4008:
+  %_4012 = getelementptr [2 x i8], [2 x i8]* @_4011, i32 0, i32 0
+  ret i8* %_4012
+_4009:
+  %_4014 = getelementptr [2 x i8], [2 x i8]* @_4013, i32 0, i32 0
+  ret i8* %_4014
 }
 
 define void @print_lfsr({ i64, [0 x i1] }* %lfsr_register, i64 %len) {
-  %_3522 = alloca { i64, [0 x i1] }*
-  store { i64, [0 x i1] }* %lfsr_register, { i64, [0 x i1] }** %_3522
-  %_3523 = alloca i64
-  store i64 %len, i64* %_3523
-  %_3524 = alloca i64
-  store i64 0, i64* %_3524
-  br label %_3528
-_3528:
-  %_3525 = load i64, i64* %_3524
-  %_3526 = load i64, i64* %_3523
-  %_3527 = icmp slt i64 %_3525, %_3526
-  br i1 %_3527, label %_3529, label %_3530
-_3529:
-  %_3533 = load { i64, [0 x i1] }*, { i64, [0 x i1] }** %_3522
-  %_3534 = load i64, i64* %_3524
-  %_3535 = getelementptr { i64, [0 x i1] }, { i64, [0 x i1] }* %_3533, i32 0, i32 1, i64 %_3534
-  %_3536 = load i1, i1* %_3535
-  %_3532 = call i8* @string_of_bool(i1 %_3536)
-  call void @print_string(i8* %_3532)
-  %_3537 = load i64, i64* %_3524
-  %_3538 = add i64 %_3537, 1
-  store i64 %_3538, i64* %_3524
-  br label %_3528
-_3530:
+  %_3989 = alloca { i64, [0 x i1] }*
+  store { i64, [0 x i1] }* %lfsr_register, { i64, [0 x i1] }** %_3989
+  %_3990 = alloca i64
+  store i64 %len, i64* %_3990
+  %_3991 = alloca i64
+  store i64 0, i64* %_3991
+  br label %_3995
+_3995:
+  %_3992 = load i64, i64* %_3991
+  %_3993 = load i64, i64* %_3990
+  %_3994 = icmp slt i64 %_3992, %_3993
+  br i1 %_3994, label %_3996, label %_3997
+_3996:
+  %_4000 = load { i64, [0 x i1] }*, { i64, [0 x i1] }** %_3989
+  %_4001 = load i64, i64* %_3991
+  %_4002 = getelementptr { i64, [0 x i1] }, { i64, [0 x i1] }* %_4000, i32 0, i32 1, i64 %_4001
+  %_4003 = load i1, i1* %_4002
+  %_3999 = call i8* @string_of_bool(i1 %_4003)
+  call void @print_string(i8* %_3999)
+  %_4004 = load i64, i64* %_3991
+  %_4005 = add i64 %_4004, 1
+  store i64 %_4005, i64* %_3991
+  br label %_3995
+_3997:
   ret void
 }
 
 define i64 @program(i64 %argc, { i64, [0 x i8*] }* %argv) {
-  %_3449 = alloca i64
-  store i64 %argc, i64* %_3449
-  %_3450 = alloca { i64, [0 x i8*] }*
-  store { i64, [0 x i8*] }* %argv, { i64, [0 x i8*] }** %_3450
-  %_3451 = alloca { i64, [0 x i1] }*
-  %_3455 = alloca i64
-  %_3471 = alloca i64
-  %_3478 = alloca i1
-  %_3490 = alloca i64
-  %_3452 = load i64, i64* @lfsr_length
-  %_raw_array3453 = call i64* @oat_alloc_array(i64 %_3452)
-  %_array3454 = bitcast i64* %_raw_array3453 to { i64, [0 x i1] }*
-  store { i64, [0 x i1] }* %_array3454, { i64, [0 x i1] }** %_3451
-  store i64 0, i64* %_3455
-  br label %_3459
-_3459:
-  %_3456 = load i64, i64* %_3455
-  %_3457 = load i64, i64* @lfsr_length
-  %_3458 = icmp slt i64 %_3456, %_3457
-  br i1 %_3458, label %_3460, label %_3461
-_3460:
-  %_3462 = load { i64, [0 x i1] }*, { i64, [0 x i1] }** @lfsr_init_values
-  %_3463 = load i64, i64* %_3455
-  %_3464 = getelementptr { i64, [0 x i1] }, { i64, [0 x i1] }* %_3462, i32 0, i32 1, i64 %_3463
-  %_3465 = load i1, i1* %_3464
-  %_3467 = load { i64, [0 x i1] }*, { i64, [0 x i1] }** %_3451
-  %_3468 = load i64, i64* %_3455
-  %_3466 = getelementptr { i64, [0 x i1] }, { i64, [0 x i1] }* %_3467, i32 0, i32 1, i64 %_3468
-  store i1 %_3465, i1* %_3466
-  %_3469 = load i64, i64* %_3455
-  %_3470 = add i64 %_3469, 1
-  store i64 %_3470, i64* %_3455
-  br label %_3459
-_3461:
-  store i64 0, i64* %_3471
-  br label %_3475
-_3475:
-  %_3472 = load i64, i64* %_3471
-  %_3473 = load i64, i64* @lfsr_iterations
-  %_3474 = icmp slt i64 %_3472, %_3473
-  br i1 %_3474, label %_3476, label %_3477
-_3476:
-  %_3480 = load { i64, [0 x i1] }*, { i64, [0 x i1] }** %_3451
-  %_3481 = load i64, i64* @lfsr_length
-  %_3482 = sub i64 %_3481, 1
-  %_3483 = getelementptr { i64, [0 x i1] }, { i64, [0 x i1] }* %_3480, i32 0, i32 1, i64 %_3482
-  %_3484 = load i1, i1* %_3483
-  %_3485 = load { i64, [0 x i1] }*, { i64, [0 x i1] }** %_3451
-  %_3486 = load i64, i64* @lfsr_length
-  %_3487 = sub i64 %_3486, 2
-  %_3488 = getelementptr { i64, [0 x i1] }, { i64, [0 x i1] }* %_3485, i32 0, i32 1, i64 %_3487
-  %_3489 = load i1, i1* %_3488
-  %_3479 = call i1 @xor(i1 %_3484, i1 %_3489)
-  store i1 %_3479, i1* %_3478
-  %_3491 = load i64, i64* @lfsr_length
-  %_3492 = sub i64 %_3491, 1
-  store i64 %_3492, i64* %_3490
-  br label %_3495
-_3495:
-  %_3493 = load i64, i64* %_3490
-  %_3494 = icmp sgt i64 %_3493, 0
-  br i1 %_3494, label %_3496, label %_3497
-_3496:
-  %_3498 = load { i64, [0 x i1] }*, { i64, [0 x i1] }** %_3451
-  %_3499 = load i64, i64* %_3490
-  %_3500 = sub i64 %_3499, 1
-  %_3501 = getelementptr { i64, [0 x i1] }, { i64, [0 x i1] }* %_3498, i32 0, i32 1, i64 %_3500
-  %_3502 = load i1, i1* %_3501
-  %_3504 = load { i64, [0 x i1] }*, { i64, [0 x i1] }** %_3451
-  %_3505 = load i64, i64* %_3490
-  %_3503 = getelementptr { i64, [0 x i1] }, { i64, [0 x i1] }* %_3504, i32 0, i32 1, i64 %_3505
-  store i1 %_3502, i1* %_3503
-  %_3506 = load i64, i64* %_3490
-  %_3507 = sub i64 %_3506, 1
-  store i64 %_3507, i64* %_3490
-  br label %_3495
-_3497:
-  %_3508 = load i1, i1* %_3478
-  %_3510 = load { i64, [0 x i1] }*, { i64, [0 x i1] }** %_3451
-  %_3509 = getelementptr { i64, [0 x i1] }, { i64, [0 x i1] }* %_3510, i32 0, i32 1, i32 0
-  store i1 %_3508, i1* %_3509
-  %_3511 = load i64, i64* %_3471
-  %_3512 = add i64 %_3511, 1
-  store i64 %_3512, i64* %_3471
-  br label %_3475
-_3477:
-  %_3514 = load { i64, [0 x i1] }*, { i64, [0 x i1] }** @lfsr_init_values
-  %_3515 = load i64, i64* @lfsr_length
-  call void @print_lfsr({ i64, [0 x i1] }* %_3514, i64 %_3515)
-  %_3518 = getelementptr [2 x i8], [2 x i8]* @_3517, i32 0, i32 0
-  call void @print_string(i8* %_3518)
-  %_3520 = load { i64, [0 x i1] }*, { i64, [0 x i1] }** %_3451
-  %_3521 = load i64, i64* @lfsr_length
-  call void @print_lfsr({ i64, [0 x i1] }* %_3520, i64 %_3521)
+  %_3916 = alloca i64
+  store i64 %argc, i64* %_3916
+  %_3917 = alloca { i64, [0 x i8*] }*
+  store { i64, [0 x i8*] }* %argv, { i64, [0 x i8*] }** %_3917
+  %_3918 = alloca { i64, [0 x i1] }*
+  %_3922 = alloca i64
+  %_3938 = alloca i64
+  %_3945 = alloca i1
+  %_3957 = alloca i64
+  %_3919 = load i64, i64* @lfsr_length
+  %_raw_array3920 = call i64* @oat_alloc_array(i64 %_3919)
+  %_array3921 = bitcast i64* %_raw_array3920 to { i64, [0 x i1] }*
+  store { i64, [0 x i1] }* %_array3921, { i64, [0 x i1] }** %_3918
+  store i64 0, i64* %_3922
+  br label %_3926
+_3926:
+  %_3923 = load i64, i64* %_3922
+  %_3924 = load i64, i64* @lfsr_length
+  %_3925 = icmp slt i64 %_3923, %_3924
+  br i1 %_3925, label %_3927, label %_3928
+_3927:
+  %_3929 = load { i64, [0 x i1] }*, { i64, [0 x i1] }** @lfsr_init_values
+  %_3930 = load i64, i64* %_3922
+  %_3931 = getelementptr { i64, [0 x i1] }, { i64, [0 x i1] }* %_3929, i32 0, i32 1, i64 %_3930
+  %_3932 = load i1, i1* %_3931
+  %_3934 = load { i64, [0 x i1] }*, { i64, [0 x i1] }** %_3918
+  %_3935 = load i64, i64* %_3922
+  %_3933 = getelementptr { i64, [0 x i1] }, { i64, [0 x i1] }* %_3934, i32 0, i32 1, i64 %_3935
+  store i1 %_3932, i1* %_3933
+  %_3936 = load i64, i64* %_3922
+  %_3937 = add i64 %_3936, 1
+  store i64 %_3937, i64* %_3922
+  br label %_3926
+_3928:
+  store i64 0, i64* %_3938
+  br label %_3942
+_3942:
+  %_3939 = load i64, i64* %_3938
+  %_3940 = load i64, i64* @lfsr_iterations
+  %_3941 = icmp slt i64 %_3939, %_3940
+  br i1 %_3941, label %_3943, label %_3944
+_3943:
+  %_3947 = load { i64, [0 x i1] }*, { i64, [0 x i1] }** %_3918
+  %_3948 = load i64, i64* @lfsr_length
+  %_3949 = sub i64 %_3948, 1
+  %_3950 = getelementptr { i64, [0 x i1] }, { i64, [0 x i1] }* %_3947, i32 0, i32 1, i64 %_3949
+  %_3951 = load i1, i1* %_3950
+  %_3952 = load { i64, [0 x i1] }*, { i64, [0 x i1] }** %_3918
+  %_3953 = load i64, i64* @lfsr_length
+  %_3954 = sub i64 %_3953, 2
+  %_3955 = getelementptr { i64, [0 x i1] }, { i64, [0 x i1] }* %_3952, i32 0, i32 1, i64 %_3954
+  %_3956 = load i1, i1* %_3955
+  %_3946 = call i1 @xor(i1 %_3951, i1 %_3956)
+  store i1 %_3946, i1* %_3945
+  %_3958 = load i64, i64* @lfsr_length
+  %_3959 = sub i64 %_3958, 1
+  store i64 %_3959, i64* %_3957
+  br label %_3962
+_3962:
+  %_3960 = load i64, i64* %_3957
+  %_3961 = icmp sgt i64 %_3960, 0
+  br i1 %_3961, label %_3963, label %_3964
+_3963:
+  %_3965 = load { i64, [0 x i1] }*, { i64, [0 x i1] }** %_3918
+  %_3966 = load i64, i64* %_3957
+  %_3967 = sub i64 %_3966, 1
+  %_3968 = getelementptr { i64, [0 x i1] }, { i64, [0 x i1] }* %_3965, i32 0, i32 1, i64 %_3967
+  %_3969 = load i1, i1* %_3968
+  %_3971 = load { i64, [0 x i1] }*, { i64, [0 x i1] }** %_3918
+  %_3972 = load i64, i64* %_3957
+  %_3970 = getelementptr { i64, [0 x i1] }, { i64, [0 x i1] }* %_3971, i32 0, i32 1, i64 %_3972
+  store i1 %_3969, i1* %_3970
+  %_3973 = load i64, i64* %_3957
+  %_3974 = sub i64 %_3973, 1
+  store i64 %_3974, i64* %_3957
+  br label %_3962
+_3964:
+  %_3975 = load i1, i1* %_3945
+  %_3977 = load { i64, [0 x i1] }*, { i64, [0 x i1] }** %_3918
+  %_3976 = getelementptr { i64, [0 x i1] }, { i64, [0 x i1] }* %_3977, i32 0, i32 1, i32 0
+  store i1 %_3975, i1* %_3976
+  %_3978 = load i64, i64* %_3938
+  %_3979 = add i64 %_3978, 1
+  store i64 %_3979, i64* %_3938
+  br label %_3942
+_3944:
+  %_3981 = load { i64, [0 x i1] }*, { i64, [0 x i1] }** @lfsr_init_values
+  %_3982 = load i64, i64* @lfsr_length
+  call void @print_lfsr({ i64, [0 x i1] }* %_3981, i64 %_3982)
+  %_3985 = getelementptr [2 x i8], [2 x i8]* @_3984, i32 0, i32 0
+  call void @print_string(i8* %_3985)
+  %_3987 = load { i64, [0 x i1] }*, { i64, [0 x i1] }** %_3918
+  %_3988 = load i64, i64* @lfsr_length
+  call void @print_lfsr({ i64, [0 x i1] }* %_3987, i64 %_3988)
   ret i64 0
 }
 

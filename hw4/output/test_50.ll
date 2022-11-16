@@ -3,17 +3,21 @@ target triple = "x86_64-unknown-linux"
 @arr = global { i64, [0 x i64] }* null
 
 define i64 @program(i64 %argc, { i64, [0 x i8*] }* %argv) {
-  %_753 = alloca i64
-  store i64 %argc, i64* %_753
-  %_754 = alloca { i64, [0 x i8*] }*
-  store { i64, [0 x i8*] }* %argv, { i64, [0 x i8*] }** %_754
-  %_raw_array755 = call i64* @oat_alloc_array(i64 2)
-  %_array756 = bitcast i64* %_raw_array755 to { i64, [0 x i64] }*
-  store { i64, [0 x i64] }* %_array756, { i64, [0 x i64] }** @arr
-  %_757 = load { i64, [0 x i64] }*, { i64, [0 x i64] }** @arr
-  %_758 = getelementptr { i64, [0 x i64] }, { i64, [0 x i64] }* %_757, i32 0, i32 1, i32 1
-  %_759 = load i64, i64* %_758
-  ret i64 %_759
+  %_832 = alloca i64
+  store i64 %argc, i64* %_832
+  %_833 = alloca { i64, [0 x i8*] }*
+  store { i64, [0 x i8*] }* %argv, { i64, [0 x i8*] }** %_833
+  %_raw_array834 = call i64* @oat_alloc_array(i64 2)
+  %_array835 = bitcast i64* %_raw_array834 to { i64, [0 x i64] }*
+  %_837 = getelementptr { i64, [0 x i64] }, { i64, [0 x i64] }* %_array835, i32 0, i32 1, i32 1
+  store i64 2, i64* %_837
+  %_836 = getelementptr { i64, [0 x i64] }, { i64, [0 x i64] }* %_array835, i32 0, i32 1, i32 0
+  store i64 1, i64* %_836
+  store { i64, [0 x i64] }* %_array835, { i64, [0 x i64] }** @arr
+  %_838 = load { i64, [0 x i64] }*, { i64, [0 x i64] }** @arr
+  %_839 = getelementptr { i64, [0 x i64] }, { i64, [0 x i64] }* %_838, i32 0, i32 1, i32 1
+  %_840 = load i64, i64* %_839
+  ret i64 %_840
 }
 
 
