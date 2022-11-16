@@ -404,6 +404,20 @@ let rec cmp_exp (c:Ctxt.t) (exp:Ast.exp node) : Ll.ty * Ll.operand * stream =
       let call_func = [(I (dst_uid, Call (ret_ty, ll_fun, ll_ty_args)))] in
       ret_ty, Ll.Id dst_uid, load_args >@ call_func
     end
+  | Index (e1, e2) -> 
+    begin 
+      let arr_ty, base_ptr, load_base_addr = cmp_exp c e1 in
+      let _, offset, load_offset = cmp_exp c e2 in
+      (*let arr_elt_ty = Ll.I64 in*)
+      let Ptr (Struct [I64; Array(0, arr_elt_ty)]) = arr_ty in
+      let src_ptr_uid = gensym "" in
+      let src_ptr = Ll.Id src_ptr_uid in
+      let compute_src_ptr = I (src_ptr_uid, Gep (arr_ty, base_ptr, [Const 0L; Const 1L; offset])) in
+      let dst_uid = gensym "" in
+      let ll_dst = Ll.Id dst_uid in
+      let load_from_src = I (dst_uid, Load (Ptr arr_elt_ty , src_ptr)) in 
+      arr_elt_ty, ll_dst, load_base_addr >@ load_offset >@ [compute_src_ptr] >@ [load_from_src] 
+    end
   | _ -> failwith "cmp_exp unimplemented"
 
 
@@ -658,15 +672,16 @@ let rec cmp_gexp c (e:Ast.exp node) : Ll.gdecl * (Ll.gid * Ll.gdecl) list =
   | CArr (arr_ty, exp_list) -> 
     begin
       let arr_len = List.length exp_list in
-      let gty1 = Array (arr_len, cmp_ty arr_ty) in
+      let ll_arr_ty = Array (arr_len, cmp_ty arr_ty) in
+      let gty1 = Struct [I64; ll_arr_ty] in 
       let init_list = 
-        let cmp_arg arg_acc exp = 
+        let cmp_arg decl_acc exp = 
           let gdecl, _ = cmp_gexp c exp in
-          arg_acc >@ [gdecl]
+          decl_acc @ [gdecl]
          in
         List.fold_left cmp_arg [] exp_list
       in
-      let ginit1 = GArray init_list in
+      let ginit1 = GStruct [I64, GInt (Int64.of_int arr_len); ll_arr_ty, GArray init_list] in
       let gid = gensym "" in
       let gty2 = cmp_ty @@ Ast.TRef (Ast.RArray arr_ty) in
       let ginit2 = GBitcast (Ptr gty1, GGid gid, gty2) in

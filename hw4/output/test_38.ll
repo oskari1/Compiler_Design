@@ -1,70 +1,43 @@
-; generated from: oatprograms/gcd.oat
+; generated from: oatprograms/lib5.oat
 target triple = "x86_64-unknown-linux"
-define i64 @gcd(i64 %a, i64 %b) {
-  %_800 = alloca i64
-  store i64 %a, i64* %_800
-  %_801 = alloca i64
-  store i64 %b, i64* %_801
-  %_807 = alloca i64
-  br label %_804
-_804:
-  %_802 = load i64, i64* %_801
-  %_803 = icmp ne i64 %_802, 0
-  br i1 %_803, label %_805, label %_806
-_805:
-  %_808 = load i64, i64* %_801
-  store i64 %_808, i64* %_807
-  %_810 = load i64, i64* %_800
-  %_811 = load i64, i64* %_801
-  %_809 = call i64 @mod(i64 %_810, i64 %_811)
-  store i64 %_809, i64* %_801
-  %_812 = load i64, i64* %_807
-  store i64 %_812, i64* %_800
-  br label %_804
-_806:
-  %_813 = load i64, i64* %_800
-  ret i64 %_813
-}
-
-define i64 @mod(i64 %a, i64 %b) {
-  %_785 = alloca i64
-  store i64 %a, i64* %_785
-  %_786 = alloca i64
-  store i64 %b, i64* %_786
-  %_787 = alloca i64
-  %_788 = load i64, i64* %_785
-  store i64 %_788, i64* %_787
-  br label %_793
-_793:
-  %_789 = load i64, i64* %_787
-  %_790 = load i64, i64* %_786
-  %_791 = sub i64 %_789, %_790
-  %_792 = icmp sge i64 %_791, 0
-  br i1 %_792, label %_794, label %_795
-_794:
-  %_796 = load i64, i64* %_787
-  %_797 = load i64, i64* %_786
-  %_798 = sub i64 %_796, %_797
-  store i64 %_798, i64* %_787
-  br label %_793
-_795:
-  %_799 = load i64, i64* %_787
-  ret i64 %_799
-}
+@_515 = global [6 x i8] c"hello\00"
 
 define i64 @program(i64 %argc, { i64, [0 x i8*] }* %argv) {
-  %_778 = alloca i64
-  store i64 %argc, i64* %_778
-  %_779 = alloca { i64, [0 x i8*] }*
-  store { i64, [0 x i8*] }* %argv, { i64, [0 x i8*] }** %_779
-  %_780 = alloca i64
-  %_781 = alloca i64
-  store i64 64, i64* %_780
-  store i64 48, i64* %_781
-  %_783 = load i64, i64* %_780
-  %_784 = load i64, i64* %_781
-  %_782 = call i64 @gcd(i64 %_783, i64 %_784)
-  ret i64 %_782
+  %_512 = alloca i64
+  store i64 %argc, i64* %_512
+  %_513 = alloca { i64, [0 x i8*] }*
+  store { i64, [0 x i8*] }* %argv, { i64, [0 x i8*] }** %_513
+  %_514 = alloca i8*
+  %_517 = alloca { i64, [0 x i64] }*
+  %_520 = alloca i64
+  %_521 = alloca i64
+  %_516 = getelementptr [6 x i8], [6 x i8]* @_515, i32 0, i32 0
+  store i8* %_516, i8** %_514
+  %_519 = load i8*, i8** %_514
+  %_518 = call { i64, [0 x i64] }* @array_of_string(i8* %_519)
+  store { i64, [0 x i64] }* %_518, { i64, [0 x i64] }** %_517
+  store i64 0, i64* %_520
+  store i64 0, i64* %_521
+  br label %_524
+_524:
+  %_522 = load i64, i64* %_521
+  %_523 = icmp slt i64 %_522, 5
+  br i1 %_523, label %_525, label %_526
+_525:
+  %_527 = load i64, i64* %_520
+  %_528 = load { i64, [0 x i64] }*, { i64, [0 x i64] }** %_517
+  %_529 = load i64, i64* %_521
+  %_530 = getelementptr { i64, [0 x i64] }, { i64, [0 x i64] }* %_528, i32 0, i32 1, i64 %_529
+  %_531 = load i64, i64* %_530
+  %_532 = add i64 %_527, %_531
+  store i64 %_532, i64* %_520
+  %_533 = load i64, i64* %_521
+  %_534 = add i64 %_533, 1
+  store i64 %_534, i64* %_521
+  br label %_524
+_526:
+  %_535 = load i64, i64* %_520
+  ret i64 %_535
 }
 
 
