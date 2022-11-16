@@ -333,7 +333,7 @@ let ll_binop_insn (ast_binop:Ast.binop) (rt:Ll.ty) (op1:Ll.operand) (op2:Ll.oper
 let rec cmp_exp (c:Ctxt.t) (exp:Ast.exp node) : Ll.ty * Ll.operand * stream =
   match exp.elt with 
   | CInt i -> I64, Const i, []
-  | CBool b -> let b_int = if b then 1L else 0L in I64, Const b_int, []
+  | CBool b -> let b_int = if b then 1L else 0L in I1, Const b_int, []
   | CStr str -> 
     begin
       let str_len = String.length str + 1 in
@@ -418,6 +418,12 @@ let rec cmp_exp (c:Ctxt.t) (exp:Ast.exp node) : Ll.ty * Ll.operand * stream =
       let ll_dst = Ll.Id dst_uid in
       let load_from_src = I (dst_uid, Load (Ptr arr_elt_ty , src_ptr)) in 
       arr_elt_ty, ll_dst, load_base_addr >@ load_offset >@ [compute_src_ptr] >@ [load_from_src] 
+    end
+  | NewArr (elt_ty, exp) -> 
+    begin
+      let _, init_val, load_init_val = cmp_exp c exp in 
+      let arr_ty, ll_dst, stream = oat_alloc_array elt_ty init_val in
+      arr_ty, ll_dst, load_init_val >@ stream
     end
   | _ -> failwith "cmp_exp unimplemented"
 

@@ -1,15 +1,14 @@
-; generated from: oatprograms/run61.oat
+; generated from: oatprograms/run49.oat
 target triple = "x86_64-unknown-linux"
-@s = global i8* bitcast ([3 x i8]* @_366 to i8*)
-@_366 = global [3 x i8] c"42\00"
+@_428 = global [4 x i8] c"abc\00"
 
 define i64 @program(i64 %argc, { i64, [0 x i8*] }* %argv) {
-  %_362 = alloca i64
-  store i64 %argc, i64* %_362
-  %_363 = alloca { i64, [0 x i8*] }*
-  store { i64, [0 x i8*] }* %argv, { i64, [0 x i8*] }** %_363
-  %_365 = load i8*, i8** @s
-  call void @print_string(i8* %_365)
+  %_425 = alloca i64
+  store i64 %argc, i64* %_425
+  %_426 = alloca { i64, [0 x i8*] }*
+  store { i64, [0 x i8*] }* %argv, { i64, [0 x i8*] }** %_426
+  %_429 = getelementptr [4 x i8], [4 x i8]* @_428, i32 0, i32 0
+  call void @print_string(i8* %_429)
   ret i64 0
 }
 

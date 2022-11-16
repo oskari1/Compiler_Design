@@ -1,28 +1,21 @@
-; generated from: oatprograms/run28.oat
+; generated from: oatprograms/run13.oat
 target triple = "x86_64-unknown-linux"
+define i64 @f(i64 %x, i64 %y) {
+  %_275 = alloca i64
+  store i64 %x, i64* %_275
+  %_276 = alloca i64
+  store i64 %y, i64* %_276
+  %_277 = load i64, i64* %_275
+  ret i64 %_277
+}
+
 define i64 @program(i64 %argc, { i64, [0 x i8*] }* %argv) {
-  %_211 = alloca i64
-  store i64 %argc, i64* %_211
-  %_212 = alloca { i64, [0 x i8*] }*
-  store { i64, [0 x i8*] }* %argv, { i64, [0 x i8*] }** %_212
-  %_213 = alloca i64
-  %_214 = alloca i64
-  store i64 9, i64* %_213
-  %_215 = load i64, i64* %_213
-  %_216 = load i64, i64* %_213
-  %_217 = add i64 %_215, %_216
-  store i64 %_217, i64* %_214
-  %_218 = load i64, i64* %_213
-  %_219 = load i64, i64* %_213
-  %_220 = load i64, i64* %_213
-  %_221 = mul i64 %_219, %_220
-  %_222 = add i64 %_218, %_221
-  %_223 = load i64, i64* %_214
-  %_224 = sub i64 %_222, %_223
-  %_225 = lshr i64 %_224, 2
-  %_226 = shl i64 %_225, 2
-  %_227 = ashr i64 %_226, 2
-  ret i64 %_227
+  %_272 = alloca i64
+  store i64 %argc, i64* %_272
+  %_273 = alloca { i64, [0 x i8*] }*
+  store { i64, [0 x i8*] }* %argv, { i64, [0 x i8*] }** %_273
+  %_274 = call i64 @f(i64 1, i64 2)
+  ret i64 %_274
 }
 
 

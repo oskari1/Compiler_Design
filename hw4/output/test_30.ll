@@ -1,50 +1,56 @@
-; generated from: oatprograms/run41.oat
+; generated from: oatprograms/run38.oat
 target triple = "x86_64-unknown-linux"
-define i64 @f(i64 %x1, i64 %x2, i64 %x3, i64 %x4, i64 %x5, i64 %x6, i64 %x7, i64 %x8) {
-  %_323 = alloca i64
-  store i64 %x1, i64* %_323
-  %_324 = alloca i64
-  store i64 %x2, i64* %_324
-  %_325 = alloca i64
-  store i64 %x3, i64* %_325
-  %_326 = alloca i64
-  store i64 %x4, i64* %_326
-  %_327 = alloca i64
-  store i64 %x5, i64* %_327
-  %_328 = alloca i64
-  store i64 %x6, i64* %_328
-  %_329 = alloca i64
-  store i64 %x7, i64* %_329
-  %_330 = alloca i64
-  store i64 %x8, i64* %_330
-  %_331 = load i64, i64* %_323
-  %_332 = load i64, i64* %_324
-  %_333 = add i64 %_331, %_332
-  %_334 = load i64, i64* %_325
-  %_335 = add i64 %_333, %_334
-  %_336 = load i64, i64* %_326
-  %_337 = add i64 %_335, %_336
-  %_338 = load i64, i64* %_327
-  %_339 = add i64 %_337, %_338
-  %_340 = load i64, i64* %_328
-  %_341 = add i64 %_339, %_340
-  %_342 = load i64, i64* %_329
-  %_343 = add i64 %_341, %_342
-  %_344 = load i64, i64* %_330
-  %_345 = add i64 %_343, %_344
-  ret i64 %_345
+define i64 @f1() {
+  %_355 = call i64 @f2()
+  ret i64 %_355
+}
+
+define i64 @f2() {
+  %_354 = call i64 @f3()
+  ret i64 %_354
+}
+
+define i64 @f3() {
+  %_353 = call i64 @f4()
+  ret i64 %_353
+}
+
+define i64 @f4() {
+  %_352 = call i64 @f5()
+  ret i64 %_352
+}
+
+define i64 @f5() {
+  %_351 = call i64 @f6()
+  ret i64 %_351
+}
+
+define i64 @f6() {
+  %_350 = call i64 @f7()
+  ret i64 %_350
+}
+
+define i64 @f7() {
+  %_349 = call i64 @f8()
+  ret i64 %_349
+}
+
+define i64 @f8() {
+  %_348 = call i64 @f9()
+  ret i64 %_348
+}
+
+define i64 @f9() {
+  ret i64 31
 }
 
 define i64 @program(i64 %argc, { i64, [0 x i8*] }* %argv) {
-  %_317 = alloca i64
-  store i64 %argc, i64* %_317
-  %_318 = alloca { i64, [0 x i8*] }*
-  store { i64, [0 x i8*] }* %argv, { i64, [0 x i8*] }** %_318
-  %_320 = sub i64 0, 5
-  %_321 = sub i64 0, 4
-  %_322 = sub i64 0, 3
-  %_319 = call i64 @f(i64 1, i64 2, i64 3, i64 4, i64 5, i64 %_320, i64 %_321, i64 %_322)
-  ret i64 %_319
+  %_345 = alloca i64
+  store i64 %argc, i64* %_345
+  %_346 = alloca { i64, [0 x i8*] }*
+  store { i64, [0 x i8*] }* %argv, { i64, [0 x i8*] }** %_346
+  %_347 = call i64 @f1()
+  ret i64 %_347
 }
 
 

@@ -1,37 +1,14 @@
-; generated from: oatprograms/fact.oat
+; generated from: oatprograms/run50.oat
 target triple = "x86_64-unknown-linux"
-define i64 @fact(i64 %x) {
-  %_372 = alloca i64
-  store i64 %x, i64* %_372
-  %_373 = alloca i64
-  store i64 1, i64* %_373
-  br label %_376
-_376:
-  %_374 = load i64, i64* %_372
-  %_375 = icmp sgt i64 %_374, 0
-  br i1 %_375, label %_377, label %_378
-_377:
-  %_379 = load i64, i64* %_373
-  %_380 = load i64, i64* %_372
-  %_381 = mul i64 %_379, %_380
-  store i64 %_381, i64* %_373
-  %_382 = load i64, i64* %_372
-  %_383 = sub i64 %_382, 1
-  store i64 %_383, i64* %_372
-  br label %_376
-_378:
-  %_384 = load i64, i64* %_373
-  ret i64 %_384
-}
+@_433 = global [6 x i8] c"abcde\00"
 
 define i64 @program(i64 %argc, { i64, [0 x i8*] }* %argv) {
-  %_367 = alloca i64
-  store i64 %argc, i64* %_367
-  %_368 = alloca { i64, [0 x i8*] }*
-  store { i64, [0 x i8*] }* %argv, { i64, [0 x i8*] }** %_368
-  %_371 = call i64 @fact(i64 5)
-  %_370 = call i8* @string_of_int(i64 %_371)
-  call void @print_string(i8* %_370)
+  %_430 = alloca i64
+  store i64 %argc, i64* %_430
+  %_431 = alloca { i64, [0 x i8*] }*
+  store { i64, [0 x i8*] }* %argv, { i64, [0 x i8*] }** %_431
+  %_434 = getelementptr [6 x i8], [6 x i8]* @_433, i32 0, i32 0
+  call void @print_string(i8* %_434)
   ret i64 0
 }
 
