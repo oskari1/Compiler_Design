@@ -1,28 +1,28 @@
 ; generated from: oatprograms/run28.oat
 target triple = "x86_64-unknown-linux"
 define i64 @program(i64 %argc, { i64, [0 x i8*] }* %argv) {
-  %_161 = alloca i64
-  store i64 %argc, i64* %_161
-  %_162 = alloca { i64, [0 x i8*] }*
-  store { i64, [0 x i8*] }* %argv, { i64, [0 x i8*] }** %_162
-  %_163 = alloca i64
-  %_164 = alloca i64
-  store i64 9, i64* %_163
-  %_165 = load i64, i64* %_163
-  %_166 = load i64, i64* %_163
-  %_167 = add i64 %_165, %_166
-  store i64 %_167, i64* %_164
-  %_168 = load i64, i64* %_163
-  %_169 = load i64, i64* %_163
-  %_170 = load i64, i64* %_163
-  %_171 = mul i64 %_169, %_170
-  %_172 = add i64 %_168, %_171
-  %_173 = load i64, i64* %_164
-  %_174 = sub i64 %_172, %_173
-  %_175 = lshr i64 %_174, 2
-  %_176 = shl i64 %_175, 2
-  %_177 = ashr i64 %_176, 2
-  ret i64 %_177
+  %_170 = alloca i64
+  store i64 %argc, i64* %_170
+  %_171 = alloca { i64, [0 x i8*] }*
+  store { i64, [0 x i8*] }* %argv, { i64, [0 x i8*] }** %_171
+  %_172 = alloca i64
+  %_173 = alloca i64
+  store i64 9, i64* %_172
+  %_174 = load i64, i64* %_172
+  %_175 = load i64, i64* %_172
+  %_176 = add i64 %_174, %_175
+  store i64 %_176, i64* %_173
+  %_177 = load i64, i64* %_172
+  %_178 = load i64, i64* %_172
+  %_179 = load i64, i64* %_172
+  %_180 = mul i64 %_178, %_179
+  %_181 = add i64 %_177, %_180
+  %_182 = load i64, i64* %_173
+  %_183 = sub i64 %_181, %_182
+  %_184 = lshr i64 %_183, 2
+  %_185 = shl i64 %_184, 2
+  %_186 = ashr i64 %_185, 2
+  ret i64 %_186
 }
 
 

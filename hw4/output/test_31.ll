@@ -1,15 +1,15 @@
 ; generated from: oatprograms/run61.oat
 target triple = "x86_64-unknown-linux"
-@s = global i8* bitcast ([3 x i8]* @_316 to i8*)
-@_316 = global [3 x i8] c"42\00"
+@s = global i8* bitcast ([3 x i8]* @_325 to i8*)
+@_325 = global [3 x i8] c"42\00"
 
 define i64 @program(i64 %argc, { i64, [0 x i8*] }* %argv) {
-  %_312 = alloca i64
-  store i64 %argc, i64* %_312
-  %_313 = alloca { i64, [0 x i8*] }*
-  store { i64, [0 x i8*] }* %argv, { i64, [0 x i8*] }** %_313
-  %_315 = load i8*, i8** @s
-  call void @print_string(i8* %_315)
+  %_321 = alloca i64
+  store i64 %argc, i64* %_321
+  %_322 = alloca { i64, [0 x i8*] }*
+  store { i64, [0 x i8*] }* %argv, { i64, [0 x i8*] }** %_322
+  %_324 = load i8*, i8** @s
+  call void @print_string(i8* %_324)
   ret i64 0
 }
 

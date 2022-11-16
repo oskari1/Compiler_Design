@@ -493,16 +493,27 @@ let rec cmp_stmt (c:Ctxt.t) (rt:Ll.ty) (stmt:Ast.stmt node) : Ctxt.t * stream =
       let c, loop_stream = cmp_stmt c rt (no_loc (While (bexp, body_block @ [update_stmt]))) in 
       c, init_stream >@ loop_stream 
     end
-  | Assn (lhs, exp) ->
+  | Assn (lhs, rhs) ->
     begin 
-      let exp_ty, ll_exp_src, cmp_exp = cmp_exp c exp in
-      let _, ll_dst = 
-        match lhs.elt with 
-        | (Id oat_id) -> Ctxt.lookup oat_id c 
-        | _ -> failwith "unimplemented case for Assn"
-      in
-      let init_var = (I ("", Store (exp_ty, ll_exp_src, ll_dst))) in 
-      c, cmp_exp >@ [init_var] 
+      let exp_ty, ll_exp_src, cmp_rhs = cmp_exp c rhs in
+      match lhs.elt with 
+      | Id oat_id -> 
+        begin 
+          let _, ll_dst = Ctxt.lookup oat_id c in 
+          let init_var = (I ("", Store (exp_ty, ll_exp_src, ll_dst))) in 
+          c, cmp_rhs >@ [init_var]
+        end 
+      | Index (e1, e2) -> 
+        begin 
+          let index_ptr = gensym "" in
+          let ll_dst = Ll.Id index_ptr in
+          let e1_ty, arr_base_addr, cmp_e1 = cmp_exp c e1 in
+          let _, offset, cmp_e2 = cmp_exp c e2 in
+          let compute_dst_addr = I (index_ptr, Gep (e1_ty, arr_base_addr, [Const 0L; Const 1L; offset])) in
+          let store_exp = I ("", Store (exp_ty, ll_exp_src, ll_dst)) in 
+          c, cmp_rhs >@ cmp_e1 >@ cmp_e2 >@[compute_dst_addr] >@ [store_exp]
+        end 
+      | _ -> failwith "unimplemented case for Assn"
     end
   | SCall (id, args) -> 
     let _, _, call_fun = cmp_exp c (no_loc (Call (id, args))) in 
@@ -515,8 +526,6 @@ and cmp_block (c:Ctxt.t) (rt:Ll.ty) (stmts:Ast.block) : Ctxt.t * stream =
       let c, stmt_code = cmp_stmt c rt s in
       c, code >@ stmt_code
     ) (c,[]) stmts
-
-
 
 (* Adds each function identifer to the context at an
    appropriately translated type.  
@@ -641,7 +650,7 @@ let rec cmp_gexp c (e:Ast.exp node) : Ll.gdecl * (Ll.gid * Ll.gdecl) list =
       let str_len = String.length str + 1 in
       let gty1 = Array (str_len, I8) in
       let ginit1 = GString str in
-      let gid = gensym  "" in
+      let gid = gensym "" in
       let gty2 = cmp_ty @@ Ast.TRef RString in
       let ginit2 = GBitcast (Ptr gty1, GGid gid, Ll.Ptr I8) in
       (gty2, ginit2), (gid, (gty1, ginit1))::[] 
@@ -649,8 +658,7 @@ let rec cmp_gexp c (e:Ast.exp node) : Ll.gdecl * (Ll.gid * Ll.gdecl) list =
   | CArr (arr_ty, exp_list) -> 
     begin
       let arr_len = List.length exp_list in
-      let ll_arr_ty = cmp_ty arr_ty in
-      let gty1 = Array (arr_len, ll_arr_ty) in
+      let gty1 = Array (arr_len, cmp_ty arr_ty) in
       let init_list = 
         let cmp_arg arg_acc exp = 
           let gdecl, _ = cmp_gexp c exp in
@@ -659,7 +667,7 @@ let rec cmp_gexp c (e:Ast.exp node) : Ll.gdecl * (Ll.gid * Ll.gdecl) list =
         List.fold_left cmp_arg [] exp_list
       in
       let ginit1 = GArray init_list in
-      let gid = gensym  "" in
+      let gid = gensym "" in
       let gty2 = cmp_ty @@ Ast.TRef (Ast.RArray arr_ty) in
       let ginit2 = GBitcast (Ptr gty1, GGid gid, gty2) in
       (gty2, ginit2), (gid, (gty1, ginit1))::[]
