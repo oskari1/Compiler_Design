@@ -600,6 +600,37 @@ let cmp_fdecl (c:Ctxt.t) (f:Ast.fdecl node) : Ll.fdecl * (Ll.gid * Ll.gdecl) lis
      be an array of pointers to arrays emitted as additional global declarations.
 *)
 
+(* Global initialized arrays:
+
+  There is another wrinkle: To compile global initialized arrays like in the
+  globals4.oat, it is helpful to do a bitcast once at the global scope to
+  convert the "precise type" required by the LLVM initializer to the actual
+  translation type (which sets the array length to 0).  So for globals4.oat,
+  the arr global would compile to (something like):
+
+  @arr = global { i64, [0 x i64] }* bitcast 
+           ({ i64, [4 x i64] }* @_global_arr5 to { i64, [0 x i64] }* ) 
+  @_global_arr5 = global { i64, [4 x i64] } 
+                  { i64 4, [4 x i64] [ i64 1, i64 2, i64 3, i64 4 ] }
+
+/--------------- globals7.oat ------------------ 
+   global arr = int[] null;
+
+   int foo() { 
+     var x = new int[3]; 
+     arr = x; 
+     x[2] = 3; 
+     return arr[2]; 
+   }
+   /------------------------------------------------
+
+   The translation (given by cmp_ty) of the type int[] is {i64, [0 x i64}* so
+   the corresponding LLVM IR declaration will look like:
+
+   @arr = global { i64, [0 x i64] }* null
+
+*)
+
 let rec cmp_gexp c (e:Ast.exp node) : Ll.gdecl * (Ll.gid * Ll.gdecl) list =
   match e.elt with 
   | CNull rty -> (cmp_ty (Ast.TRef rty), GNull), []
@@ -610,10 +641,28 @@ let rec cmp_gexp c (e:Ast.exp node) : Ll.gdecl * (Ll.gid * Ll.gdecl) list =
       let str_len = String.length str + 1 in
       let gty1 = Array (str_len, I8) in
       let ginit1 = GString str in
-      let gid = gensym  "" in
+      let gid = gensym "" in
       let gty2 = cmp_ty @@ Ast.TRef RString in
       let ginit2 = GBitcast (Ptr gty1, GGid gid, Ll.Ptr I8) in
       (gty2, ginit2), (gid, (gty1, ginit1))::[] 
+    end
+  | CArr (arr_ty, exp_list) -> 
+    begin
+      let arr_len = List.length exp_list in
+      let ll_arr_ty = cmp_ty arr_ty in
+      let gty1 = Array (arr_len, ll_arr_ty) in
+      let init_list = 
+        let cmp_arg arg_acc exp = 
+          let gdecl, _ = cmp_gexp c exp in
+          arg_acc >@ [gdecl]
+         in
+        List.fold_left cmp_arg [] exp_list
+      in
+      let ginit1 = GArray init_list in
+      let gid = gensym "" in
+      let gty2 = cmp_ty @@ Ast.TRef (Ast.RArray arr_ty) in
+      let ginit2 = GBitcast (Ptr gty1, GGid gid, gty2) in
+      (gty2, ginit2), (gid, (gty1, ginit1))::[]
     end
   | _ -> failwith "invalid global initializer"
 

@@ -1,36 +1,18 @@
-; generated from: oatprograms/fac.oat
+; generated from: oatprograms/lib8.oat
 target triple = "x86_64-unknown-linux"
-define i64 @f(i64 %i) {
-  %_513 = alloca i64
-  store i64 %i, i64* %_513
-  %_514 = alloca i64
-  store i64 0, i64* %_514
-  %_515 = load i64, i64* %_513
-  %_516 = icmp eq i64 %_515, 0
-  br i1 %_516, label %_517, label %_518
-_517:
-  store i64 1, i64* %_514
-  br label %_519
-_518:
-  %_520 = load i64, i64* %_513
-  %_522 = load i64, i64* %_513
-  %_523 = sub i64 %_522, 1
-  %_521 = call i64 @f(i64 %_523)
-  %_524 = mul i64 %_520, %_521
-  store i64 %_524, i64* %_514
-  br label %_519
-_519:
-  %_525 = load i64, i64* %_514
-  ret i64 %_525
-}
+@_476 = global [13 x i8] c"Hello world!\00"
 
 define i64 @program(i64 %argc, { i64, [0 x i8*] }* %argv) {
-  %_510 = alloca i64
-  store i64 %argc, i64* %_510
-  %_511 = alloca { i64, [0 x i8*] }*
-  store { i64, [0 x i8*] }* %argv, { i64, [0 x i8*] }** %_511
-  %_512 = call i64 @f(i64 5)
-  ret i64 %_512
+  %_473 = alloca i64
+  store i64 %argc, i64* %_473
+  %_474 = alloca { i64, [0 x i8*] }*
+  store { i64, [0 x i8*] }* %argv, { i64, [0 x i8*] }** %_474
+  %_475 = alloca i8*
+  %_477 = getelementptr [13 x i8], [13 x i8]* @_476, i32 0, i32 0
+  store i8* %_477, i8** %_475
+  %_479 = load i8*, i8** %_475
+  call void @print_string(i8* %_479)
+  ret i64 0
 }
 
 
