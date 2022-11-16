@@ -1,0 +1,3 @@
+exec_65: runtime.c:81: void print_string(char *): Assertion `NULL != str' failed.
+timeout: the monitored command dumped core
+Aborted

@@ -425,6 +425,19 @@ let rec cmp_exp (c:Ctxt.t) (exp:Ast.exp node) : Ll.ty * Ll.operand * stream =
       let arr_ty, ll_dst, stream = oat_alloc_array elt_ty init_val in
       arr_ty, ll_dst, load_init_val >@ stream
     end
+  | CArr (elt_ty, exp_list) -> 
+    begin
+      let size_src = Const (Int64.of_int (List.length exp_list)) in
+      let ans_ty, ans, alloc_arr = oat_alloc_array elt_ty size_src in
+      let init_arr = 
+        let cmp_arg decl_acc exp = 
+          let _, _, init_elt = cmp_exp c exp in
+          decl_acc @ init_elt
+         in
+        List.fold_left cmp_arg [] exp_list
+      in
+      ans_ty, ans, alloc_arr >@ init_arr 
+    end
   | _ -> failwith "cmp_exp unimplemented"
 
 

@@ -1,1 +1,2 @@
-TFTF FFFF
+timeout: the monitored command dumped core
+Segmentation fault

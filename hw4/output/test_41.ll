@@ -1,41 +1,50 @@
-; generated from: oatprograms/run47.oat
+; generated from: oatprograms/run41.oat
 target triple = "x86_64-unknown-linux"
-@a = global i64 1
-
-define i64 @f() {
-  %_655 = load i64, i64* @a
-  %_656 = add i64 %_655, 1
-  store i64 %_656, i64* @a
-  %_657 = load i64, i64* @a
-  ret i64 %_657
+define i64 @f(i64 %x1, i64 %x2, i64 %x3, i64 %x4, i64 %x5, i64 %x6, i64 %x7, i64 %x8) {
+  %_560 = alloca i64
+  store i64 %x1, i64* %_560
+  %_561 = alloca i64
+  store i64 %x2, i64* %_561
+  %_562 = alloca i64
+  store i64 %x3, i64* %_562
+  %_563 = alloca i64
+  store i64 %x4, i64* %_563
+  %_564 = alloca i64
+  store i64 %x5, i64* %_564
+  %_565 = alloca i64
+  store i64 %x6, i64* %_565
+  %_566 = alloca i64
+  store i64 %x7, i64* %_566
+  %_567 = alloca i64
+  store i64 %x8, i64* %_567
+  %_568 = load i64, i64* %_560
+  %_569 = load i64, i64* %_561
+  %_570 = add i64 %_568, %_569
+  %_571 = load i64, i64* %_562
+  %_572 = add i64 %_570, %_571
+  %_573 = load i64, i64* %_563
+  %_574 = add i64 %_572, %_573
+  %_575 = load i64, i64* %_564
+  %_576 = add i64 %_574, %_575
+  %_577 = load i64, i64* %_565
+  %_578 = add i64 %_576, %_577
+  %_579 = load i64, i64* %_566
+  %_580 = add i64 %_578, %_579
+  %_581 = load i64, i64* %_567
+  %_582 = add i64 %_580, %_581
+  ret i64 %_582
 }
 
 define i64 @program(i64 %argc, { i64, [0 x i8*] }* %argv) {
-  %_636 = alloca i64
-  store i64 %argc, i64* %_636
-  %_637 = alloca { i64, [0 x i8*] }*
-  store { i64, [0 x i8*] }* %argv, { i64, [0 x i8*] }** %_637
-  %_638 = alloca { i64, [0 x i64] }*
-  %_639 = call i64 @f()
-  %_raw_array640 = call i64* @oat_alloc_array(i64 %_639)
-  %_array641 = bitcast i64* %_raw_array640 to { i64, [0 x i64] }*
-  store { i64, [0 x i64] }* %_array641, { i64, [0 x i64] }** %_638
-  %_643 = load { i64, [0 x i64] }*, { i64, [0 x i64] }** %_638
-  %_642 = getelementptr { i64, [0 x i64] }, { i64, [0 x i64] }* %_643, i32 0, i32 1, i32 0
-  store i64 0, i64* %_642
-  %_645 = load { i64, [0 x i64] }*, { i64, [0 x i64] }** %_638
-  %_644 = getelementptr { i64, [0 x i64] }, { i64, [0 x i64] }* %_645, i32 0, i32 1, i32 1
-  store i64 1, i64* %_644
-  %_646 = load i64, i64* @a
-  %_647 = load { i64, [0 x i64] }*, { i64, [0 x i64] }** %_638
-  %_648 = getelementptr { i64, [0 x i64] }, { i64, [0 x i64] }* %_647, i32 0, i32 1, i32 0
-  %_649 = load i64, i64* %_648
-  %_650 = add i64 %_646, %_649
-  %_651 = load { i64, [0 x i64] }*, { i64, [0 x i64] }** %_638
-  %_652 = getelementptr { i64, [0 x i64] }, { i64, [0 x i64] }* %_651, i32 0, i32 1, i32 1
-  %_653 = load i64, i64* %_652
-  %_654 = add i64 %_650, %_653
-  ret i64 %_654
+  %_554 = alloca i64
+  store i64 %argc, i64* %_554
+  %_555 = alloca { i64, [0 x i8*] }*
+  store { i64, [0 x i8*] }* %argv, { i64, [0 x i8*] }** %_555
+  %_557 = sub i64 0, 5
+  %_558 = sub i64 0, 4
+  %_559 = sub i64 0, 3
+  %_556 = call i64 @f(i64 1, i64 2, i64 3, i64 4, i64 5, i64 %_557, i64 %_558, i64 %_559)
+  ret i64 %_556
 }
 
 
