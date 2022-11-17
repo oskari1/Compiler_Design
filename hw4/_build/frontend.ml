@@ -332,6 +332,7 @@ let ll_binop_insn (ast_binop:Ast.binop) (rt:Ll.ty) (op1:Ll.operand) (op2:Ll.oper
 
 let rec cmp_exp (c:Ctxt.t) (exp:Ast.exp node) : Ll.ty * Ll.operand * stream =
   match exp.elt with 
+  | CNull rty -> cmp_ty (Ast.TRef rty), Null, []
   | CInt i -> I64, Const i, []
   | CBool b -> let b_int = if b then 1L else 0L in I1, Const b_int, []
   | CStr str -> 
@@ -372,13 +373,17 @@ let rec cmp_exp (c:Ctxt.t) (exp:Ast.exp node) : Ll.ty * Ll.operand * stream =
       let _, ret_ty = typ_of_unop unop in 
       let ll_ret_ty = cmp_ty ret_ty in 
       let res_uid = gensym "" in 
-      let ll_insn =  
+      let ll_insns =  
         match unop with 
-        | Neg -> Binop (Ll.Sub, ll_ret_ty, Const 0L, ll_e)
-        | Lognot -> Binop (Ll.And, ll_ret_ty, Const 1L, ll_e) 
-        | Bitnot -> Binop (Ll.Xor, ll_ret_ty, Const (-1L), ll_e) 
+        | Neg -> [(I (res_uid, Binop (Ll.Sub, ll_ret_ty, Const 0L, ll_e)))]
+        | Lognot ->  
+          begin
+            [(I (res_uid, Icmp (Ne, ll_ret_ty, ll_e, Const 0L)))]
+            (* Binop (Ll.And, ll_ret_ty, Const 1L, ll_e)*) 
+          end 
+        | Bitnot -> [(I (res_uid, Binop (Ll.Xor, ll_ret_ty, Const (-1L), ll_e)))] 
       in 
-      ll_ret_ty, Id res_uid, load_e >@ [(I (res_uid, ll_insn))] 
+      ll_ret_ty, Id res_uid, load_e >@ ll_insns 
     end 
   | Id oat_id -> 
     begin
@@ -506,7 +511,7 @@ let rec cmp_stmt (c:Ctxt.t) (rt:Ll.ty) (stmt:Ast.stmt node) : Ctxt.t * stream =
       c, cmp_bexp >@ branch 
                   >@ then_L >@ then_block_stream >@ then_T
                   >@ else_L >@ else_block_stream >@ else_T
-                  >@ join_L
+                  >@ join_L 
     end
   | While (bexp, body_block) -> 
     begin
@@ -627,8 +632,10 @@ let cmp_fdecl (c:Ctxt.t) (f:Ast.fdecl node) : Ll.fdecl * (Ll.gid * Ll.gdecl) lis
   (* step 4 *)
   let rt = cmp_ret_ty frtyp in 
   let compiled_body = cmp_block c_extended rt body in 
+  let cfg_elts = snd compiled_body in
   (* step 5 *)
-  let cfg = cfg_of_stream (alloc_stack_for_args >@ (snd compiled_body)) in  
+  let entry_T = if frtyp = RetVoid then [(T (Ret (cmp_ret_ty frtyp, None)))] else [] in
+  let cfg = cfg_of_stream (alloc_stack_for_args >@ cfg_elts >@ entry_T) in  
   let f_ty = cmp_fty (fst @@ List.split args, frtyp) in 
   let f_param = snd @@ List.split args in 
   let fdecl = {f_ty=f_ty; f_param=f_param; f_cfg=fst cfg} in 
