@@ -2,6 +2,9 @@
 target triple = "x86_64-unknown-linux"
 @arr = global { i64, [0 x { i64, [0 x i64] }*] }* bitcast ({ i64, [3 x { i64, [0 x i64] }*] }* @_5975 to { i64, [0 x { i64, [0 x i64] }*] }*)
 @_5975 = global { i64, [3 x { i64, [0 x i64] }*] } { i64 3, [3 x { i64, [0 x i64] }*] [ { i64, [0 x i64] }* bitcast ({ i64, [2 x i64] }* @_5972 to { i64, [0 x i64] }*), { i64, [0 x i64] }* bitcast ({ i64, [2 x i64] }* @_5973 to { i64, [0 x i64] }*), { i64, [0 x i64] }* bitcast ({ i64, [2 x i64] }* @_5974 to { i64, [0 x i64] }*) ] }
+@_5972 = global { i64, [2 x i64] } { i64 2, [2 x i64] [ i64 1, i64 4 ] }
+@_5973 = global { i64, [2 x i64] } { i64 2, [2 x i64] [ i64 2, i64 5 ] }
+@_5974 = global { i64, [2 x i64] } { i64 2, [2 x i64] [ i64 3, i64 6 ] }
 
 define i64 @program(i64 %argc, { i64, [0 x i8*] }* %argv) {
   %_5948 = alloca i64

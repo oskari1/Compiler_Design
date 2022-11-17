@@ -531,7 +531,14 @@ let rec cmp_stmt (c:Ctxt.t) (rt:Ll.ty) (stmt:Ast.stmt node) : Ctxt.t * stream =
     end
   | For (init, Some bexp, Some update_stmt, body_block) ->
     begin 
-      let c, init_stream = List.fold_left (fun (c, stream) -> cmp_vdecl c) (c, []) init in 
+      let process_var_decl (c, decl_acc) decl = 
+        begin
+          let c, stream = cmp_vdecl c decl in
+          c, decl_acc >@ stream
+        end
+      in 
+      (*let c, init_stream = List.fold_left (fun (c, stream) -> cmp_vdecl c) (c, []) init in*) 
+      let c, init_stream = List.fold_left process_var_decl (c, []) init in 
       let c, loop_stream = cmp_stmt c rt (no_loc (While (bexp, body_block @ [update_stmt]))) in 
       c, init_stream >@ loop_stream 
     end
@@ -704,18 +711,18 @@ let rec cmp_gexp c (e:Ast.exp node) : Ll.gdecl * (Ll.gid * Ll.gdecl) list =
       let arr_len = List.length exp_list in
       let ll_arr_ty = Array (arr_len, cmp_ty arr_ty) in
       let gty1 = Struct [I64; ll_arr_ty] in 
-      let init_list = 
-        let cmp_arg decl_acc exp = 
-          let gdecl, _ = cmp_gexp c exp in
-          decl_acc @ [gdecl]
+      let init_list, sub_init_list = 
+        let cmp_arg (decl_acc,sub_decl_acc) exp = 
+          let gdecl, gdecls = cmp_gexp c exp in
+          decl_acc @ [gdecl], sub_decl_acc @ gdecls
          in
-        List.fold_left cmp_arg [] exp_list
+        List.fold_left cmp_arg ([],[]) exp_list
       in
       let ginit1 = GStruct [I64, GInt (Int64.of_int arr_len); ll_arr_ty, GArray init_list] in
       let gid = gensym "" in
       let gty2 = cmp_ty @@ Ast.TRef (Ast.RArray arr_ty) in
       let ginit2 = GBitcast (Ptr gty1, GGid gid, gty2) in
-      (gty2, ginit2), (gid, (gty1, ginit1))::[]
+      (gty2, ginit2), (gid, (gty1, ginit1))::sub_init_list
     end
   | _ -> failwith "invalid global initializer"
 

@@ -6,8 +6,10 @@ define i64 @program(i64 %argc, { i64, [0 x i8*] }* %argv) {
   %_5794 = alloca { i64, [0 x i8*] }*
   store { i64, [0 x i8*] }* %argv, { i64, [0 x i8*] }** %_5794
   %_5795 = alloca i64
+  %_5796 = alloca i64
   %_5797 = alloca i64
   store i64 0, i64* %_5795
+  store i64 0, i64* %_5796
   store i64 10, i64* %_5797
   br label %_5800
 _5800:

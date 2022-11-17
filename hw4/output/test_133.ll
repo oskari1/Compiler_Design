@@ -2,6 +2,9 @@
 target triple = "x86_64-unknown-linux"
 @eye = global { i64, [0 x { i64, [0 x i64] }*] }* bitcast ({ i64, [3 x { i64, [0 x i64] }*] }* @_5615 to { i64, [0 x { i64, [0 x i64] }*] }*)
 @_5615 = global { i64, [3 x { i64, [0 x i64] }*] } { i64 3, [3 x { i64, [0 x i64] }*] [ { i64, [0 x i64] }* bitcast ({ i64, [3 x i64] }* @_5612 to { i64, [0 x i64] }*), { i64, [0 x i64] }* bitcast ({ i64, [3 x i64] }* @_5613 to { i64, [0 x i64] }*), { i64, [0 x i64] }* bitcast ({ i64, [3 x i64] }* @_5614 to { i64, [0 x i64] }*) ] }
+@_5612 = global { i64, [3 x i64] } { i64 3, [3 x i64] [ i64 1, i64 0, i64 0 ] }
+@_5613 = global { i64, [3 x i64] } { i64 3, [3 x i64] [ i64 0, i64 1, i64 0 ] }
+@_5614 = global { i64, [3 x i64] } { i64 3, [3 x i64] [ i64 0, i64 0, i64 1 ] }
 @_5421 = global [3 x i8] c"| \00"
 @_5438 = global [2 x i8] c" \00"
 @_5447 = global [4 x i8] c" |
