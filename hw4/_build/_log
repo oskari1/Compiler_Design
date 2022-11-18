@@ -68,12 +68,12 @@ menhir --ocamlc '/home/ojyrkinen/.opam/4.06.0/bin/ocamlc.opt -I /home/ojyrkinen/
 # Target: frontend.cmo, tags: { byte, compile, extension:cmo, extension:ml, file:frontend.cmo, file:frontend.ml, implem, ocaml, quiet }
 /home/ojyrkinen/.opam/4.06.0/bin/ocamlc.opt -c -I /home/ojyrkinen/.opam/4.06.0/lib/num -I /home/ojyrkinen/.opam/4.06.0/lib/ocaml -I x86 -I util -I ll -o frontend.cmo frontend.ml
 + /home/ojyrkinen/.opam/4.06.0/bin/ocamlc.opt -c -I /home/ojyrkinen/.opam/4.06.0/lib/num -I /home/ojyrkinen/.opam/4.06.0/lib/ocaml -I x86 -I util -I ll -o frontend.cmo frontend.ml
-File "frontend.ml", line 399, characters 10-45:
+File "frontend.ml", line 400, characters 10-45:
 Warning 8: this pattern-matching is not exhaustive.
 Here is an example of a case that is not matched:
 ((Ptr (Void|I1|I8|I64|Ptr _|Struct _|Array (_, _)|Namedt _), _)|
 ((Void|I1|I8|I64|Struct _|Array (_, _)|Fun (_, _)|Namedt _), _))
-File "frontend.ml", line 418, characters 10-50:
+File "frontend.ml", line 419, characters 10-50:
 Warning 8: this pattern-matching is not exhaustive.
 Here is an example of a case that is not matched:
 (Ptr (Struct (I64::Array (0, _)::_::_))|Ptr (Struct (I64::Array (1, _)::_))|
@@ -150,12 +150,12 @@ Void|I1|I8|I64|Struct _|Array (_, _)|Fun (_, _)|Namedt _)
 # Target: frontend.cmx, tags: { compile, extension:cmx, extension:ml, file:frontend.cmx, file:frontend.ml, implem, native, ocaml, quiet }
 /home/ojyrkinen/.opam/4.06.0/bin/ocamlopt.opt -c -I /home/ojyrkinen/.opam/4.06.0/lib/num -I /home/ojyrkinen/.opam/4.06.0/lib/ocaml -I x86 -I util -I ll -o frontend.cmx frontend.ml
 + /home/ojyrkinen/.opam/4.06.0/bin/ocamlopt.opt -c -I /home/ojyrkinen/.opam/4.06.0/lib/num -I /home/ojyrkinen/.opam/4.06.0/lib/ocaml -I x86 -I util -I ll -o frontend.cmx frontend.ml
-File "frontend.ml", line 399, characters 10-45:
+File "frontend.ml", line 400, characters 10-45:
 Warning 8: this pattern-matching is not exhaustive.
 Here is an example of a case that is not matched:
 ((Ptr (Void|I1|I8|I64|Ptr _|Struct _|Array (_, _)|Namedt _), _)|
 ((Void|I1|I8|I64|Struct _|Array (_, _)|Fun (_, _)|Namedt _), _))
-File "frontend.ml", line 418, characters 10-50:
+File "frontend.ml", line 419, characters 10-50:
 Warning 8: this pattern-matching is not exhaustive.
 Here is an example of a case that is not matched:
 (Ptr (Struct (I64::Array (0, _)::_::_))|Ptr (Struct (I64::Array (1, _)::_))|

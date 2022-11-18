@@ -378,7 +378,8 @@ let rec cmp_exp (c:Ctxt.t) (exp:Ast.exp node) : Ll.ty * Ll.operand * stream =
         | Neg -> [(I (res_uid, Binop (Ll.Sub, ll_ret_ty, Const 0L, ll_e)))]
         | Lognot ->  
           begin
-            [(I (res_uid, Icmp (Ne, ll_ret_ty, ll_e, Const 0L)))]
+            (*[(I (res_uid, Icmp (Ne, ll_ret_ty, ll_e, Const 0L)))]*)
+            [(I (res_uid, Icmp (Eq, ll_ret_ty, ll_e, Const 0L)))]
             (* Binop (Ll.And, ll_ret_ty, Const 1L, ll_e)*) 
           end 
         | Bitnot -> [(I (res_uid, Binop (Ll.Xor, ll_ret_ty, Const (-1L), ll_e)))] 
