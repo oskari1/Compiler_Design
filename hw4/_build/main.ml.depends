@@ -1,1 +1,1 @@
-main.ml: Arg Assert Driver Gradedtests Ll Platform Printf Sharedtests
+main.ml: Arg Assert Driver Gradedtests Ll Platform Printf Sharedtests Studenttests
