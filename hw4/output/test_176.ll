@@ -37,8 +37,6 @@ _6097:
   %_raw_array6104 = call i64* @oat_alloc_array(i64 6)
   %_array6105 = bitcast i64* %_raw_array6104 to { i64, [0 x i64] }*
   ret { i64, [0 x i64] }* %_array6105
-_6098:
-  br label %_6093
 }
 
 

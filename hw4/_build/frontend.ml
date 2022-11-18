@@ -496,6 +496,13 @@ let rec cmp_stmt (c:Ctxt.t) (rt:Ll.ty) (stmt:Ast.stmt node) : Ctxt.t * stream =
   | Decl (oat_id, exp) -> cmp_vdecl c (oat_id, exp)  
   | If (bexp, then_block, else_block) ->
     begin
+      let has_T (elt_list:elt list) : bool = 
+        if List.length elt_list > 0 then begin 
+          match List.hd elt_list with 
+          | T _ -> true 
+          | _ -> false end
+        else false
+      in 
       let _, ll_bexp_src, cmp_bexp = cmp_exp c bexp in
       let then_lbl = gensym "" in 
       let else_lbl = gensym "" in 
@@ -503,11 +510,11 @@ let rec cmp_stmt (c:Ctxt.t) (rt:Ll.ty) (stmt:Ast.stmt node) : Ctxt.t * stream =
       let branch = [(T (Cbr (ll_bexp_src, then_lbl, else_lbl)))] in 
       let then_L = [(L then_lbl)] in  
       let c, then_block_stream = cmp_block c rt then_block in
-      let then_T = [(T (Br join_lbl))] in
+      let then_T = if not (has_T then_block_stream) then [(T (Br join_lbl))] else [] in
       let else_L = [(L else_lbl)] in  
       let c, else_block_stream = cmp_block c rt else_block in
-      let else_T = [(T (Br join_lbl))] in
-      let join_L = [(L join_lbl)] in
+      let else_T = if not (has_T else_block_stream) then [(T (Br join_lbl))] else [] in
+      let join_L = if (has_T else_block_stream && has_T then_block_stream) then [] else [(L join_lbl)] in
       c, cmp_bexp >@ branch 
                   >@ then_L >@ then_block_stream >@ then_T
                   >@ else_L >@ else_block_stream >@ else_T
@@ -537,7 +544,6 @@ let rec cmp_stmt (c:Ctxt.t) (rt:Ll.ty) (stmt:Ast.stmt node) : Ctxt.t * stream =
           c, decl_acc >@ stream
         end
       in 
-      (*let c, init_stream = List.fold_left (fun (c, stream) -> cmp_vdecl c) (c, []) init in*) 
       let c, init_stream = List.fold_left process_var_decl (c, []) init in 
       let c, loop_stream = cmp_stmt c rt (no_loc (While (bexp, body_block @ [update_stmt]))) in 
       c, init_stream >@ loop_stream 

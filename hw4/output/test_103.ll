@@ -150,8 +150,6 @@ _4388:
   ret i64 1
 _4389:
   ret i64 0
-_4390:
-  ret i64 0
 }
 
 define i64 @program(i64 %argc, { i64, [0 x i8*] }* %argv) {
