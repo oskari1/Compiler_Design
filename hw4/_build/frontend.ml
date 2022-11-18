@@ -648,7 +648,8 @@ let cmp_fdecl (c:Ctxt.t) (f:Ast.fdecl node) : Ll.fdecl * (Ll.gid * Ll.gdecl) lis
   let compiled_body = cmp_block c_extended rt body in 
   let cfg_elts = snd compiled_body in
   (* step 5 *)
-  let entry_T = if frtyp = RetVoid then [(T (Ret (cmp_ret_ty frtyp, None)))] else [] in
+  let entry_T = if frtyp = RetVoid then [(T (Ret (cmp_ret_ty frtyp, None)))] else [(T (Ret (cmp_ret_ty frtyp, Some (Const 0L))))] in
+  (*let entry_T = if frtyp = RetVoid then [(T (Ret (cmp_ret_ty frtyp, None)))] else [] in*)
   let cfg = cfg_of_stream (alloc_stack_for_args >@ cfg_elts >@ entry_T) in  
   let f_ty = cmp_fty (fst @@ List.split args, frtyp) in 
   let f_param = snd @@ List.split args in 
