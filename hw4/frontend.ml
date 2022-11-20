@@ -397,7 +397,12 @@ let rec cmp_exp (c:Ctxt.t) (exp:Ast.exp node) : Ll.ty * Ll.operand * stream =
     begin 
       (* see semantics of lookup_function, the output type always has this form *)
       (* see semantics of cmp_function_ctxt, second output always has this form*)
-      let Ptr (Fun (arg_tys, ret_ty)), ll_fun = Ctxt.lookup_function id c in
+      let arg_tys, ret_ty, ll_fun = 
+      match Ctxt.lookup_function id c with 
+        | Ptr (Fun (arg_tys, ret_ty)), ll_fun -> arg_tys, ret_ty,ll_fun
+        | _ -> failwith "Invalid function type"
+      in
+      (*let Ptr (Fun (arg_tys, ret_ty)), ll_fun = Ctxt.lookup_function id c in*)
       let dst_uid = gensym "" in
       let load_args, ll_args = 
         let load_arg (s, arg_acc) (arg:Ast.exp Ast.node) : (stream * Ll.operand list) = 
@@ -416,7 +421,12 @@ let rec cmp_exp (c:Ctxt.t) (exp:Ast.exp node) : Ll.ty * Ll.operand * stream =
          non-exhaustive pattern-matching is valid *)
       let arr_ty, base_ptr, load_base_addr = cmp_exp c e1 in
       let _, offset, load_offset = cmp_exp c e2 in
-      let Ptr (Struct [I64; Array(0, arr_elt_ty)]) = arr_ty in
+      let arr_elt_ty = 
+        match arr_ty with 
+        | Ptr (Struct [I64; Array(0, arr_elt_ty)]) -> arr_elt_ty  
+        | _ -> failwith "Invalid array type"
+      in 
+      (*let Ptr (Struct [I64; Array(0, arr_elt_ty)]) = arr_ty in *)
       let src_ptr_uid = gensym "" in
       let src_ptr = Ll.Id src_ptr_uid in
       let compute_src_ptr = I (src_ptr_uid, Gep (arr_ty, base_ptr, [Const 0L; Const 1L; offset])) in
