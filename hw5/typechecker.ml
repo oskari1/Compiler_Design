@@ -47,11 +47,50 @@ let typ_of_unop : Ast.unop -> Ast.ty * Ast.ty = function
       (Don't forget about OCaml's 'and' keyword.)
 *)
 let rec subtype (c : Tctxt.t) (t1 : Ast.ty) (t2 : Ast.ty) : bool =
-  failwith "todo: subtype"
+  match t1, t2 with 
+  | TInt, TInt -> true 
+  | TBool, TBool -> true
+  | TNullRef rty1, TNullRef rty2 -> subtype_ref c rty1 rty2 
+  | TRef rty1, TRef rty2 -> subtype_ref c rty1 rty2 
+  | TRef rty1, TNullRef rty2 -> subtype_ref c rty1 rty2 
+  | _ -> false
+
 
 (* Decides whether H |-r ref1 <: ref2 *)
 and subtype_ref (c : Tctxt.t) (t1 : Ast.rty) (t2 : Ast.rty) : bool =
-  failwith "todo: subtype_ref"
+  match t1, t2 with 
+  | RString, RString -> true 
+  | RArray t1, RArray t2 -> t1 = t2  
+  | RStruct struct1_id, RStruct struct2_id ->  
+    begin 
+      let struct1_fields = Tctxt.lookup_struct struct1_id c in 
+      let struct2_fields = Tctxt.lookup_struct struct2_id c in 
+      let m = List.length struct1_fields in 
+      let n = List.length struct2_fields in 
+      if m < n then false else 
+        let check_nth_field (bexp, n) (field : Ast.field) : (bool * int) =
+          bexp && (field = List.nth struct1_fields n), n + 1 
+        in
+        fst @@ List.fold_left check_nth_field (true, 0) struct2_fields
+    end 
+  | RFun (arg_tys1, rt1), RFun (arg_tys2, rt2) -> 
+    begin 
+      let n = List.length arg_tys1 in 
+      let valid_arg_tys = begin 
+        if n = List.length arg_tys2 then 
+          let arg_ty_pairs = List.combine arg_tys1 arg_tys2 in
+          List.fold_left (fun bexp (t1, t2) -> subtype c t1 t2 && bexp) true arg_ty_pairs 
+        else false end 
+      in
+      valid_arg_tys && (subtype_ret c rt1 rt2)
+    end  
+  | _ -> false
+
+and subtype_ret (c : Tctxt.t) (t1 : Ast.ret_ty) (t2 : Ast.ret_ty) : bool =
+  match t1, t2 with 
+  | RetVoid, RetVoid -> true 
+  | RetVal t1, RetVal t2 -> subtype c t1 t2
+  | _ -> false
 
 
 (* well-formed types -------------------------------------------------------- *)
