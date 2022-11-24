@@ -123,7 +123,7 @@ and typecheck_ref_ty (l : 'a Ast.node) (tc : Tctxt.t) (t : Ast.rty) : unit =
     | Some _ -> ()
     | None -> type_error l "struct type not declared" end
   | RFun (arg_tys, rt) -> 
-    for n = 0 to List.length arg_tys do typecheck_ty l tc (List.nth arg_tys n) done;
+    for n = 0 to List.length arg_tys - 1 do typecheck_ty l tc (List.nth arg_tys n) done;
     typecheck_ret_ty l tc rt 
        
 and typecheck_ret_ty (l : 'a Ast.node) (tc : Tctxt.t) (t : Ast.ret_ty) : unit =
@@ -157,7 +157,22 @@ and typecheck_ret_ty (l : 'a Ast.node) (tc : Tctxt.t) (t : Ast.ret_ty) : unit =
 
 *)
 let rec typecheck_exp (c : Tctxt.t) (e : Ast.exp node) : Ast.ty =
-  failwith "todo: implement typecheck_exp"
+  let l = Ast.no_loc "" in  
+  match e.elt with 
+  | CNull rty -> typecheck_ref_ty l c rty; TNullRef rty
+  | CBool _ -> TBool 
+  | CInt _ -> TInt 
+  | CStr _ -> TRef RString 
+  | Id id -> lookup id c
+  | CArr (t, exp_list) -> begin 
+    typecheck_ty l c t;
+    let ty_list = List.fold_left (fun acc exp -> acc @ [typecheck_exp c exp]) [] exp_list in
+    for n = 0 to List.length ty_list - 1 do 
+      let tn = List.nth ty_list n in 
+      if not @@ subtype c tn t then type_error l "array initializer has wrong type"  
+    done; 
+    TRef (RArray t) end 
+  | _ -> failwith "unimplemented"
 
 (* statements --------------------------------------------------------------- *)
 
@@ -249,15 +264,57 @@ let typecheck_fdecl (tc : Tctxt.t) (f : Ast.fdecl) (l : 'a Ast.node) : unit =
    NOTE: global initializers may mention function identifiers as
    constants, but can't mention other global values *)
 
+let typ_ftyp (fdecl:Ast.fdecl) (tc:Tctxt.t) = 
+  let {frtyp=rt; fname=f; args=arg_list} = fdecl in  
+  let l = Ast.no_loc "" in  
+  typecheck_ret_ty l tc rt;
+  for n = 0 to List.length arg_list - 1 do 
+    let tn, _ = List.nth arg_list n in 
+    typecheck_ty l tc tn
+  done;
+  let ty_list, _ = List.split arg_list in 
+  f, TRef (RFun (ty_list, rt))
+
 let create_struct_ctxt (p:Ast.prog) : Tctxt.t =
-  failwith "todo: create_struct_ctxt"
+  let rec aux_struct (h1 : struct_ctxt) (p : Ast.prog) : struct_ctxt =
+    match p with 
+    | [] -> h1
+    | (Gtdecl tdecl)::prog -> begin 
+      let s, fields = tdecl.elt in
+      (* check that S does not occur in H1, see Oat v.2 spec *)
+      aux_struct (h1@[(s, fields)]) p end 
+    | (Gvdecl _)::prog -> aux_struct h1 prog
+    | (Gfdecl fdecl)::prog -> aux_struct h1 prog 
+  in 
+  {locals = []; globals = []; structs = (aux_struct [] p)}
 
 let create_function_ctxt (tc:Tctxt.t) (p:Ast.prog) : Tctxt.t =
-  failwith "todo: create_function_ctxt"
+  let rec aux_func (g1 : global_ctxt) (p : Ast.prog) : global_ctxt =
+    match p with 
+    | [] -> g1
+    | (Gtdecl _)::prog -> aux_func g1 prog 
+    | (Gvdecl _)::prog -> aux_func g1 prog
+    | (Gfdecl fdecl)::prog -> begin 
+      let f, t = typ_ftyp fdecl.elt tc in 
+      (* check that f is not in g1 *)
+      aux_func (g1@[(f, t)]) prog end
+  in 
+  {tc with globals = (aux_func [] p) @ tc.globals}
 
 let create_global_ctxt (tc:Tctxt.t) (p:Ast.prog) : Tctxt.t =
-  failwith "todo: create_function_ctxt"
-
+  let rec aux_global (g1 : global_ctxt) (p : Ast.prog) : global_ctxt =
+    match p with 
+    | [] -> g1
+    | (Gtdecl _)::prog -> aux_global g1 prog 
+    | (Gvdecl vdecl)::prog -> begin 
+      let {name=x; init=gexp} = vdecl.elt in 
+      (* check that gexp contains no global variables? See Oat v.2 spec *)
+      let t = typecheck_exp tc gexp in
+      (* check that x is not in g1? *)
+      aux_global (g1@[(x, t)]) prog end
+    | (Gfdecl _)::prog -> aux_global g1 prog 
+  in 
+  {tc with globals = (aux_global [] p) @ tc.globals}
 
 (* This function implements the |- prog and the H ; G |- prog 
    rules of the oat.pdf specification.   
