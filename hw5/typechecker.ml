@@ -226,7 +226,26 @@ let rec typecheck_exp (c : Tctxt.t) (e : Ast.exp node) : Ast.ty =
      block typecheck rules.
 *)
 let rec typecheck_stmt (tc : Tctxt.t) (s:Ast.stmt node) (to_ret:ret_ty) : Tctxt.t * bool =
-  failwith "todo: implement typecheck_stmt"
+  let l = Ast.no_loc "" in
+  match s.elt with 
+  | Assn (lhs, exp) -> 
+    let t = typecheck_exp tc lhs in 
+    let t' = typecheck_exp tc exp in 
+    let id =
+      match lhs.elt with 
+      | Id id -> id
+      | _ -> type_error l "lhs of assignment is not an id"
+    in
+    let is_local_or_global = Tctxt.lookup_option id tc in  
+    if not @@ subtype tc t' t then type_error l "in lhs = exp, exp is not subtype of lhs" 
+    else if is_local_or_global = None then type_error l "lhs is not a local or global variable id"
+    else tc, false 
+  | Ret (Some exp) -> 
+    let t' = typecheck_exp tc exp in
+    if subtype_ret tc (RetVal t') to_ret then tc, true 
+    else type_error l "return statement has invalid return type"
+  | Ret None -> tc, true
+  | _ -> failwith "unimplemented"
 
 
 (* struct type declarations ------------------------------------------------- *)
@@ -267,7 +286,8 @@ let check_distinct (l: 'a list) : bool =
 
 let typecheck_fdecl (tc : Tctxt.t) (f : Ast.fdecl) (l : 'a Ast.node) : unit =
   let {frtyp=to_ret; args=arg_list; body=block} = f in
-  let returns = typecheck_block tc block to_ret l in 
+  let tc_with_locals = List.fold_left (fun c (ty, id) -> add_local c id ty) tc arg_list in 
+  let returns = typecheck_block tc_with_locals block to_ret l in 
   let distinct_args = check_distinct (snd @@ List.split arg_list) in 
   if not returns then type_error l "function body does not return" 
   else if not distinct_args then type_error l "function arguments are not distinct" 

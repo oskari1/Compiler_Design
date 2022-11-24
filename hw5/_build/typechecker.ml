@@ -172,6 +172,24 @@ let rec typecheck_exp (c : Tctxt.t) (e : Ast.exp node) : Ast.ty =
       if not @@ subtype c tn t then type_error l "array initializer has wrong type"  
     done; 
     TRef (RArray t) end 
+  | Bop (Eq, exp1, exp2) | Bop (Neq, exp1, exp2) -> 
+    let t1 = typecheck_exp c exp1 in 
+    let t2 = typecheck_exp c exp2 in
+    if not (subtype c t1 t2) then type_error l "exp1 is not subtype of exp2 in exp1 == exp2" 
+    else if not (subtype c t2 t1) then type_error l "exp2 is not subtype of exp1 in exp1 == exp2" 
+    else TBool
+  | Bop (bop, exp1, exp2) ->  
+    let t1, t2, t = typ_of_binop bop in 
+    let t1' = typecheck_exp c exp1 in 
+    let t2' = typecheck_exp c exp2 in
+    if t1 <> t1' then type_error l "first operator has invalid type in binary operation" 
+    else if t2 <> t2' then type_error l "second operator has invalid type in binary operation"
+    else t 
+  | Uop (uop, exp) -> 
+    let t,_ = typ_of_unop uop in 
+    let t' = typecheck_exp c exp in 
+    if t <> t' then type_error l "invalid operator type in unary operation"
+    else t
   | _ -> failwith "unimplemented"
 
 (* statements --------------------------------------------------------------- *)
@@ -208,7 +226,26 @@ let rec typecheck_exp (c : Tctxt.t) (e : Ast.exp node) : Ast.ty =
      block typecheck rules.
 *)
 let rec typecheck_stmt (tc : Tctxt.t) (s:Ast.stmt node) (to_ret:ret_ty) : Tctxt.t * bool =
-  failwith "todo: implement typecheck_stmt"
+  let l = Ast.no_loc "" in
+  match s.elt with 
+  | Assn (lhs, exp) -> 
+    let t = typecheck_exp tc lhs in 
+    let t' = typecheck_exp tc exp in 
+    let id =
+      match lhs.elt with 
+      | Id id -> id
+      | _ -> type_error l "lhs of assignment is not an id"
+    in
+    let is_local_or_global = Tctxt.lookup_option id tc in  
+    if not @@ subtype tc t' t then type_error l "in lhs = exp, exp is not subtype of lhs" 
+    else if is_local_or_global = None then type_error l "lhs is not a local or global variable id"
+    else tc, false 
+  | Ret (Some exp) -> 
+    let t' = typecheck_exp tc exp in
+    if subtype_ret tc (RetVal t') to_ret then tc, true 
+    else type_error l "return statement has invalid return type"
+  | Ret None -> tc, true
+  | _ -> failwith "unimplemented"
 
 
 (* struct type declarations ------------------------------------------------- *)
@@ -234,8 +271,27 @@ let typecheck_tdecl (tc : Tctxt.t) id fs  (l : 'a Ast.node) : unit =
     - typechecks the body of the function (passing in the expected return type
     - checks that the function actually returns
 *)
+
+let typecheck_block (tc : Tctxt.t) (block:Ast.block) (to_ret:ret_ty) (l : 'a Ast.node) : bool =
+  let typecheck_ss (tc : Tctxt.t) (block:Ast.block) (rt:ret_ty) : Tctxt.t * bool = 
+    List.fold_left (fun (tctxt, last_returns) stmt ->  
+      if last_returns then type_error l "function body returns preemptively" else
+      typecheck_stmt tctxt stmt rt) (tc,false) block 
+  in
+  snd (typecheck_ss tc block to_ret) 
+
+let check_distinct (l: 'a list) : bool =
+  let sorted_l = List.sort_uniq compare l in 
+  List.length sorted_l = List.length l
+
 let typecheck_fdecl (tc : Tctxt.t) (f : Ast.fdecl) (l : 'a Ast.node) : unit =
-  failwith "todo: typecheck_fdecl"
+  let {frtyp=to_ret; args=arg_list; body=block} = f in
+  let tc_with_locals = List.fold_left (fun c (ty, id) -> add_local c id ty) tc arg_list in 
+  let returns = typecheck_block tc_with_locals block to_ret l in 
+  let distinct_args = check_distinct (snd @@ List.split arg_list) in 
+  if not returns then type_error l "function body does not return" 
+  else if not distinct_args then type_error l "function arguments are not distinct" 
+  else () 
 
 (* creating the typchecking context ----------------------------------------- *)
 
