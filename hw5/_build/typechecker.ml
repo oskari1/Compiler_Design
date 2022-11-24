@@ -172,6 +172,20 @@ let rec typecheck_exp (c : Tctxt.t) (e : Ast.exp node) : Ast.ty =
       if not @@ subtype c tn t then type_error l "array initializer has wrong type"  
     done; 
     TRef (RArray t) end 
+  | NewArr (t, exp1, x, exp2) ->
+    typecheck_ty l c t; 
+    let exp1_ty = typecheck_exp c exp1 in 
+    if exp1_ty <> TInt then type_error l "array length initializer does not have type int"
+    else if (lookup_local_option x c) <> None then type_error l "x is in L"
+    else 
+      let c_extended = Tctxt.add_local c x TInt in 
+      let t' = typecheck_exp c_extended exp2 in 
+      if not @@ subtype c_extended t' t then type_error l "initial value has wrong type in array initializer"
+      else TRef (RArray t) 
+  | Index (exp1, exp2) -> begin 
+    match typecheck_exp c exp1, typecheck_exp c exp2 with 
+    | TRef (RArray t), TInt -> t 
+    | _, _ -> type_error l "incorrectly indexed array" end
   | Bop (Eq, exp1, exp2) | Bop (Neq, exp1, exp2) -> 
     let t1 = typecheck_exp c exp1 in 
     let t2 = typecheck_exp c exp2 in
@@ -190,7 +204,7 @@ let rec typecheck_exp (c : Tctxt.t) (e : Ast.exp node) : Ast.ty =
     let t' = typecheck_exp c exp in 
     if t <> t' then type_error l "invalid operator type in unary operation"
     else t
-  | _ -> failwith "unimplemented"
+  | _ -> type_error l "invalid expression" 
 
 (* statements --------------------------------------------------------------- *)
 
