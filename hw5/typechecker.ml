@@ -172,6 +172,24 @@ let rec typecheck_exp (c : Tctxt.t) (e : Ast.exp node) : Ast.ty =
       if not @@ subtype c tn t then type_error l "array initializer has wrong type"  
     done; 
     TRef (RArray t) end 
+  | Bop (Eq, exp1, exp2) | Bop (Neq, exp1, exp2) -> 
+    let t1 = typecheck_exp c exp1 in 
+    let t2 = typecheck_exp c exp2 in
+    if not (subtype c t1 t2) then type_error l "exp1 is not subtype of exp2 in exp1 == exp2" 
+    else if not (subtype c t2 t1) then type_error l "exp2 is not subtype of exp1 in exp1 == exp2" 
+    else TBool
+  | Bop (bop, exp1, exp2) ->  
+    let t1, t2, t = typ_of_binop bop in 
+    let t1' = typecheck_exp c exp1 in 
+    let t2' = typecheck_exp c exp2 in
+    if t1 <> t1' then type_error l "first operator has invalid type in binary operation" 
+    else if t2 <> t2' then type_error l "second operator has invalid type in binary operation"
+    else t 
+  | Uop (uop, exp) -> 
+    let t,_ = typ_of_unop uop in 
+    let t' = typecheck_exp c exp in 
+    if t <> t' then type_error l "invalid operator type in unary operation"
+    else t
   | _ -> failwith "unimplemented"
 
 (* statements --------------------------------------------------------------- *)
