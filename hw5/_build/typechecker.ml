@@ -282,7 +282,7 @@ let create_struct_ctxt (p:Ast.prog) : Tctxt.t =
     | (Gtdecl tdecl)::prog -> begin 
       let s, fields = tdecl.elt in
       (* check that S does not occur in H1, see Oat v.2 spec *)
-      aux_struct (h1@[(s, fields)]) p end 
+      aux_struct (h1@[(s, fields)]) prog end 
     | (Gvdecl _)::prog -> aux_struct h1 prog
     | (Gfdecl fdecl)::prog -> aux_struct h1 prog 
   in 

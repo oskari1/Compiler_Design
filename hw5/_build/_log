@@ -83,12 +83,8 @@ menhir --ocamlc '/home/ojyrkinen/.opam/4.06.0/bin/ocamlc.opt -I /home/ojyrkinen/
 /home/ojyrkinen/.opam/4.06.0/bin/ocamlc.opt -c -I /home/ojyrkinen/.opam/4.06.0/lib/num -I /home/ojyrkinen/.opam/4.06.0/lib/ocaml -I util -I x86 -I ll -o util/assert.cmi util/assert.mli
 # Target: driver.cmo, tags: { byte, compile, extension:cmo, extension:ml, file:driver.cmo, file:driver.ml, implem, ocaml, quiet }
 /home/ojyrkinen/.opam/4.06.0/bin/ocamlc.opt -c -I /home/ojyrkinen/.opam/4.06.0/lib/num -I /home/ojyrkinen/.opam/4.06.0/lib/ocaml -I x86 -I util -I ll -o driver.cmo driver.ml
-# Target: studenttests.ml.depends, tags: { extension:ml, file:studenttests.ml, ocaml, ocamldep, quiet }
-/home/ojyrkinen/.opam/4.06.0/bin/ocamldep.opt -modules studenttests.ml > studenttests.ml.depends
 # Target: gradedtests.cmo, tags: { byte, compile, extension:cmo, extension:ml, file:gradedtests.cmo, file:gradedtests.ml, implem, ocaml, quiet }
 /home/ojyrkinen/.opam/4.06.0/bin/ocamlc.opt -c -I /home/ojyrkinen/.opam/4.06.0/lib/num -I /home/ojyrkinen/.opam/4.06.0/lib/ocaml -I x86 -I util -I ll -o gradedtests.cmo gradedtests.ml
-# Target: studenttests.cmo, tags: { byte, compile, extension:cmo, extension:ml, file:studenttests.cmo, file:studenttests.ml, implem, ocaml, quiet }
-/home/ojyrkinen/.opam/4.06.0/bin/ocamlc.opt -c -I /home/ojyrkinen/.opam/4.06.0/lib/num -I /home/ojyrkinen/.opam/4.06.0/lib/ocaml -I x86 -I util -I ll -o studenttests.cmo studenttests.ml
 # Target: main.cmo, tags: { byte, compile, extension:cmo, extension:ml, file:main.cmo, file:main.ml, implem, ocaml, quiet }
 /home/ojyrkinen/.opam/4.06.0/bin/ocamlc.opt -c -I /home/ojyrkinen/.opam/4.06.0/lib/num -I /home/ojyrkinen/.opam/4.06.0/lib/ocaml -I x86 -I util -I ll -o main.cmo main.ml
 # Target: util/assert.ml.depends, tags: { extension:ml, file:util/assert.ml, ocaml, ocamldep, quiet }
@@ -135,10 +131,8 @@ menhir --ocamlc '/home/ojyrkinen/.opam/4.06.0/bin/ocamlc.opt -I /home/ojyrkinen/
 /home/ojyrkinen/.opam/4.06.0/bin/ocamlopt.opt -c -I /home/ojyrkinen/.opam/4.06.0/lib/num -I /home/ojyrkinen/.opam/4.06.0/lib/ocaml -I x86 -I util -I ll -o driver.cmx driver.ml
 # Target: gradedtests.cmx, tags: { compile, extension:cmx, extension:ml, file:gradedtests.cmx, file:gradedtests.ml, implem, native, ocaml, quiet }
 /home/ojyrkinen/.opam/4.06.0/bin/ocamlopt.opt -c -I /home/ojyrkinen/.opam/4.06.0/lib/num -I /home/ojyrkinen/.opam/4.06.0/lib/ocaml -I x86 -I util -I ll -o gradedtests.cmx gradedtests.ml
-# Target: studenttests.cmx, tags: { compile, extension:cmx, extension:ml, file:studenttests.cmx, file:studenttests.ml, implem, native, ocaml, quiet }
-/home/ojyrkinen/.opam/4.06.0/bin/ocamlopt.opt -c -I /home/ojyrkinen/.opam/4.06.0/lib/num -I /home/ojyrkinen/.opam/4.06.0/lib/ocaml -I x86 -I util -I ll -o studenttests.cmx studenttests.ml
 # Target: main.cmx, tags: { compile, extension:cmx, extension:ml, file:main.cmx, file:main.ml, implem, native, ocaml, quiet }
 /home/ojyrkinen/.opam/4.06.0/bin/ocamlopt.opt -c -I /home/ojyrkinen/.opam/4.06.0/lib/num -I /home/ojyrkinen/.opam/4.06.0/lib/ocaml -I x86 -I util -I ll -o main.cmx main.ml
 # Target: main.native, tags: { dont_link_with, extension:native, file:main.native, link, native, ocaml, program, quiet }
-/home/ojyrkinen/.opam/4.06.0/bin/ocamlopt.opt unix.cmxa str.cmxa -I /home/ojyrkinen/.opam/4.06.0/lib/num -I /home/ojyrkinen/.opam/4.06.0/lib/ocaml /home/ojyrkinen/.opam/4.06.0/lib/ocaml/nums.cmxa -I util -I ll -I x86 util/range.cmx ast.cmx astlib.cmx ll/ll.cmx util/platform.cmx x86/x86.cmx backend.cmx ll/llutil.cmx tctxt.cmx typechecker.cmx frontend.cmx parser.cmx lexer.cmx ll/llparser.cmx ll/lllexer.cmx driver.cmx util/assert.cmx gradedtests.cmx studenttests.cmx main.cmx -o main.native
+/home/ojyrkinen/.opam/4.06.0/bin/ocamlopt.opt unix.cmxa str.cmxa -I /home/ojyrkinen/.opam/4.06.0/lib/num -I /home/ojyrkinen/.opam/4.06.0/lib/ocaml /home/ojyrkinen/.opam/4.06.0/lib/ocaml/nums.cmxa -I util -I ll -I x86 util/range.cmx ast.cmx astlib.cmx ll/ll.cmx util/platform.cmx x86/x86.cmx backend.cmx ll/llutil.cmx tctxt.cmx typechecker.cmx frontend.cmx parser.cmx lexer.cmx ll/llparser.cmx ll/lllexer.cmx driver.cmx util/assert.cmx gradedtests.cmx main.cmx -o main.native
 # Compilation successful.

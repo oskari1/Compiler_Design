@@ -42,7 +42,7 @@ let typecheck_subtyping_tests =
   ]
 
 let provided_tests : suite = [
-  GradedTest("subtype unit tests", 3, unit_tests);
+  (*GradedTest("subtype unit tests", 3, unit_tests);*)
   GradedTest("tc subtyping tests", 4, typecheck_file_correct typecheck_subtyping_tests);(*
   GradedTest("tc subtyping error tests", 4, typecheck_file_error typecheck_subtyping_error_tests);  
   GradedTest("tc statement error tests", 5, typecheck_file_error typecheck_statement_error_tests);

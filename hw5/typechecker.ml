@@ -234,8 +234,26 @@ let typecheck_tdecl (tc : Tctxt.t) id fs  (l : 'a Ast.node) : unit =
     - typechecks the body of the function (passing in the expected return type
     - checks that the function actually returns
 *)
+
+let typecheck_block (tc : Tctxt.t) (block:Ast.block) (to_ret:ret_ty) (l : 'a Ast.node) : bool =
+  let typecheck_ss (tc : Tctxt.t) (block:Ast.block) (rt:ret_ty) : Tctxt.t * bool = 
+    List.fold_left (fun (tctxt, last_returns) stmt ->  
+      if last_returns then type_error l "function body returns preemptively" else
+      typecheck_stmt tctxt stmt rt) (tc,false) block 
+  in
+  snd (typecheck_ss tc block to_ret) 
+
+let check_distinct (l: 'a list) : bool =
+  let sorted_l = List.sort_uniq compare l in 
+  List.length sorted_l = List.length l
+
 let typecheck_fdecl (tc : Tctxt.t) (f : Ast.fdecl) (l : 'a Ast.node) : unit =
-  failwith "todo: typecheck_fdecl"
+  let {frtyp=to_ret; args=arg_list; body=block} = f in
+  let returns = typecheck_block tc block to_ret l in 
+  let distinct_args = check_distinct (snd @@ List.split arg_list) in 
+  if not returns then type_error l "function body does not return" 
+  else if not distinct_args then type_error l "function arguments are not distinct" 
+  else () 
 
 (* creating the typchecking context ----------------------------------------- *)
 
@@ -282,7 +300,7 @@ let create_struct_ctxt (p:Ast.prog) : Tctxt.t =
     | (Gtdecl tdecl)::prog -> begin 
       let s, fields = tdecl.elt in
       (* check that S does not occur in H1, see Oat v.2 spec *)
-      aux_struct (h1@[(s, fields)]) p end 
+      aux_struct (h1@[(s, fields)]) prog end 
     | (Gvdecl _)::prog -> aux_struct h1 prog
     | (Gfdecl fdecl)::prog -> aux_struct h1 prog 
   in 
