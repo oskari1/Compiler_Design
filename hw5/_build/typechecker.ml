@@ -186,6 +186,41 @@ let rec typecheck_exp (c : Tctxt.t) (e : Ast.exp node) : Ast.ty =
     match typecheck_exp c exp1, typecheck_exp c exp2 with 
     | TRef (RArray t), TInt -> t 
     | _, _ -> type_error l "incorrectly indexed array" end
+  | Length (exp) -> begin 
+    match typecheck_exp c exp with 
+    | TRef (RArray t) -> TInt 
+    | _ -> type_error l "incorrect argument for length(.)" end
+  | CStruct (s, exp_list) ->
+    let fields = Tctxt.lookup_struct s c in 
+    for n = 0 to (List.length fields) - 1 do
+      let {fieldName=xn; ftyp=tn} = List.nth fields n in 
+      let tn' = lookup_field s xn c in
+      if not (subtype c tn' tn) then type_error l "array field initializer has wrong type"
+      done;
+      TRef (RStruct s)
+  | Proj (exp, x) -> 
+    let s = 
+      match typecheck_exp c exp with 
+      | TRef (RStruct s) -> s 
+      | _ -> type_error l "invalid struct expression"
+    in
+    let fields = lookup_struct_option s c in 
+    if fields = None then type_error l "struct type has not been declared"
+    else lookup_field s x c 
+  | Call (exp, exp_list) -> 
+    (* what should we return if the function has return type void? *)
+    let (arg_ty, ret_ty) = 
+    match typecheck_exp c exp with 
+    | TRef (RFun (arg_ty, RetVal ret_ty)) -> arg_ty, ret_ty
+    | _ -> type_error l "invalid function expression" 
+    in
+    for n = 0 to (List.length arg_ty) - 1 do 
+      let expn = List.nth exp_list n in
+      let tn' = typecheck_exp c expn in
+      let tn = List.nth arg_ty n in  
+      if not (subtype c tn' tn) then type_error l "function called with incorrect argument type" 
+    done;
+    ret_ty
   | Bop (Eq, exp1, exp2) | Bop (Neq, exp1, exp2) -> 
     let t1 = typecheck_exp c exp1 in 
     let t2 = typecheck_exp c exp2 in
@@ -204,7 +239,6 @@ let rec typecheck_exp (c : Tctxt.t) (e : Ast.exp node) : Ast.ty =
     let t' = typecheck_exp c exp in 
     if t <> t' then type_error l "invalid operator type in unary operation"
     else t
-  | _ -> type_error l "invalid expression" 
 
 (* statements --------------------------------------------------------------- *)
 
