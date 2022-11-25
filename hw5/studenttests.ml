@@ -29,16 +29,16 @@ let unit_tests = [
   )
 ]
 
-let typecheck_subtyping_tests =
-  [ "hw5programs/tc_subtyping1.oat"
+let typecheck_subtyping_tests = 
+  [(* "hw5programs/tc_subtyping1.oat"
   ; "hw5programs/tc_subtyping2.oat"
   ; "hw5programs/tc_subtyping3.oat"
   ; "hw5programs/tc_subtyping4.oat"
   ; "hw5programs/tc_subtyping5.oat"
   ; "hw5programs/tc_subtyping6.oat"
-  ; "hw5programs/tc_subtyping7.oat"
-  ; "hw5programs/tc_subtyping8.oat"
-  ; "hw5programs/tc_subtyping9.oat"            
+  ;*) "hw5programs/tc_subtyping7.oat"
+  ;(* "hw5programs/tc_subtyping8.oat"
+  ; "hw5programs/tc_subtyping9.oat"*)            
   ]
 
 let provided_tests : suite = [

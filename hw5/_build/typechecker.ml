@@ -73,17 +73,25 @@ and subtype_ref (c : Tctxt.t) (t1 : Ast.rty) (t2 : Ast.rty) : bool =
         in
         fst @@ List.fold_left check_nth_field (true, 0) struct2_fields
     end 
-  | RFun (arg_tys1, rt1), RFun (arg_tys2, rt2) -> 
-    begin 
+  | RFun (arg_tys1, rt1), RFun (arg_tys2, rt2) ->(* 
+      let n = List.length arg_tys1 in
+      if not(n = List.length arg_tys2) then false 
+      else begin 
+        for i = 0 to n - 1 do 
+          let ti' = List.nth arg_tys2 i in 
+          let ti = List.nth arg_tys1 i in 
+          if not (subtype c ti' ti) then valid = false 
+          done;
+        valid
+        end*)
       let n = List.length arg_tys1 in 
       let valid_arg_tys = begin 
         if n = List.length arg_tys2 then 
-          let arg_ty_pairs = List.combine arg_tys1 arg_tys2 in
-          List.fold_left (fun bexp (t1, t2) -> subtype c t1 t2 && bexp) true arg_ty_pairs 
+          let arg_ty_pairs = List.combine arg_tys2 arg_tys1 in
+          List.fold_left (fun bexp (ti', ti) -> subtype c ti' ti && bexp) true arg_ty_pairs 
         else false end 
       in
       valid_arg_tys && (subtype_ret c rt1 rt2)
-    end  
   | _ -> false
 
 and subtype_ret (c : Tctxt.t) (t1 : Ast.ret_ty) (t2 : Ast.ret_ty) : bool =
@@ -212,7 +220,7 @@ let rec typecheck_exp (c : Tctxt.t) (e : Ast.exp node) : Ast.ty =
     let (arg_ty, ret_ty) = 
     match typecheck_exp c exp with 
     | TRef (RFun (arg_ty, RetVal ret_ty)) -> arg_ty, ret_ty
-    | _ -> type_error l "invalid function expression" 
+    | _ -> print_endline "type error line 215"; type_error l "invalid function expression" 
     in
     for n = 0 to (List.length arg_ty) - 1 do 
       let expn = List.nth exp_list n in
@@ -273,6 +281,13 @@ let rec typecheck_exp (c : Tctxt.t) (e : Ast.exp node) : Ast.ty =
    - You will probably find it convenient to add a helper function that implements the 
      block typecheck rules.
 *)
+
+let typecheck_vdecl (tc : Tctxt.t) (vdecl:vdecl) (l:'a Ast.node): Tctxt.t = 
+  let x, exp = vdecl in
+  let t = typecheck_exp tc exp in
+  if (lookup_option x tc) = None then add_local tc x t
+  else type_error l "declared variable is already declared"
+
 let rec typecheck_stmt (tc : Tctxt.t) (s:Ast.stmt node) (to_ret:ret_ty) : Tctxt.t * bool =
   let l = Ast.no_loc "" in
   match s.elt with 
@@ -288,6 +303,20 @@ let rec typecheck_stmt (tc : Tctxt.t) (s:Ast.stmt node) (to_ret:ret_ty) : Tctxt.
     if not @@ subtype tc t' t then type_error l "in lhs = exp, exp is not subtype of lhs" 
     else if is_local_or_global = None then type_error l "lhs is not a local or global variable id"
     else tc, false 
+  | Decl vdecl -> typecheck_vdecl tc vdecl l, false 
+  | SCall (exp, exp_list) -> 
+    let arg_tys =
+      match typecheck_exp tc exp with 
+      | TRef (RFun (arg_tys, RetVoid)) -> arg_tys
+      | _ -> print_endline "type error line 303"; type_error l "invalid function type"
+    in
+    for n = 0 to List.length arg_tys - 1 do 
+      let exp_n = List.nth exp_list n in
+      let tn' = typecheck_exp tc exp_n in 
+      let tn = List.nth arg_tys n in 
+      if subtype tc tn' tn then () else type_error l "function called with invalid argument type" 
+    done;
+    tc, false
   | Ret (Some exp) -> 
     let t' = typecheck_exp tc exp in
     if subtype_ret tc (RetVal t') to_ret then tc, true 
