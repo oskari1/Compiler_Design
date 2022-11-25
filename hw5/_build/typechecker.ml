@@ -288,6 +288,9 @@ let typecheck_vdecl (tc : Tctxt.t) (vdecl:vdecl) (l:'a Ast.node): Tctxt.t =
   if (lookup_option x tc) = None then add_local tc x t
   else type_error l "declared variable is already declared"
 
+let typecheck_vdecls (tc : Tctxt.t) (vdecls:vdecl list) (l:'a Ast.node): Tctxt.t = 
+  fst @@ List.fold_left (fun (tc, l) vdecl -> typecheck_vdecl tc vdecl l, l) (tc, l) vdecls
+
 let rec typecheck_stmt (tc : Tctxt.t) (s:Ast.stmt node) (to_ret:ret_ty) : Tctxt.t * bool =
   let l = Ast.no_loc "" in
   match s.elt with 
@@ -317,6 +320,41 @@ let rec typecheck_stmt (tc : Tctxt.t) (s:Ast.stmt node) (to_ret:ret_ty) : Tctxt.
       if subtype tc tn' tn then () else type_error l "function called with invalid argument type" 
     done;
     tc, false
+  | If (exp, block1, block2) -> begin 
+    match typecheck_exp tc exp with 
+    | TBool ->  
+      let r1 = typecheck_block tc block1 to_ret l in
+      let r2 = typecheck_block tc block2 to_ret l in
+      tc, r1 && r2
+    | _ -> type_error l "invalid conditional type in if-statement" end
+  | Cast (ref, x, exp, block1, block2) -> 
+    let ref' = 
+    match typecheck_exp tc exp with 
+    | TNullRef rty -> rty 
+    | _ -> type_error l "invalid expression type in if? statement"
+    in
+    if subtype_ref tc ref' ref then
+      let r1 = typecheck_block tc block1 to_ret l in
+      let r2 = typecheck_block tc block2 to_ret l in
+      tc, r1 && r2 
+    else type_error l "incompatible types in if?-conditional"
+  | While (exp, block) -> 
+    let _ = begin 
+      match typecheck_exp tc exp with  
+      | TBool -> TBool 
+      | _ -> type_error l "conditional in while loop has wrong type" end
+    in
+    let _ = typecheck_block tc block to_ret l in
+    tc, false
+  | For (vdecls, Some exp, Some stmt, block) -> 
+    let locals2 = typecheck_vdecls tc vdecls l in begin
+    match typecheck_exp locals2 exp with 
+    | TBool -> 
+      if snd @@ typecheck_stmt locals2 stmt to_ret then begin 
+        let _ = typecheck_block locals2 block to_ret l in 
+        tc, false end
+      else type_error l "update-stmt in for-loop returns"
+    | _ -> type_error l "conditional in for-loop has incorrect type" end
   | Ret (Some exp) -> 
     let t' = typecheck_exp tc exp in
     if subtype_ret tc (RetVal t') to_ret then tc, true 
@@ -324,6 +362,13 @@ let rec typecheck_stmt (tc : Tctxt.t) (s:Ast.stmt node) (to_ret:ret_ty) : Tctxt.
   | Ret None -> tc, true
   | _ -> failwith "unimplemented"
 
+and typecheck_block (tc : Tctxt.t) (block:Ast.block) (to_ret:ret_ty) (l : 'a Ast.node) : bool =
+  let typecheck_ss (tc : Tctxt.t) (block:Ast.block) (rt:ret_ty) : Tctxt.t * bool = 
+    List.fold_left (fun (tctxt, last_returns) stmt ->  
+      if last_returns then type_error l "function body returns preemptively" else
+      typecheck_stmt tctxt stmt rt) (tc,false) block 
+  in
+  snd (typecheck_ss tc block to_ret)
 
 (* struct type declarations ------------------------------------------------- *)
 (* Here is an example of how to implement the TYP_TDECLOK rule, which is 
