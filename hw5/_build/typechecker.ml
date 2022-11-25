@@ -480,6 +480,7 @@ let create_function_ctxt (tc:Tctxt.t) (p:Ast.prog) : Tctxt.t =
   {tc with globals = (aux_func [] p) @ tc.globals}
 
 let create_global_ctxt (tc:Tctxt.t) (p:Ast.prog) : Tctxt.t =
+  let g0 = List.map (fun (id, (arg_tys, rt)) -> (id, TRef (RFun (arg_tys, rt)))) builtins in 
   let rec aux_global (g1 : global_ctxt) (p : Ast.prog) : global_ctxt =
     match p with 
     | [] -> g1
@@ -492,7 +493,7 @@ let create_global_ctxt (tc:Tctxt.t) (p:Ast.prog) : Tctxt.t =
       aux_global (g1@[(x, t)]) prog end
     | (Gfdecl _)::prog -> aux_global g1 prog 
   in 
-  {tc with globals = (aux_global [] p) @ tc.globals}
+  {tc with globals = (aux_global g0 p) @ tc.globals}
 
 (* This function implements the |- prog and the H ; G |- prog 
    rules of the oat.pdf specification.   
