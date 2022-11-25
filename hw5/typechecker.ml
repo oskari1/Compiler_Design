@@ -496,20 +496,18 @@ let create_function_ctxt (tc:Tctxt.t) (p:Ast.prog) : Tctxt.t =
   {tc with globals = (aux_func [] p) @ tc.globals}
 
 let create_global_ctxt (tc:Tctxt.t) (p:Ast.prog) : Tctxt.t =
-  let g0 = List.map (fun (id, (arg_tys, rt)) -> (id, TRef (RFun (arg_tys, rt)))) builtins in 
-  let rec aux_global (g1 : global_ctxt) (p : Ast.prog) : global_ctxt =
-    match p with 
-    | [] -> g1
-    | (Gtdecl _)::prog -> aux_global g1 prog 
-    | (Gvdecl vdecl)::prog -> begin 
-      let {name=x; init=gexp} = vdecl.elt in 
-      (* check that gexp contains no global variables? See Oat v.2 spec *)
-      let t = typecheck_exp tc gexp in
-      (* check that x is not in g1? *)
-      aux_global (g1@[(x, t)]) prog end
-    | (Gfdecl _)::prog -> aux_global g1 prog 
-  in 
-  {tc with globals = (aux_global g0 p) @ tc.globals}
+  let l = Ast.no_loc "" in  
+  let update_ctxt (tc:Tctxt.t) (decl:Ast.decl) : Tctxt.t =
+    match decl with 
+    | Gvdecl vdecl -> 
+      let {name=x; init=gexp} = vdecl.elt in begin 
+      match lookup_global_option x tc with 
+      | None -> let t = typecheck_exp tc gexp in add_global tc x t 
+      | Some _ -> type_error l "global redeclaration" end 
+    | _ -> tc
+  in
+  let tc_with_builtins = List.fold_left (fun ctxt (id, (arg_tys, rt)) -> add_global ctxt id (TRef (RFun (arg_tys, rt)))) tc builtins in
+  List.fold_left update_ctxt tc_with_builtins p 
 
 (* This function implements the |- prog and the H ; G |- prog 
    rules of the oat.pdf specification.   

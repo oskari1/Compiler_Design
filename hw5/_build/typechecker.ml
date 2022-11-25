@@ -482,18 +482,6 @@ let create_struct_ctxt (p:Ast.prog) : Tctxt.t =
   in
   List.fold_left update_ctxt {locals = []; globals = []; structs = []} p   
 
-  (*let rec aux_struct (h1 : struct_ctxt) (p : Ast.prog) : struct_ctxt =
-    match p with 
-    | [] -> h1
-    | (Gtdecl tdecl)::prog -> begin 
-      let s, fields = tdecl.elt in
-      (* check that S does not occur in H1, see Oat v.2 spec *)
-      aux_struct (h1@[(s, fields)]) prog end 
-    | (Gvdecl _)::prog -> aux_struct h1 prog
-    | (Gfdecl fdecl)::prog -> aux_struct h1 prog 
-  in 
-  {locals = []; globals = []; structs = (aux_struct [] p)} *)
-
 let create_function_ctxt (tc:Tctxt.t) (p:Ast.prog) : Tctxt.t =
   let rec aux_func (g1 : global_ctxt) (p : Ast.prog) : global_ctxt =
     match p with 
@@ -508,6 +496,19 @@ let create_function_ctxt (tc:Tctxt.t) (p:Ast.prog) : Tctxt.t =
   {tc with globals = (aux_func [] p) @ tc.globals}
 
 let create_global_ctxt (tc:Tctxt.t) (p:Ast.prog) : Tctxt.t =
+  let l = Ast.no_loc "" in  
+  let update_ctxt (tc:Tctxt.t) (decl:Ast.decl) : Tctxt.t =
+    match decl with 
+    | Gvdecl vdecl -> 
+      let {name=x; init=gexp} = vdecl.elt in begin 
+      match lookup_global_option x tc with 
+      | None -> let t = typecheck_exp tc gexp in add_global tc x t 
+      | Some _ -> type_error l "global redeclaration" end 
+    | _ -> tc
+  in
+  let tc_with_builtins = List.fold_left (fun ctxt (id, (arg_tys, rt)) -> add_global ctxt id (TRef (RFun (arg_tys, rt)))) tc builtins in
+  List.fold_left update_ctxt tc_with_builtins p 
+(*
   let g0 = List.map (fun (id, (arg_tys, rt)) -> (id, TRef (RFun (arg_tys, rt)))) builtins in 
   let rec aux_global (g1 : global_ctxt) (p : Ast.prog) : global_ctxt =
     match p with 
@@ -522,7 +523,7 @@ let create_global_ctxt (tc:Tctxt.t) (p:Ast.prog) : Tctxt.t =
     | (Gfdecl _)::prog -> aux_global g1 prog 
   in 
   {tc with globals = (aux_global g0 p) @ tc.globals}
-
+*)
 (* This function implements the |- prog and the H ; G |- prog 
    rules of the oat.pdf specification.   
 *)
