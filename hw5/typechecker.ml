@@ -470,17 +470,17 @@ let typ_ftyp (fdecl:Ast.fdecl) (tc:Tctxt.t) =
   f, TRef (RFun (ty_list, rt))
 
 let create_struct_ctxt (p:Ast.prog) : Tctxt.t =
-  let rec aux_struct (h1 : struct_ctxt) (p : Ast.prog) : struct_ctxt =
-    match p with 
-    | [] -> h1
-    | (Gtdecl tdecl)::prog -> begin 
-      let s, fields = tdecl.elt in
-      (* check that S does not occur in H1, see Oat v.2 spec *)
-      aux_struct (h1@[(s, fields)]) prog end 
-    | (Gvdecl _)::prog -> aux_struct h1 prog
-    | (Gfdecl fdecl)::prog -> aux_struct h1 prog 
-  in 
-  {locals = []; globals = []; structs = (aux_struct [] p)}
+  let l = Ast.no_loc "" in  
+  let update_ctxt (tc:Tctxt.t) (decl:Ast.decl) : Tctxt.t =
+    match decl with 
+    | Gtdecl tdecl -> 
+      let s, fields = tdecl.elt in begin 
+      match lookup_struct_option s tc with 
+      | None -> add_struct tc s fields
+      | Some _ -> type_error l "struct redeclaration" end 
+    | _ -> tc
+  in
+  List.fold_left update_ctxt {locals = []; globals = []; structs = []} p   
 
 let create_function_ctxt (tc:Tctxt.t) (p:Ast.prog) : Tctxt.t =
   let rec aux_func (g1 : global_ctxt) (p : Ast.prog) : global_ctxt =
