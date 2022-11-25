@@ -200,12 +200,23 @@ let rec typecheck_exp (c : Tctxt.t) (e : Ast.exp node) : Ast.ty =
     | _ -> type_error l "incorrect argument for length(.)" end
   | CStruct (s, exp_list) ->
     let fields = Tctxt.lookup_struct s c in 
+    let matching_fields = 
+      let init_field_names = List.sort compare (fst @@ List.split exp_list) in 
+      let field_names = List.sort compare (List.map (fun {fieldName=xn; ftyp=_} -> xn) fields) in 
+      field_names = init_field_names
+    in
+    if matching_fields then begin  
     for n = 0 to (List.length fields) - 1 do
       let {fieldName=xn; ftyp=tn} = List.nth fields n in 
-      let tn' = lookup_field s xn c in
+      let tn' = 
+      match lookup_field_option s xn c with 
+      | Some tn' -> tn'
+      | None -> type_error l "tried to access non-existent field of a struct" 
+       in
       if not (subtype c tn' tn) then type_error l "array field initializer has wrong type"
       done;
-      TRef (RStruct s)
+      TRef (RStruct s) end 
+    else type_error l "explicit struct initializer does not have matching fields"
   | Proj (exp, x) -> 
     let s = 
       match typecheck_exp c exp with 
@@ -214,7 +225,10 @@ let rec typecheck_exp (c : Tctxt.t) (e : Ast.exp node) : Ast.ty =
     in
     let fields = lookup_struct_option s c in 
     if fields = None then type_error l "struct type has not been declared"
-    else lookup_field s x c 
+    else begin 
+      match lookup_field_option s x c with 
+      | Some ty -> ty 
+      | None -> type_error l "tried to access non-existent field of a struct" end
   | Call (exp, exp_list) -> 
     (* what should we return if the function has return type void? *)
     let (arg_ty, ret_ty) = 
