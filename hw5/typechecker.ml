@@ -483,17 +483,17 @@ let create_struct_ctxt (p:Ast.prog) : Tctxt.t =
   List.fold_left update_ctxt {locals = []; globals = []; structs = []} p   
 
 let create_function_ctxt (tc:Tctxt.t) (p:Ast.prog) : Tctxt.t =
-  let rec aux_func (g1 : global_ctxt) (p : Ast.prog) : global_ctxt =
-    match p with 
-    | [] -> g1
-    | (Gtdecl _)::prog -> aux_func g1 prog 
-    | (Gvdecl _)::prog -> aux_func g1 prog
-    | (Gfdecl fdecl)::prog -> begin 
-      let f, t = typ_ftyp fdecl.elt tc in 
-      (* check that f is not in g1 *)
-      aux_func (g1@[(f, t)]) prog end
-  in 
-  {tc with globals = (aux_func [] p) @ tc.globals}
+  let l = Ast.no_loc "" in  
+  let update_ctxt (tc:Tctxt.t) (decl:Ast.decl) : Tctxt.t =
+    match decl with 
+    | Gfdecl fdecl -> 
+      let f, t = typ_ftyp fdecl.elt tc in begin 
+      match lookup_global_option f tc with 
+      | None -> add_global tc f t 
+      | Some _ -> type_error l "function redeclaration" end 
+    | _ -> tc
+  in
+  List.fold_left update_ctxt tc p  
 
 let create_global_ctxt (tc:Tctxt.t) (p:Ast.prog) : Tctxt.t =
   let l = Ast.no_loc "" in  
