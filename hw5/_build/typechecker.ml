@@ -222,6 +222,8 @@ let rec typecheck_exp (c : Tctxt.t) (e : Ast.exp node) : Ast.ty =
     | TRef (RFun (arg_ty, RetVal ret_ty)) -> arg_ty, ret_ty
     | _ -> type_error l "invalid function expression" 
     in
+    if List.length arg_ty <> List.length exp_list then type_error l "passed incorrect number of arguments to function"
+    else
     for n = 0 to (List.length arg_ty) - 1 do 
       let expn = List.nth exp_list n in
       let tn' = typecheck_exp c expn in
