@@ -220,7 +220,7 @@ let rec typecheck_exp (c : Tctxt.t) (e : Ast.exp node) : Ast.ty =
     let (arg_ty, ret_ty) = 
     match typecheck_exp c exp with 
     | TRef (RFun (arg_ty, RetVal ret_ty)) -> arg_ty, ret_ty
-    | _ -> print_endline "type error line 215"; type_error l "invalid function expression" 
+    | _ -> type_error l "invalid function expression" 
     in
     for n = 0 to (List.length arg_ty) - 1 do 
       let expn = List.nth exp_list n in
@@ -285,7 +285,7 @@ let rec typecheck_exp (c : Tctxt.t) (e : Ast.exp node) : Ast.ty =
 let typecheck_vdecl (tc : Tctxt.t) (vdecl:vdecl) (l:'a Ast.node): Tctxt.t = 
   let x, exp = vdecl in
   let t = typecheck_exp tc exp in
-  if (lookup_option x tc) = None then add_local tc x t
+  if (lookup_local_option x tc) = None then add_local tc x t
   else type_error l "declared variable is already declared"
 
 let typecheck_vdecls (tc : Tctxt.t) (vdecls:vdecl list) (l:'a Ast.node): Tctxt.t = 
@@ -311,7 +311,7 @@ let rec typecheck_stmt (tc : Tctxt.t) (s:Ast.stmt node) (to_ret:ret_ty) : Tctxt.
     let arg_tys =
       match typecheck_exp tc exp with 
       | TRef (RFun (arg_tys, RetVoid)) -> arg_tys
-      | _ -> print_endline "type error line 303"; type_error l "invalid function type"
+      | _ -> type_error l "invalid function type"
     in
     for n = 0 to List.length arg_tys - 1 do 
       let exp_n = List.nth exp_list n in
@@ -350,7 +350,7 @@ let rec typecheck_stmt (tc : Tctxt.t) (s:Ast.stmt node) (to_ret:ret_ty) : Tctxt.
     let locals2 = typecheck_vdecls tc vdecls l in begin
     match typecheck_exp locals2 exp with 
     | TBool -> 
-      if snd @@ typecheck_stmt locals2 stmt to_ret then begin 
+      if not (snd @@ typecheck_stmt locals2 stmt to_ret) then  begin 
         let _ = typecheck_block locals2 block to_ret l in 
         tc, false end
       else type_error l "update-stmt in for-loop returns"

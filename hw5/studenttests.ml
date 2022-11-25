@@ -40,13 +40,18 @@ let typecheck_subtyping_tests =
   ;(* "hw5programs/tc_subtyping8.oat"
   ; "hw5programs/tc_subtyping9.oat"*)            
   ]
-
+let typecheck_correct_statement_tests =
+  [(* "hw5programs/tc_correct_while.oat";*)
+    "hw5programs/tc_correct_for.oat";(*
+    "hw5programs/tc_correct_if.oat";
+    "hw5programs/tc_correct_void.oat"*)
+  ]
 let provided_tests : suite = [
-  (*GradedTest("subtype unit tests", 3, unit_tests);*)
-  GradedTest("tc subtyping tests", 4, typecheck_file_correct typecheck_subtyping_tests);(*
+  (*GradedTest("subtype unit tests", 3, unit_tests);
+  GradedTest("tc subtyping tests", 4, typecheck_file_correct typecheck_subtyping_tests);
   GradedTest("tc subtyping error tests", 4, typecheck_file_error typecheck_subtyping_error_tests);  
-  GradedTest("tc statement error tests", 5, typecheck_file_error typecheck_statement_error_tests);
-  GradedTest("tc statement correct tests", 5, typecheck_file_correct typecheck_correct_statement_tests);
+  GradedTest("tc statement error tests", 5, typecheck_file_error typecheck_statement_error_tests);*)
+  GradedTest("tc statement correct tests", 5, typecheck_file_correct typecheck_correct_statement_tests);(*
   GradedTest("tc other correct tests", 5, typecheck_file_correct typecheck_correct_other_tests);
   GradedTest("tc null/not null error tests", 5, typecheck_file_error typecheck_error_null_not_null_tests);
   GradedTest("tc expression error tests", 5, typecheck_file_error typecheck_error_expression_tests);
