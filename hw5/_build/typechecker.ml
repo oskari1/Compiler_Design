@@ -331,24 +331,6 @@ let rec typecheck_stmt (tc : Tctxt.t) (s:Ast.stmt node) (to_ret:ret_ty) : Tctxt.
     in
     if (lhs_is_local || lhs_not_global_func_id) && subtype tc t' t then tc, false
     else type_error l "in lhs = exp, exp is not subtype of lhs"
-    (*let t =
-      match typecheck_exp tc lhs with 
-      | TRef (RFun (_, _)) -> type_error l "lhs of assignment should not have function type" 
-      | t -> t
-    in
-    let t' = typecheck_exp tc exp in 
-    let id =
-      match lhs.elt with 
-      | Id id -> id
-      | _ -> type_error l "lhs of assignment is not an id"
-    in
-    let _ =
-      match Tctxt.lookup_option id tc with 
-      | Some ty when ty = t -> ty
-      | _ -> type_error l "lhs is not a local or global variable id"
-    in
-    if not @@ subtype tc t' t then type_error l "in lhs = exp, exp is not subtype of lhs" 
-    else tc, false*) 
   | Decl vdecl -> typecheck_vdecl tc vdecl l, false 
   | SCall (exp, exp_list) -> 
     let arg_tys =
@@ -376,8 +358,9 @@ let rec typecheck_stmt (tc : Tctxt.t) (s:Ast.stmt node) (to_ret:ret_ty) : Tctxt.
     | TNullRef rty -> rty 
     | _ -> type_error l "invalid expression type in if? statement"
     in
+    let tc_extended = add_local tc x (TRef ref) in
     if subtype_ref tc ref' ref then
-      let r1 = typecheck_block tc block1 to_ret l in
+      let r1 = typecheck_block tc_extended block1 to_ret l in
       let r2 = typecheck_block tc block2 to_ret l in
       tc, r1 && r2 
     else type_error l "incompatible types in if?-conditional"
