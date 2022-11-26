@@ -73,17 +73,7 @@ and subtype_ref (c : Tctxt.t) (t1 : Ast.rty) (t2 : Ast.rty) : bool =
         in
         fst @@ List.fold_left check_nth_field (true, 0) struct2_fields
     end 
-  | RFun (arg_tys1, rt1), RFun (arg_tys2, rt2) ->(* 
-      let n = List.length arg_tys1 in
-      if not(n = List.length arg_tys2) then false 
-      else begin 
-        for i = 0 to n - 1 do 
-          let ti' = List.nth arg_tys2 i in 
-          let ti = List.nth arg_tys1 i in 
-          if not (subtype c ti' ti) then valid = false 
-          done;
-        valid
-        end*)
+  | RFun (arg_tys1, rt1), RFun (arg_tys2, rt2) ->
       let n = List.length arg_tys1 in 
       let valid_arg_tys = begin 
         if n = List.length arg_tys2 then 
@@ -230,7 +220,6 @@ let rec typecheck_exp (c : Tctxt.t) (e : Ast.exp node) : Ast.ty =
       | Some ty -> ty 
       | None -> type_error l "tried to access non-existent field of a struct" end
   | Call (exp, exp_list) -> 
-    (* what should we return if the function has return type void? *)
     let (arg_ty, ret_ty) = 
     match typecheck_exp c exp with 
     | TRef (RFun (arg_ty, RetVal ret_ty)) -> arg_ty, ret_ty
@@ -505,26 +494,6 @@ let create_function_ctxt (tc:Tctxt.t) (p:Ast.prog) : Tctxt.t =
   List.fold_left update_ctxt tc p  
 
 let create_global_ctxt (tc:Tctxt.t) (p:Ast.prog) : Tctxt.t =
-  (*let l = Ast.no_loc "" in  
-  let update_ctxt (tc:Tctxt.t) (decl:Ast.decl) : Tctxt.t =
-    match decl with 
-    | Gvdecl vdecl -> 
-      let {name=x; init=gexp} = vdecl.elt in  
-      let _ = begin 
-        match gexp.elt with
-        | Id id -> begin 
-          match lookup_global_option id tc with 
-          | Some (TRef (RFun (_, _))) -> None 
-          | _ -> type_error l "gexp must not contain global variables" end 
-        | _ -> None end 
-      in begin
-      match lookup_global_option x tc with 
-      | None -> let t = typecheck_exp tc gexp in add_global tc x t 
-      | Some _ -> type_error l "global redeclaration" end 
-    | _ -> tc 
-  in
-  let tc_with_builtins = List.fold_left (fun ctxt (id, (arg_tys, rt)) -> add_global ctxt id (TRef (RFun (arg_tys, rt)))) tc builtins in
-  List.fold_left update_ctxt tc_with_builtins p*) 
   let l = Ast.no_loc "" in  
   let update_ctxt (gc, fc_and_gc : Tctxt.t * Tctxt.t) (decl:Ast.decl) : Tctxt.t * Tctxt.t =
     match decl with
