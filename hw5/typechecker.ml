@@ -505,14 +505,18 @@ let create_function_ctxt (tc:Tctxt.t) (p:Ast.prog) : Tctxt.t =
   List.fold_left update_ctxt tc p  
 
 let create_global_ctxt (tc:Tctxt.t) (p:Ast.prog) : Tctxt.t =
-  let l = Ast.no_loc "" in  
+  (*let l = Ast.no_loc "" in  
   let update_ctxt (tc:Tctxt.t) (decl:Ast.decl) : Tctxt.t =
     match decl with 
     | Gvdecl vdecl -> 
       let {name=x; init=gexp} = vdecl.elt in  
-      let _ = begin match gexp.elt with
-      | Id _ -> type_error l "gexp must not contain global variables" 
-      | x -> x end 
+      let _ = begin 
+        match gexp.elt with
+        | Id id -> begin 
+          match lookup_global_option id tc with 
+          | Some (TRef (RFun (_, _))) -> None 
+          | _ -> type_error l "gexp must not contain global variables" end 
+        | _ -> None end 
       in begin
       match lookup_global_option x tc with 
       | None -> let t = typecheck_exp tc gexp in add_global tc x t 
@@ -520,7 +524,33 @@ let create_global_ctxt (tc:Tctxt.t) (p:Ast.prog) : Tctxt.t =
     | _ -> tc 
   in
   let tc_with_builtins = List.fold_left (fun ctxt (id, (arg_tys, rt)) -> add_global ctxt id (TRef (RFun (arg_tys, rt)))) tc builtins in
-  List.fold_left update_ctxt tc_with_builtins p 
+  List.fold_left update_ctxt tc_with_builtins p*) 
+  let l = Ast.no_loc "" in  
+  let update_ctxt (gc, fc_and_gc : Tctxt.t * Tctxt.t) (decl:Ast.decl) : Tctxt.t * Tctxt.t =
+    match decl with
+    | Gvdecl vdecl ->
+      let {name=x; init=gexp} = vdecl.elt in
+      (* check that gexp contains no global variables *)
+      let _ = begin
+        match gexp.elt with
+        | Id id -> begin
+          match lookup_global_option id gc with
+          | Some _ -> type_error l "gexp must not contain global variables"
+          | _ -> None end
+        | _ -> None end
+      in begin
+      (* check that x has not already been declared *)
+      match lookup_global_option x fc_and_gc with
+      | None ->
+        let t = typecheck_exp fc_and_gc gexp in
+        let gc_new = add_global gc x t in
+        gc_new, {fc_and_gc with globals = gc_new.globals @ fc_and_gc.globals}
+      |  _ -> type_error l "global redeclaration" end
+    | _ -> gc, fc_and_gc
+  in
+  let add_builtins_to_ctxt ctxt (id, (arg_tys, rt)) = add_global ctxt id (TRef (RFun (arg_tys, rt))) in
+  let fc_with_builtins = List.fold_left add_builtins_to_ctxt tc builtins in
+  snd @@ List.fold_left update_ctxt ({locals=[]; globals=[]; structs=[]}, fc_with_builtins) p
 
 (* This function implements the |- prog and the H ; G |- prog 
    rules of the oat.pdf specification.   
