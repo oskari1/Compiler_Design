@@ -326,8 +326,7 @@ let rec typecheck_stmt (tc : Tctxt.t) (s:Ast.stmt node) (to_ret:ret_ty) : Tctxt.
     let lhs_not_global_func_id = 
       match lookup_global_option id tc with
       | Some (TRef (RFun (_, _))) -> false 
-      | Some ty when ty = t -> true 
-      | _ -> false   
+      | _ -> true
     in
     if (lhs_is_local || lhs_not_global_func_id) && subtype tc t' t then tc, false
     else type_error l "in lhs = exp, exp is not subtype of lhs"
