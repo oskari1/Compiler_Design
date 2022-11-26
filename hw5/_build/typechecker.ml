@@ -310,18 +310,45 @@ let typecheck_vdecls (tc : Tctxt.t) (vdecls:vdecl list) (l:'a Ast.node): Tctxt.t
 let rec typecheck_stmt (tc : Tctxt.t) (s:Ast.stmt node) (to_ret:ret_ty) : Tctxt.t * bool =
   let l = Ast.no_loc "" in
   match s.elt with 
-  | Assn (lhs, exp) -> 
+  | Assn (lhs, exp) ->
     let t = typecheck_exp tc lhs in 
+    let t' = typecheck_exp tc exp in 
+    let id = 
+      match lhs.elt with 
+      | Id id -> id
+      | _ -> "lhs of assignment is not an id"
+    in
+    let lhs_is_local = 
+      match lookup_local_option id tc with  
+      | Some ty when ty = t -> true 
+      | _ -> false
+    in
+    let lhs_not_global_func_id = 
+      match lookup_global_option id tc with
+      | Some (TRef (RFun (_, _))) -> false 
+      | Some ty when ty = t -> true 
+      | _ -> false   
+    in
+    if (lhs_is_local || lhs_not_global_func_id) && subtype tc t' t then tc, false
+    else type_error l "in lhs = exp, exp is not subtype of lhs"
+    (*let t =
+      match typecheck_exp tc lhs with 
+      | TRef (RFun (_, _)) -> type_error l "lhs of assignment should not have function type" 
+      | t -> t
+    in
     let t' = typecheck_exp tc exp in 
     let id =
       match lhs.elt with 
       | Id id -> id
       | _ -> type_error l "lhs of assignment is not an id"
     in
-    let is_local_or_global = Tctxt.lookup_option id tc in  
+    let _ =
+      match Tctxt.lookup_option id tc with 
+      | Some ty when ty = t -> ty
+      | _ -> type_error l "lhs is not a local or global variable id"
+    in
     if not @@ subtype tc t' t then type_error l "in lhs = exp, exp is not subtype of lhs" 
-    else if is_local_or_global = None then type_error l "lhs is not a local or global variable id"
-    else tc, false 
+    else tc, false*) 
   | Decl vdecl -> typecheck_vdecl tc vdecl l, false 
   | SCall (exp, exp_list) -> 
     let arg_tys =
@@ -494,29 +521,21 @@ let create_function_ctxt (tc:Tctxt.t) (p:Ast.prog) : Tctxt.t =
     | _ -> tc
   in
   List.fold_left update_ctxt tc p  
-(*
-  let rec aux_func (g1 : global_ctxt) (p : Ast.prog) : global_ctxt =
-    match p with 
-    | [] -> g1
-    | (Gtdecl _)::prog -> aux_func g1 prog 
-    | (Gvdecl _)::prog -> aux_func g1 prog
-    | (Gfdecl fdecl)::prog -> begin 
-      let f, t = typ_ftyp fdecl.elt tc in 
-      (* check that f is not in g1 *)
-      aux_func (g1@[(f, t)]) prog end
-  in 
-  {tc with globals = (aux_func [] p) @ tc.globals}
-*)
+
 let create_global_ctxt (tc:Tctxt.t) (p:Ast.prog) : Tctxt.t =
   let l = Ast.no_loc "" in  
   let update_ctxt (tc:Tctxt.t) (decl:Ast.decl) : Tctxt.t =
     match decl with 
     | Gvdecl vdecl -> 
-      let {name=x; init=gexp} = vdecl.elt in begin 
+      let {name=x; init=gexp} = vdecl.elt in  
+      let _ = begin match gexp.elt with
+      | Id _ -> type_error l "gexp must not contain global variables" 
+      | x -> x end 
+      in begin
       match lookup_global_option x tc with 
       | None -> let t = typecheck_exp tc gexp in add_global tc x t 
       | Some _ -> type_error l "global redeclaration" end 
-    | _ -> tc
+    | _ -> tc 
   in
   let tc_with_builtins = List.fold_left (fun ctxt (id, (arg_tys, rt)) -> add_global ctxt id (TRef (RFun (arg_tys, rt)))) tc builtins in
   List.fold_left update_ctxt tc_with_builtins p 
