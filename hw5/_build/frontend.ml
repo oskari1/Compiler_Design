@@ -320,8 +320,20 @@ let rec cmp_exp (tc : TypeCtxt.t) (c:Ctxt.t) (exp:Ast.exp node) : Ll.ty * Ll.ope
   | Ast.NewArr (elt_ty, e1, id, e2) ->    
     let _, size_op, size_code = cmp_exp tc c e1 in
     let arr_ty, arr_op, alloc_code = oat_alloc_array tc elt_ty size_op in
-    arr_ty, arr_op, size_code >@ alloc_code
-
+    arr_ty, arr_op, size_code >@ alloc_code(*
+    let _, size_op, size_code = cmp_exp tc c e1 in
+    let arr_ty, arr_op, alloc_code = oat_alloc_array tc elt_ty size_op in
+    let arr_id = gensym "a" in
+    let arr = no_loc (Id arr_id) in
+    let init_id = (id, no_loc (CInt 0L))::[] in
+    let check_id = Some (no_loc (Bop (Lt, (no_loc (Id id)), (no_loc (Length arr))))) in
+    let update_id = Some (no_loc (Assn (no_loc (Id id), no_loc (Bop (Add, no_loc (Id id), no_loc (CInt 1L)))))) in
+    let loop_body = (no_loc (Assn ((no_loc (Index (arr, no_loc (Id id)))), e2)))::[] in
+    let ast_loop' = For (init_id, check_id, update_id, loop_body) in
+    let ast_loop = no_loc ast_loop' in
+    let _, loop_code = cmp_stmt tc c Void ast_loop in 
+    arr_ty, arr_op, size_code >@ alloc_code >@ loop_code
+*)
    (* STRUCT TASK: complete this code that compiles struct expressions.
       For each field component of the struct
        - use the TypeCtxt operations to compute getelementptr indices
