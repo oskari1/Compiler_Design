@@ -326,20 +326,20 @@ let rec cmp_exp (tc : TypeCtxt.t) (c:Ctxt.t) (exp:Ast.exp node) : Ll.ty * Ll.ope
   *)
   | Ast.NewArr (elt_ty, e1, id, e2) ->    
     let _, size_op, size_code = cmp_exp tc c e1 in
-    let arr_ty, arr_op, alloc_code = oat_alloc_array tc elt_ty size_op in
-    let arr_id = gensym "oat_a" in
-    let arr = no_loc (Id arr_id) in
-    let arr_ptr = Ll.Id arr_id in
-    let alloc_arr_ptr = [(E(arr_id, Alloca (arr_ty)))] in
-    let load_arr_ptr_to_tmp = lift [("", Store (arr_ty, arr_op, arr_ptr))] in
-    let c = Ctxt.add c arr_id (Ptr arr_ty, arr_ptr) in
+    let arr_ty, ll_arr_op, alloc_code = oat_alloc_array tc elt_ty size_op in
+    let oat_arr_id = gensym "tmp_a" in
+    let oat_arr = no_loc (Id oat_arr_id) in
+    let ll_arr_ptr = Ll.Id oat_arr_id in
+    let alloc_arr_ptr = [(E(oat_arr_id, Alloca (arr_ty)))] in
+    let load_arr_addr_to_ptr = lift [("", Store (arr_ty, ll_arr_op, ll_arr_ptr))] in
+    let c = Ctxt.add c oat_arr_id (Ptr arr_ty, ll_arr_ptr) in
     let init_id = (id, no_loc (CInt 0L))::[] in
-    let check_id = Some (no_loc (Bop (Lt, (no_loc (Id id)), (no_loc (Length arr))))) in
+    let check_id = Some (no_loc (Bop (Lt, (no_loc (Id id)), (no_loc (Length oat_arr))))) in
     let update_id = Some (no_loc (Assn (no_loc (Id id), no_loc (Bop (Add, no_loc (Id id), no_loc (CInt 1L)))))) in
-    let loop_body = (no_loc (Assn ((no_loc (Index (arr, no_loc (Id id)))), e2)))::[] in
+    let loop_body = (no_loc (Assn ((no_loc (Index (oat_arr, no_loc (Id id)))), e2)))::[] in
     let ast_loop = no_loc @@ For (init_id, check_id, update_id, loop_body) in
     let _, loop_code = cmp_stmt tc c Void ast_loop in 
-    arr_ty, arr_op, size_code >@ alloc_code >@ alloc_arr_ptr >@ load_arr_ptr_to_tmp >@ loop_code
+    arr_ty, ll_arr_op, size_code >@ alloc_code >@ alloc_arr_ptr >@ load_arr_addr_to_ptr >@ loop_code
 
    (* STRUCT TASK: complete this code that compiles struct expressions.
       For each field component of the struct
