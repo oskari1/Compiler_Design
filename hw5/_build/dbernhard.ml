@@ -11,6 +11,7 @@ let incorrect_types = [
   ; hw5_prefix ^ "err_array_subtype2.oat"
   ; hw5_prefix ^ "err_branching.oat"
   ; hw5_prefix ^ "err_branching2.oat"
+(*  ; hw5_prefix ^ "err_branching3.oat"*)
   ; hw5_prefix ^ "err_builtin.oat"
   ; hw5_prefix ^ "err_call_retvoid.oat"
   ; hw5_prefix ^ "err_cast.oat"

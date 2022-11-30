@@ -373,7 +373,11 @@ let rec typecheck_stmt (tc : Tctxt.t) (s:Ast.stmt node) (to_ret:ret_ty) : Tctxt.
     let t' = typecheck_exp tc exp in
     if subtype_ret tc (RetVal t') to_ret then tc, true 
     else type_error l "return statement has invalid return type"
-  | Ret None -> tc, true
+  (*| Ret None -> tc, true*)
+  | Ret None -> begin 
+    match to_ret with  
+    | RetVoid -> tc, true
+    | _ -> type_error l "invalid return type" end
   | _ -> failwith "unimplemented"
 
 and typecheck_block (tc : Tctxt.t) (block:Ast.block) (to_ret:ret_ty) (l : 'a Ast.node) : bool =
