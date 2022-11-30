@@ -3,108 +3,108 @@ target triple = "x86_64-unknown-linux"
 %Info = type { i64 }
 %Point = type { %Info*, i64 }
 
-@info = global %Info* @_global_struct7560
-@_global_struct7560 = global %Info { i64 7 }
-@info2 = global %Info* @_global_struct7559
-@_global_struct7559 = global %Info { i64 7 }
-@_str_arr7550 = global [10 x i8] c"are equal\00"
-@_str_arr7553 = global [10 x i8] c"not equal\00"
+@info = global %Info* @_global_struct7582
+@_global_struct7582 = global %Info { i64 7 }
+@info2 = global %Info* @_global_struct7581
+@_global_struct7581 = global %Info { i64 7 }
+@_str_arr7572 = global [10 x i8] c"are equal\00"
+@_str_arr7575 = global [10 x i8] c"not equal\00"
 
-define i64 @program(i64 %_argc7505, { i64, [0 x i8*] }* %_argv7503) {
-  %_argc7506 = alloca i64
-  %_argv7504 = alloca { i64, [0 x i8*] }*
-  %_tmp_a7509 = alloca { i64, [0 x %Point*] }*
-  %_i7510 = alloca i64
-  %_p7531 = alloca { i64, [0 x %Point*] }*
-  store i64 %_argc7505, i64* %_argc7506
-  store { i64, [0 x i8*] }* %_argv7503, { i64, [0 x i8*] }** %_argv7504
-  %_raw_array7507 = call i64* @oat_alloc_array(i64 3)
-  %_array7508 = bitcast i64* %_raw_array7507 to { i64, [0 x %Point*] }*
-  store { i64, [0 x %Point*] }* %_array7508, { i64, [0 x %Point*] }** %_tmp_a7509
-  store i64 0, i64* %_i7510
-  br label %_cond7518
-_cond7518:
-  %_i7511 = load i64, i64* %_i7510
-  %__tmp_a75097512 = load { i64, [0 x %Point*] }*, { i64, [0 x %Point*] }** %_tmp_a7509
-  %_len_addr7513 = getelementptr { i64, [0 x %Point*] }, { i64, [0 x %Point*] }* %__tmp_a75097512, i32 0, i32 0
-  %_arr_len7514 = load i64, i64* %_len_addr7513
-  %_bop7515 = icmp slt i64 %_i7511, %_arr_len7514
-  br i1 %_bop7515, label %_body7517, label %_post7516
-_body7517:
-  %__tmp_a75097519 = load { i64, [0 x %Point*] }*, { i64, [0 x %Point*] }** %_tmp_a7509
-  %_i7520 = load i64, i64* %_i7510
-  %_ans7523 = bitcast { i64, [0 x %Point*] }* %__tmp_a75097519 to i64*
-  call void @oat_assert_array_length(i64* %_ans7523, i64 %_i7520)
-  %_index_ptr7522 = getelementptr { i64, [0 x %Point*] }, { i64, [0 x %Point*] }* %__tmp_a75097519, i32 0, i32 1, i64 %_i7520
-  %_raw_array7524 = call i64* @oat_malloc(i64 16)
-  %_array7525 = bitcast i64* %_raw_array7524 to %Point*
-  %_info7526 = load %Info*, %Info** @info
-  %_ind7527 = getelementptr %Point, %Point* %_array7525, i32 0, i32 0
-  store %Info* %_info7526, %Info** %_ind7527
-  %_ind7528 = getelementptr %Point, %Point* %_array7525, i32 0, i32 1
-  store i64 0, i64* %_ind7528
-  store %Point* %_array7525, %Point** %_index_ptr7522
-  %_i7529 = load i64, i64* %_i7510
-  %_bop7530 = add i64 %_i7529, 1
-  store i64 %_bop7530, i64* %_i7510
-  br label %_cond7518
-_post7516:
-  store { i64, [0 x %Point*] }* %_array7508, { i64, [0 x %Point*] }** %_p7531
-  %_p7532 = load { i64, [0 x %Point*] }*, { i64, [0 x %Point*] }** %_p7531
-  %_ans7535 = bitcast { i64, [0 x %Point*] }* %_p7532 to i64*
-  call void @oat_assert_array_length(i64* %_ans7535, i64 0)
-  %_index_ptr7534 = getelementptr { i64, [0 x %Point*] }, { i64, [0 x %Point*] }* %_p7532, i32 0, i32 1, i32 0
-  %_index7536 = load %Point*, %Point** %_index_ptr7534
-  %_index_ptr7537 = getelementptr %Point, %Point* %_index7536, i32 0, i32 0
-  %_info27538 = load %Info*, %Info** @info2
-  store %Info* %_info27538, %Info** %_index_ptr7537
-  %_p7539 = load { i64, [0 x %Point*] }*, { i64, [0 x %Point*] }** %_p7531
-  %_ans7542 = bitcast { i64, [0 x %Point*] }* %_p7539 to i64*
-  call void @oat_assert_array_length(i64* %_ans7542, i64 1)
-  %_index_ptr7541 = getelementptr { i64, [0 x %Point*] }, { i64, [0 x %Point*] }* %_p7539, i32 0, i32 1, i32 1
-  %_index7543 = load %Point*, %Point** %_index_ptr7541
-  %_p7544 = load { i64, [0 x %Point*] }*, { i64, [0 x %Point*] }** %_p7531
-  %_ans7547 = bitcast { i64, [0 x %Point*] }* %_p7544 to i64*
-  call void @oat_assert_array_length(i64* %_ans7547, i64 0)
-  %_index_ptr7546 = getelementptr { i64, [0 x %Point*] }, { i64, [0 x %Point*] }* %_p7544, i32 0, i32 1, i32 0
-  %_index7548 = load %Point*, %Point** %_index_ptr7546
-  %_result7549 = call i1 @are_equal(%Point* %_index7548, %Point* %_index7543)
-  br i1 %_result7549, label %_then7558, label %_else7557
-_then7558:
-  %_str7551 = getelementptr [10 x i8], [10 x i8]* @_str_arr7550, i32 0, i32 0
-  call void @print_string(i8* %_str7551)
-  br label %_merge7556
-_else7557:
-  %_str7554 = getelementptr [10 x i8], [10 x i8]* @_str_arr7553, i32 0, i32 0
-  call void @print_string(i8* %_str7554)
-  br label %_merge7556
-_merge7556:
+define i64 @program(i64 %_argc7527, { i64, [0 x i8*] }* %_argv7525) {
+  %_argc7528 = alloca i64
+  %_argv7526 = alloca { i64, [0 x i8*] }*
+  %_tmp_a7531 = alloca { i64, [0 x %Point*] }*
+  %_i7532 = alloca i64
+  %_p7553 = alloca { i64, [0 x %Point*] }*
+  store i64 %_argc7527, i64* %_argc7528
+  store { i64, [0 x i8*] }* %_argv7525, { i64, [0 x i8*] }** %_argv7526
+  %_raw_array7529 = call i64* @oat_alloc_array(i64 3)
+  %_array7530 = bitcast i64* %_raw_array7529 to { i64, [0 x %Point*] }*
+  store { i64, [0 x %Point*] }* %_array7530, { i64, [0 x %Point*] }** %_tmp_a7531
+  store i64 0, i64* %_i7532
+  br label %_cond7540
+_cond7540:
+  %_i7533 = load i64, i64* %_i7532
+  %__tmp_a75317534 = load { i64, [0 x %Point*] }*, { i64, [0 x %Point*] }** %_tmp_a7531
+  %_len_addr7535 = getelementptr { i64, [0 x %Point*] }, { i64, [0 x %Point*] }* %__tmp_a75317534, i32 0, i32 0
+  %_arr_len7536 = load i64, i64* %_len_addr7535
+  %_bop7537 = icmp slt i64 %_i7533, %_arr_len7536
+  br i1 %_bop7537, label %_body7539, label %_post7538
+_body7539:
+  %__tmp_a75317541 = load { i64, [0 x %Point*] }*, { i64, [0 x %Point*] }** %_tmp_a7531
+  %_i7542 = load i64, i64* %_i7532
+  %_ans7545 = bitcast { i64, [0 x %Point*] }* %__tmp_a75317541 to i64*
+  call void @oat_assert_array_length(i64* %_ans7545, i64 %_i7542)
+  %_index_ptr7544 = getelementptr { i64, [0 x %Point*] }, { i64, [0 x %Point*] }* %__tmp_a75317541, i32 0, i32 1, i64 %_i7542
+  %_raw_array7546 = call i64* @oat_malloc(i64 16)
+  %_array7547 = bitcast i64* %_raw_array7546 to %Point*
+  %_info7548 = load %Info*, %Info** @info
+  %_ind7549 = getelementptr %Point, %Point* %_array7547, i32 0, i32 0
+  store %Info* %_info7548, %Info** %_ind7549
+  %_ind7550 = getelementptr %Point, %Point* %_array7547, i32 0, i32 1
+  store i64 0, i64* %_ind7550
+  store %Point* %_array7547, %Point** %_index_ptr7544
+  %_i7551 = load i64, i64* %_i7532
+  %_bop7552 = add i64 %_i7551, 1
+  store i64 %_bop7552, i64* %_i7532
+  br label %_cond7540
+_post7538:
+  store { i64, [0 x %Point*] }* %_array7530, { i64, [0 x %Point*] }** %_p7553
+  %_p7554 = load { i64, [0 x %Point*] }*, { i64, [0 x %Point*] }** %_p7553
+  %_ans7557 = bitcast { i64, [0 x %Point*] }* %_p7554 to i64*
+  call void @oat_assert_array_length(i64* %_ans7557, i64 0)
+  %_index_ptr7556 = getelementptr { i64, [0 x %Point*] }, { i64, [0 x %Point*] }* %_p7554, i32 0, i32 1, i32 0
+  %_index7558 = load %Point*, %Point** %_index_ptr7556
+  %_index_ptr7559 = getelementptr %Point, %Point* %_index7558, i32 0, i32 0
+  %_info27560 = load %Info*, %Info** @info2
+  store %Info* %_info27560, %Info** %_index_ptr7559
+  %_p7561 = load { i64, [0 x %Point*] }*, { i64, [0 x %Point*] }** %_p7553
+  %_ans7564 = bitcast { i64, [0 x %Point*] }* %_p7561 to i64*
+  call void @oat_assert_array_length(i64* %_ans7564, i64 1)
+  %_index_ptr7563 = getelementptr { i64, [0 x %Point*] }, { i64, [0 x %Point*] }* %_p7561, i32 0, i32 1, i32 1
+  %_index7565 = load %Point*, %Point** %_index_ptr7563
+  %_p7566 = load { i64, [0 x %Point*] }*, { i64, [0 x %Point*] }** %_p7553
+  %_ans7569 = bitcast { i64, [0 x %Point*] }* %_p7566 to i64*
+  call void @oat_assert_array_length(i64* %_ans7569, i64 0)
+  %_index_ptr7568 = getelementptr { i64, [0 x %Point*] }, { i64, [0 x %Point*] }* %_p7566, i32 0, i32 1, i32 0
+  %_index7570 = load %Point*, %Point** %_index_ptr7568
+  %_result7571 = call i1 @are_equal(%Point* %_index7570, %Point* %_index7565)
+  br i1 %_result7571, label %_then7580, label %_else7579
+_then7580:
+  %_str7573 = getelementptr [10 x i8], [10 x i8]* @_str_arr7572, i32 0, i32 0
+  call void @print_string(i8* %_str7573)
+  br label %_merge7578
+_else7579:
+  %_str7576 = getelementptr [10 x i8], [10 x i8]* @_str_arr7575, i32 0, i32 0
+  call void @print_string(i8* %_str7576)
+  br label %_merge7578
+_merge7578:
   ret i64 0
 }
 
-define i1 @are_equal(%Point* %_p17484, %Point* %_p27482) {
-  %_p17485 = alloca %Point*
-  %_p27483 = alloca %Point*
-  store %Point* %_p17484, %Point** %_p17485
-  store %Point* %_p27482, %Point** %_p27483
-  %_p17486 = load %Point*, %Point** %_p17485
-  %_index_ptr7487 = getelementptr %Point, %Point* %_p17486, i32 0, i32 0
-  %_proj7488 = load %Info*, %Info** %_index_ptr7487
-  %_cast7489 = bitcast %Info* %_proj7488 to i64
-  %_p27490 = load %Point*, %Point** %_p27483
-  %_index_ptr7491 = getelementptr %Point, %Point* %_p27490, i32 0, i32 0
-  %_proj7492 = load %Info*, %Info** %_index_ptr7491
-  %_cast7493 = bitcast %Info* %_proj7492 to i64
-  %_bop7494 = icmp eq i64 %_cast7489, %_cast7493
-  %_p17495 = load %Point*, %Point** %_p17485
-  %_index_ptr7496 = getelementptr %Point, %Point* %_p17495, i32 0, i32 1
-  %_proj7497 = load i64, i64* %_index_ptr7496
-  %_p27498 = load %Point*, %Point** %_p27483
-  %_index_ptr7499 = getelementptr %Point, %Point* %_p27498, i32 0, i32 1
-  %_proj7500 = load i64, i64* %_index_ptr7499
-  %_bop7501 = icmp eq i64 %_proj7497, %_proj7500
-  %_bop7502 = and i1 %_bop7494, %_bop7501
-  ret i1 %_bop7502
+define i1 @are_equal(%Point* %_p17506, %Point* %_p27504) {
+  %_p17507 = alloca %Point*
+  %_p27505 = alloca %Point*
+  store %Point* %_p17506, %Point** %_p17507
+  store %Point* %_p27504, %Point** %_p27505
+  %_p17508 = load %Point*, %Point** %_p17507
+  %_index_ptr7509 = getelementptr %Point, %Point* %_p17508, i32 0, i32 0
+  %_proj7510 = load %Info*, %Info** %_index_ptr7509
+  %_cast7511 = bitcast %Info* %_proj7510 to i64
+  %_p27512 = load %Point*, %Point** %_p27505
+  %_index_ptr7513 = getelementptr %Point, %Point* %_p27512, i32 0, i32 0
+  %_proj7514 = load %Info*, %Info** %_index_ptr7513
+  %_cast7515 = bitcast %Info* %_proj7514 to i64
+  %_bop7516 = icmp eq i64 %_cast7511, %_cast7515
+  %_p17517 = load %Point*, %Point** %_p17507
+  %_index_ptr7518 = getelementptr %Point, %Point* %_p17517, i32 0, i32 1
+  %_proj7519 = load i64, i64* %_index_ptr7518
+  %_p27520 = load %Point*, %Point** %_p27505
+  %_index_ptr7521 = getelementptr %Point, %Point* %_p27520, i32 0, i32 1
+  %_proj7522 = load i64, i64* %_index_ptr7521
+  %_bop7523 = icmp eq i64 %_proj7519, %_proj7522
+  %_bop7524 = and i1 %_bop7516, %_bop7523
+  ret i1 %_bop7524
 }
 
 

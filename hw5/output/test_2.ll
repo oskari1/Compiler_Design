@@ -3,100 +3,100 @@ target triple = "x86_64-unknown-linux"
 %Info = type { i64 }
 %Point = type { %Info*, i64 }
 
-@info = global %Info* @_global_struct7481
-@_global_struct7481 = global %Info { i64 7 }
-@info2 = global %Info* @_global_struct7480
-@_global_struct7480 = global %Info { i64 7 }
-@_str_arr7471 = global [10 x i8] c"are equal\00"
-@_str_arr7474 = global [10 x i8] c"not equal\00"
+@info = global %Info* @_global_struct7503
+@_global_struct7503 = global %Info { i64 7 }
+@info2 = global %Info* @_global_struct7502
+@_global_struct7502 = global %Info { i64 7 }
+@_str_arr7493 = global [10 x i8] c"are equal\00"
+@_str_arr7496 = global [10 x i8] c"not equal\00"
 
-define i64 @program(i64 %_argc7433, { i64, [0 x i8*] }* %_argv7431) {
-  %_argc7434 = alloca i64
-  %_argv7432 = alloca { i64, [0 x i8*] }*
-  %_tmp_a7437 = alloca { i64, [0 x %Point*] }*
-  %_i7438 = alloca i64
-  %_p7459 = alloca { i64, [0 x %Point*] }*
-  store i64 %_argc7433, i64* %_argc7434
-  store { i64, [0 x i8*] }* %_argv7431, { i64, [0 x i8*] }** %_argv7432
-  %_raw_array7435 = call i64* @oat_alloc_array(i64 3)
-  %_array7436 = bitcast i64* %_raw_array7435 to { i64, [0 x %Point*] }*
-  store { i64, [0 x %Point*] }* %_array7436, { i64, [0 x %Point*] }** %_tmp_a7437
-  store i64 0, i64* %_i7438
-  br label %_cond7446
-_cond7446:
-  %_i7439 = load i64, i64* %_i7438
-  %__tmp_a74377440 = load { i64, [0 x %Point*] }*, { i64, [0 x %Point*] }** %_tmp_a7437
-  %_len_addr7441 = getelementptr { i64, [0 x %Point*] }, { i64, [0 x %Point*] }* %__tmp_a74377440, i32 0, i32 0
-  %_arr_len7442 = load i64, i64* %_len_addr7441
-  %_bop7443 = icmp slt i64 %_i7439, %_arr_len7442
-  br i1 %_bop7443, label %_body7445, label %_post7444
-_body7445:
-  %__tmp_a74377447 = load { i64, [0 x %Point*] }*, { i64, [0 x %Point*] }** %_tmp_a7437
-  %_i7448 = load i64, i64* %_i7438
-  %_ans7451 = bitcast { i64, [0 x %Point*] }* %__tmp_a74377447 to i64*
-  call void @oat_assert_array_length(i64* %_ans7451, i64 %_i7448)
-  %_index_ptr7450 = getelementptr { i64, [0 x %Point*] }, { i64, [0 x %Point*] }* %__tmp_a74377447, i32 0, i32 1, i64 %_i7448
-  %_raw_array7452 = call i64* @oat_malloc(i64 16)
-  %_array7453 = bitcast i64* %_raw_array7452 to %Point*
-  %_info7454 = load %Info*, %Info** @info
-  %_ind7455 = getelementptr %Point, %Point* %_array7453, i32 0, i32 0
-  store %Info* %_info7454, %Info** %_ind7455
-  %_ind7456 = getelementptr %Point, %Point* %_array7453, i32 0, i32 1
-  store i64 0, i64* %_ind7456
-  store %Point* %_array7453, %Point** %_index_ptr7450
-  %_i7457 = load i64, i64* %_i7438
-  %_bop7458 = add i64 %_i7457, 1
-  store i64 %_bop7458, i64* %_i7438
-  br label %_cond7446
-_post7444:
-  store { i64, [0 x %Point*] }* %_array7436, { i64, [0 x %Point*] }** %_p7459
-  %_p7460 = load { i64, [0 x %Point*] }*, { i64, [0 x %Point*] }** %_p7459
-  %_ans7463 = bitcast { i64, [0 x %Point*] }* %_p7460 to i64*
-  call void @oat_assert_array_length(i64* %_ans7463, i64 1)
-  %_index_ptr7462 = getelementptr { i64, [0 x %Point*] }, { i64, [0 x %Point*] }* %_p7460, i32 0, i32 1, i32 1
-  %_index7464 = load %Point*, %Point** %_index_ptr7462
-  %_p7465 = load { i64, [0 x %Point*] }*, { i64, [0 x %Point*] }** %_p7459
-  %_ans7468 = bitcast { i64, [0 x %Point*] }* %_p7465 to i64*
-  call void @oat_assert_array_length(i64* %_ans7468, i64 0)
-  %_index_ptr7467 = getelementptr { i64, [0 x %Point*] }, { i64, [0 x %Point*] }* %_p7465, i32 0, i32 1, i32 0
-  %_index7469 = load %Point*, %Point** %_index_ptr7467
-  %_result7470 = call i1 @are_equal(%Point* %_index7469, %Point* %_index7464)
-  br i1 %_result7470, label %_then7479, label %_else7478
-_then7479:
-  %_str7472 = getelementptr [10 x i8], [10 x i8]* @_str_arr7471, i32 0, i32 0
-  call void @print_string(i8* %_str7472)
-  br label %_merge7477
-_else7478:
-  %_str7475 = getelementptr [10 x i8], [10 x i8]* @_str_arr7474, i32 0, i32 0
-  call void @print_string(i8* %_str7475)
-  br label %_merge7477
-_merge7477:
+define i64 @program(i64 %_argc7455, { i64, [0 x i8*] }* %_argv7453) {
+  %_argc7456 = alloca i64
+  %_argv7454 = alloca { i64, [0 x i8*] }*
+  %_tmp_a7459 = alloca { i64, [0 x %Point*] }*
+  %_i7460 = alloca i64
+  %_p7481 = alloca { i64, [0 x %Point*] }*
+  store i64 %_argc7455, i64* %_argc7456
+  store { i64, [0 x i8*] }* %_argv7453, { i64, [0 x i8*] }** %_argv7454
+  %_raw_array7457 = call i64* @oat_alloc_array(i64 3)
+  %_array7458 = bitcast i64* %_raw_array7457 to { i64, [0 x %Point*] }*
+  store { i64, [0 x %Point*] }* %_array7458, { i64, [0 x %Point*] }** %_tmp_a7459
+  store i64 0, i64* %_i7460
+  br label %_cond7468
+_cond7468:
+  %_i7461 = load i64, i64* %_i7460
+  %__tmp_a74597462 = load { i64, [0 x %Point*] }*, { i64, [0 x %Point*] }** %_tmp_a7459
+  %_len_addr7463 = getelementptr { i64, [0 x %Point*] }, { i64, [0 x %Point*] }* %__tmp_a74597462, i32 0, i32 0
+  %_arr_len7464 = load i64, i64* %_len_addr7463
+  %_bop7465 = icmp slt i64 %_i7461, %_arr_len7464
+  br i1 %_bop7465, label %_body7467, label %_post7466
+_body7467:
+  %__tmp_a74597469 = load { i64, [0 x %Point*] }*, { i64, [0 x %Point*] }** %_tmp_a7459
+  %_i7470 = load i64, i64* %_i7460
+  %_ans7473 = bitcast { i64, [0 x %Point*] }* %__tmp_a74597469 to i64*
+  call void @oat_assert_array_length(i64* %_ans7473, i64 %_i7470)
+  %_index_ptr7472 = getelementptr { i64, [0 x %Point*] }, { i64, [0 x %Point*] }* %__tmp_a74597469, i32 0, i32 1, i64 %_i7470
+  %_raw_array7474 = call i64* @oat_malloc(i64 16)
+  %_array7475 = bitcast i64* %_raw_array7474 to %Point*
+  %_info7476 = load %Info*, %Info** @info
+  %_ind7477 = getelementptr %Point, %Point* %_array7475, i32 0, i32 0
+  store %Info* %_info7476, %Info** %_ind7477
+  %_ind7478 = getelementptr %Point, %Point* %_array7475, i32 0, i32 1
+  store i64 0, i64* %_ind7478
+  store %Point* %_array7475, %Point** %_index_ptr7472
+  %_i7479 = load i64, i64* %_i7460
+  %_bop7480 = add i64 %_i7479, 1
+  store i64 %_bop7480, i64* %_i7460
+  br label %_cond7468
+_post7466:
+  store { i64, [0 x %Point*] }* %_array7458, { i64, [0 x %Point*] }** %_p7481
+  %_p7482 = load { i64, [0 x %Point*] }*, { i64, [0 x %Point*] }** %_p7481
+  %_ans7485 = bitcast { i64, [0 x %Point*] }* %_p7482 to i64*
+  call void @oat_assert_array_length(i64* %_ans7485, i64 1)
+  %_index_ptr7484 = getelementptr { i64, [0 x %Point*] }, { i64, [0 x %Point*] }* %_p7482, i32 0, i32 1, i32 1
+  %_index7486 = load %Point*, %Point** %_index_ptr7484
+  %_p7487 = load { i64, [0 x %Point*] }*, { i64, [0 x %Point*] }** %_p7481
+  %_ans7490 = bitcast { i64, [0 x %Point*] }* %_p7487 to i64*
+  call void @oat_assert_array_length(i64* %_ans7490, i64 0)
+  %_index_ptr7489 = getelementptr { i64, [0 x %Point*] }, { i64, [0 x %Point*] }* %_p7487, i32 0, i32 1, i32 0
+  %_index7491 = load %Point*, %Point** %_index_ptr7489
+  %_result7492 = call i1 @are_equal(%Point* %_index7491, %Point* %_index7486)
+  br i1 %_result7492, label %_then7501, label %_else7500
+_then7501:
+  %_str7494 = getelementptr [10 x i8], [10 x i8]* @_str_arr7493, i32 0, i32 0
+  call void @print_string(i8* %_str7494)
+  br label %_merge7499
+_else7500:
+  %_str7497 = getelementptr [10 x i8], [10 x i8]* @_str_arr7496, i32 0, i32 0
+  call void @print_string(i8* %_str7497)
+  br label %_merge7499
+_merge7499:
   ret i64 0
 }
 
-define i1 @are_equal(%Point* %_p17412, %Point* %_p27410) {
-  %_p17413 = alloca %Point*
-  %_p27411 = alloca %Point*
-  store %Point* %_p17412, %Point** %_p17413
-  store %Point* %_p27410, %Point** %_p27411
-  %_p17414 = load %Point*, %Point** %_p17413
-  %_index_ptr7415 = getelementptr %Point, %Point* %_p17414, i32 0, i32 0
-  %_proj7416 = load %Info*, %Info** %_index_ptr7415
-  %_cast7417 = bitcast %Info* %_proj7416 to i64
-  %_p27418 = load %Point*, %Point** %_p27411
-  %_index_ptr7419 = getelementptr %Point, %Point* %_p27418, i32 0, i32 0
-  %_proj7420 = load %Info*, %Info** %_index_ptr7419
-  %_cast7421 = bitcast %Info* %_proj7420 to i64
-  %_bop7422 = icmp eq i64 %_cast7417, %_cast7421
-  %_p17423 = load %Point*, %Point** %_p17413
-  %_index_ptr7424 = getelementptr %Point, %Point* %_p17423, i32 0, i32 1
-  %_proj7425 = load i64, i64* %_index_ptr7424
-  %_p27426 = load %Point*, %Point** %_p27411
-  %_index_ptr7427 = getelementptr %Point, %Point* %_p27426, i32 0, i32 1
-  %_proj7428 = load i64, i64* %_index_ptr7427
-  %_bop7429 = icmp eq i64 %_proj7425, %_proj7428
-  %_bop7430 = and i1 %_bop7422, %_bop7429
-  ret i1 %_bop7430
+define i1 @are_equal(%Point* %_p17434, %Point* %_p27432) {
+  %_p17435 = alloca %Point*
+  %_p27433 = alloca %Point*
+  store %Point* %_p17434, %Point** %_p17435
+  store %Point* %_p27432, %Point** %_p27433
+  %_p17436 = load %Point*, %Point** %_p17435
+  %_index_ptr7437 = getelementptr %Point, %Point* %_p17436, i32 0, i32 0
+  %_proj7438 = load %Info*, %Info** %_index_ptr7437
+  %_cast7439 = bitcast %Info* %_proj7438 to i64
+  %_p27440 = load %Point*, %Point** %_p27433
+  %_index_ptr7441 = getelementptr %Point, %Point* %_p27440, i32 0, i32 0
+  %_proj7442 = load %Info*, %Info** %_index_ptr7441
+  %_cast7443 = bitcast %Info* %_proj7442 to i64
+  %_bop7444 = icmp eq i64 %_cast7439, %_cast7443
+  %_p17445 = load %Point*, %Point** %_p17435
+  %_index_ptr7446 = getelementptr %Point, %Point* %_p17445, i32 0, i32 1
+  %_proj7447 = load i64, i64* %_index_ptr7446
+  %_p27448 = load %Point*, %Point** %_p27433
+  %_index_ptr7449 = getelementptr %Point, %Point* %_p27448, i32 0, i32 1
+  %_proj7450 = load i64, i64* %_index_ptr7449
+  %_bop7451 = icmp eq i64 %_proj7447, %_proj7450
+  %_bop7452 = and i1 %_bop7444, %_bop7451
+  ret i1 %_bop7452
 }
 
 
