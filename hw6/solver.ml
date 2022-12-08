@@ -88,6 +88,29 @@ module Make (Fact : FACT) (Graph : DFA_GRAPH with type fact := Fact.t) =
   struct
 
     let solve (g:Graph.t) : Graph.t =
-      failwith "TODO HW6: Solver.solve unimplemented"
+      let module NodeS = Graph.NodeS in
+      let nodes = Graph.nodes g in
+      let elts = NodeS.elements nodes in
+      let node_set = NodeS.of_list elts in
+      let rec aux w dfg =
+        if NodeS.is_empty w then dfg 
+        else
+          let n = NodeS.choose w in 
+          let w = NodeS.remove n w in
+          let old_out = Graph.out dfg n in
+          let preds_n = Graph.preds dfg n in
+          let preds_n_facts = NodeS.fold 
+          (fun elt facts -> (Graph.out dfg elt)::facts) preds_n [] in 
+          let in_n = Fact.combine preds_n_facts in
+          let out_n = Graph.flow dfg n in_n in
+          let dfg = Graph.add_fact n out_n dfg in
+          if (Fact.compare old_out out_n <> 0) then
+            let succs_n = Graph.succs g n in
+            let w_new = NodeS.union succs_n w in 
+            aux w_new dfg 
+          else
+            aux w dfg  
+      in
+      aux node_set g
   end
 
