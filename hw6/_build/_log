@@ -106,23 +106,23 @@ menhir --ocamlc '/home/ojyrkinen/.opam/4.06.0/bin/ocamlc.opt -I ll -I x86 -I uti
 # Target: constprop.cmo, tags: { byte, compile, extension:cmo, extension:ml, file:constprop.cmo, file:constprop.ml, implem, ocaml, quiet }
 /home/ojyrkinen/.opam/4.06.0/bin/ocamlc.opt -c -I x86 -I util -I ll -o constprop.cmo constprop.ml # cached
 # Target: dce.ml.depends, tags: { extension:ml, file:dce.ml, ocaml, ocamldep, quiet }
-/home/ojyrkinen/.opam/4.06.0/bin/ocamldep.opt -modules dce.ml > dce.ml.depends # cached
+/home/ojyrkinen/.opam/4.06.0/bin/ocamldep.opt -modules dce.ml > dce.ml.depends
 # Target: dce.cmo, tags: { byte, compile, extension:cmo, extension:ml, file:dce.cmo, file:dce.ml, implem, ocaml, quiet }
-/home/ojyrkinen/.opam/4.06.0/bin/ocamlc.opt -c -I x86 -I util -I ll -o dce.cmo dce.ml # cached
-# Target: opt.cmo, tags: { byte, compile, extension:cmo, extension:ml, file:opt.cmo, file:opt.ml, implem, ocaml, quiet }
-/home/ojyrkinen/.opam/4.06.0/bin/ocamlc.opt -c -I x86 -I util -I ll -o opt.cmo opt.ml # cached
+/home/ojyrkinen/.opam/4.06.0/bin/ocamlc.opt -c -I x86 -I util -I ll -o dce.cmo dce.ml
 # Target: registers.ml.depends, tags: { extension:ml, file:registers.ml, ocaml, ocamldep, quiet }
 /home/ojyrkinen/.opam/4.06.0/bin/ocamldep.opt -modules registers.ml > registers.ml.depends # cached
 # Target: registers.cmo, tags: { byte, compile, extension:cmo, extension:ml, file:registers.cmo, file:registers.ml, implem, ocaml, quiet }
 /home/ojyrkinen/.opam/4.06.0/bin/ocamlc.opt -c -I x86 -I util -I ll -o registers.cmo registers.ml # cached
-# Target: driver.cmo, tags: { byte, compile, extension:cmo, extension:ml, file:driver.cmo, file:driver.ml, implem, ocaml, quiet }
-/home/ojyrkinen/.opam/4.06.0/bin/ocamlc.opt -c -I x86 -I util -I ll -o driver.cmo driver.ml # cached
+# Target: opt.cmo, tags: { byte, compile, extension:cmo, extension:ml, file:opt.cmo, file:opt.ml, implem, ocaml, quiet }
+/home/ojyrkinen/.opam/4.06.0/bin/ocamlc.opt -c -I x86 -I util -I ll -o opt.cmo opt.ml
 # Target: gradedtests.ml.depends, tags: { extension:ml, file:gradedtests.ml, ocaml, ocamldep, quiet }
-/home/ojyrkinen/.opam/4.06.0/bin/ocamldep.opt -modules gradedtests.ml > gradedtests.ml.depends
+/home/ojyrkinen/.opam/4.06.0/bin/ocamldep.opt -modules gradedtests.ml > gradedtests.ml.depends # cached
 # Target: analysistests.ml.depends, tags: { extension:ml, file:analysistests.ml, ocaml, ocamldep, quiet }
 /home/ojyrkinen/.opam/4.06.0/bin/ocamldep.opt -modules analysistests.ml > analysistests.ml.depends # cached
 # Target: analysistests.cmo, tags: { byte, compile, extension:cmo, extension:ml, file:analysistests.cmo, file:analysistests.ml, implem, ocaml, quiet }
 /home/ojyrkinen/.opam/4.06.0/bin/ocamlc.opt -c -I x86 -I util -I ll -o analysistests.cmo analysistests.ml # cached
+# Target: driver.cmo, tags: { byte, compile, extension:cmo, extension:ml, file:driver.cmo, file:driver.ml, implem, ocaml, quiet }
+/home/ojyrkinen/.opam/4.06.0/bin/ocamlc.opt -c -I x86 -I util -I ll -o driver.cmo driver.ml
 # Target: gradedtests.cmo, tags: { byte, compile, extension:cmo, extension:ml, file:gradedtests.cmo, file:gradedtests.ml, implem, ocaml, quiet }
 /home/ojyrkinen/.opam/4.06.0/bin/ocamlc.opt -c -I x86 -I util -I ll -o gradedtests.cmo gradedtests.ml
 # Target: main.cmo, tags: { byte, compile, extension:cmo, extension:ml, file:main.cmo, file:main.ml, implem, ocaml, quiet }
@@ -180,15 +180,15 @@ menhir --ocamlc '/home/ojyrkinen/.opam/4.06.0/bin/ocamlc.opt -I ll -I x86 -I uti
 # Target: constprop.cmx, tags: { compile, extension:cmx, extension:ml, file:constprop.cmx, file:constprop.ml, implem, native, ocaml, quiet }
 /home/ojyrkinen/.opam/4.06.0/bin/ocamlopt.opt -c -I x86 -I util -I ll -o constprop.cmx constprop.ml # cached
 # Target: dce.cmx, tags: { compile, extension:cmx, extension:ml, file:dce.cmx, file:dce.ml, implem, native, ocaml, quiet }
-/home/ojyrkinen/.opam/4.06.0/bin/ocamlopt.opt -c -I x86 -I util -I ll -o dce.cmx dce.ml # cached
-# Target: opt.cmx, tags: { compile, extension:cmx, extension:ml, file:opt.cmx, file:opt.ml, implem, native, ocaml, quiet }
-/home/ojyrkinen/.opam/4.06.0/bin/ocamlopt.opt -c -I x86 -I util -I ll -o opt.cmx opt.ml # cached
+/home/ojyrkinen/.opam/4.06.0/bin/ocamlopt.opt -c -I x86 -I util -I ll -o dce.cmx dce.ml
 # Target: registers.cmx, tags: { compile, extension:cmx, extension:ml, file:registers.cmx, file:registers.ml, implem, native, ocaml, quiet }
 /home/ojyrkinen/.opam/4.06.0/bin/ocamlopt.opt -c -I x86 -I util -I ll -o registers.cmx registers.ml # cached
-# Target: driver.cmx, tags: { compile, extension:cmx, extension:ml, file:driver.cmx, file:driver.ml, implem, native, ocaml, quiet }
-/home/ojyrkinen/.opam/4.06.0/bin/ocamlopt.opt -c -I x86 -I util -I ll -o driver.cmx driver.ml # cached
+# Target: opt.cmx, tags: { compile, extension:cmx, extension:ml, file:opt.cmx, file:opt.ml, implem, native, ocaml, quiet }
+/home/ojyrkinen/.opam/4.06.0/bin/ocamlopt.opt -c -I x86 -I util -I ll -o opt.cmx opt.ml
 # Target: analysistests.cmx, tags: { compile, extension:cmx, extension:ml, file:analysistests.cmx, file:analysistests.ml, implem, native, ocaml, quiet }
 /home/ojyrkinen/.opam/4.06.0/bin/ocamlopt.opt -c -I x86 -I util -I ll -o analysistests.cmx analysistests.ml # cached
+# Target: driver.cmx, tags: { compile, extension:cmx, extension:ml, file:driver.cmx, file:driver.ml, implem, native, ocaml, quiet }
+/home/ojyrkinen/.opam/4.06.0/bin/ocamlopt.opt -c -I x86 -I util -I ll -o driver.cmx driver.ml
 # Target: gradedtests.cmx, tags: { compile, extension:cmx, extension:ml, file:gradedtests.cmx, file:gradedtests.ml, implem, native, ocaml, quiet }
 /home/ojyrkinen/.opam/4.06.0/bin/ocamlopt.opt -c -I x86 -I util -I ll -o gradedtests.cmx gradedtests.ml
 # Target: main.cmx, tags: { compile, extension:cmx, extension:ml, file:main.cmx, file:main.ml, implem, native, ocaml, quiet }

@@ -27,9 +27,9 @@ let dce_block (lb:uid -> Liveness.Fact.t)
     let is_dead (id, insn) = 
       let live_out = lb id in 
       let alias_in = ab id in
-      let is_live uid = let res = UidS.mem uid live_out in res in
-      let maybe_aliased (id:uid) = 
-        match UidM.find id alias_in with 
+      let is_live uid = UidS.mem uid live_out in
+      let maybe_aliased uid = 
+        match UidM.find uid alias_in with 
         | Alias.SymPtr.MayAlias -> true 
         | _ -> false
       in
