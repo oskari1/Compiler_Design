@@ -34,7 +34,36 @@ type fact = SymPtr.t UidM.t
 
  *)
 let insn_flow ((u,i):uid * insn) (d:fact) : fact =
-  failwith "Alias.insn_flow unimplemented"
+  match i with 
+  | Alloca _ -> UidM.add u SymPtr.Unique d
+  | Load (ty, _) -> begin 
+    match ty with 
+    | Ptr (Ptr _) -> UidM.add u SymPtr.MayAlias d (* in this case, return type is a pointer *) 
+    | _ -> d end 
+  | Bitcast (_, Id id, _) ->
+    let d = UidM.add u SymPtr.MayAlias d in
+    UidM.add id SymPtr.MayAlias d
+  | Gep (_, Id id, _) -> 
+    let d = UidM.add u SymPtr.MayAlias d in
+    UidM.add id SymPtr.MayAlias d
+  | Gep (_, Gid id, _) -> UidM.add u SymPtr.MayAlias d
+  | Store (ty, Id id, _) -> begin 
+    match ty with 
+    | Ptr _ -> UidM.add id SymPtr.MayAlias d
+    | _ -> d end
+  | Call (ret_ty, _, arg_list) -> 
+    let d =
+      match ret_ty with 
+      | Ptr _ -> UidM.add u SymPtr.MayAlias d
+      | _ -> d
+    in
+    let ptr_ids = List.fold_left (fun ptr_ids (ty, op) -> 
+      match ty, op with 
+      | Ptr _, Id id -> id::ptr_ids
+      | _ -> ptr_ids) [] arg_list in
+    List.fold_left (fun d ptr_id -> UidM.add ptr_id SymPtr.MayAlias d) d ptr_ids
+  | _ -> UidM.add u SymPtr.UndefAlias d 
+
 
 
 (* The flow function across terminators is trivial: they never change alias info *)
@@ -69,7 +98,23 @@ module Fact =
        join of two SymPtr.t facts.
     *)
     let combine (ds:fact list) : fact =
-      failwith "Alias.Fact.combine not implemented"
+      let join_symptr x y = 
+        match x,y with
+        | SymPtr.Unique, SymPtr.Unique -> SymPtr.Unique
+        | SymPtr.MayAlias, _ -> SymPtr.MayAlias
+        | _, SymPtr.MayAlias -> SymPtr.MayAlias
+        | _, _ -> SymPtr.UndefAlias
+      in
+      let join uid v1 v2 = 
+        match v1, v2 with
+        | None, None -> None
+        | Some x, None -> Some x
+        | None, Some y -> Some y
+        | Some x, Some y -> Some (join_symptr x y)
+      in begin
+      match ds with 
+      | [] -> UidM.empty  
+      | _ -> List.fold_left (UidM.merge join) (List.hd ds) ds end
   end
 
 (* instantiate the general framework ---------------------------------------- *)
