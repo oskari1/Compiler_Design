@@ -111,14 +111,6 @@ module Fact =
         | Some x, None -> Some x
         | None, Some y -> Some y
         | Some x, Some y -> Some (join_symptr x y)
-         (*
-        | Some (SymPtr.Unique), Some (SymPtr.Unique) -> Some (SymPtr.Unique)
-        | Some (SymPtr.MayAlias), Some _ -> Some (SymPtr.MayAlias)
-        | Some _, Some (SymPtr.MayAlias) -> Some (SymPtr.MayAlias)
-        | Some _, Some _ -> Some (SymPtr.UndefAlias)
-        | Some x, _ -> Some x
-        | _, Some y -> Some y
-        | _, _ -> None *)
       in begin
       match ds with 
       | [] -> UidM.empty  
