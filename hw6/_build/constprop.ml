@@ -168,7 +168,39 @@ let run (cg:Graph.t) (cfg:Cfg.t) : Cfg.t =
   let cp_block (l:Ll.lbl) (cfg:Cfg.t) : Cfg.t =
     let b = Cfg.block cfg l in
     let cb = Graph.uid_out cg l in
-    failwith "Constprop.cp_block unimplemented"
+    
+    let aux const_in op  : Ll.operand = 
+      match op with 
+      | Id id -> begin 
+        match UidM.find id const_in with 
+        | SymConst.Const c -> Const c
+        | _ -> Id id end
+      | _ -> op
+    in
+    let update_insn (id, insn:Ll.uid * Ll.insn) =
+      let const_in = cb id in
+      
+      let insn = match insn with 
+      | Binop (bop, ty, op1, op2) -> Binop (bop, ty, aux const_in op1, aux const_in op2)
+      | Icmp (cnd, ty, op1, op2) -> Icmp (cnd, ty, aux const_in op1, aux const_in op2)
+      | Call (ty, op, op_list) -> Call (ty, op, List.map (fun (ty, op) -> ty, aux const_in op) op_list)
+      | Gep (ty, ptr, op_list) -> Gep (ty, ptr, List.map (aux const_in) op_list)
+      | Store (ty, op1, op2) -> Store (ty, aux const_in op1, op2)
+      | _ -> insn 
+      in
+      id, insn
+    in
+    let update_term (id, term) =
+      let const_in = cb id in
+      let term =
+        match term with 
+        | Ret (ty, Some op) -> Ret (ty, Some (aux const_in op))
+        | Cbr (op, l1, l2) -> Cbr (aux const_in op, l1, l2) 
+        | _ -> term
+      in id, term
+    in
+    let updated_block:block = {insns=List.map update_insn b.insns; term=update_term b.term} in
+    Cfg.add_block l updated_block cfg 
   in
 
   LblS.fold cp_block (Cfg.nodes cfg) cfg
