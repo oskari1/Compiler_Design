@@ -37,7 +37,61 @@ type fact = SymConst.t UidM.t
    - Uid of all other instructions are NonConst-out
  *)
 let insn_flow (u,i:uid * insn) (d:fact) : fact =
-  failwith "Constprop.insn_flow unimplemented"
+  let compute_const bop c1 c2 = 
+    match bop with 
+    | Add -> Int64.add c1 c2 
+    | Sub -> Int64.sub c1 c2 
+    | Mul -> Int64.mul c1 c2
+    | Shl -> Int64.shift_left c1 (Int64.to_int c2)
+    | Lshr -> Int64.shift_right_logical c1 (Int64.to_int c2)
+    | Ashr -> Int64.shift_right c1 (Int64.to_int c2)
+    | And -> Int64.logand c1 c2
+    | Or -> Int64.logor c1 c2
+    | Xor -> Int64.logxor c1 c2
+  in
+  let int64_of_bool (b:bool)=
+    match b with 
+    | true -> 1L  
+    | false -> 0L  
+  in
+  let symconst_of (arg:operand) : SymConst.t = 
+    match arg with 
+    | Const c -> SymConst.Const c
+    | Id id -> begin 
+      match UidM.find_opt id d with 
+      | Some c -> c 
+      | None -> SymConst.UndefConst end
+    | _ -> NonConst  
+  in
+  match i with 
+  | Binop (bop, _, arg1, arg2) -> begin
+    match symconst_of arg1, symconst_of arg2 with 
+    | SymConst.Const c1, SymConst.Const c2 -> 
+      let res = compute_const bop c1 c2 in 
+      UidM.add u (SymConst.Const res) d
+    | SymConst.UndefConst, _ -> UidM.add u (SymConst.UndefConst) d
+    | _, SymConst.UndefConst -> UidM.add u (SymConst.UndefConst) d
+    | SymConst.NonConst, _ -> UidM.add u (SymConst.NonConst) d
+    | _, SymConst.NonConst -> UidM.add u (SymConst.NonConst) d end
+  | Icmp (cnd, _, arg1, arg2) -> begin
+    match symconst_of arg1, symconst_of arg2 with 
+    | SymConst.Const c1, SymConst.Const c2 -> 
+      let res = 
+        match cnd with 
+        | Eq -> Int64.equal c1 c2 
+        | Ne -> not (Int64.equal c1 c2) 
+        | Slt -> Int64.compare c1 c2 < 0
+        | Sle -> let cmp = Int64.compare c1 c2 in cmp = 0 || cmp < 0 
+        | Sgt -> Int64.compare c1 c2 > 0
+        | Sge -> let cmp = Int64.compare c1 c2 in cmp = 0 || cmp > 0 
+      in
+      UidM.add u (SymConst.Const (int64_of_bool res)) d
+    | SymConst.UndefConst, _ -> UidM.add u (SymConst.UndefConst) d
+    | _, SymConst.UndefConst -> UidM.add u (SymConst.UndefConst) d
+    | SymConst.NonConst, _ -> UidM.add u (SymConst.NonConst) d
+    | _, SymConst.NonConst -> UidM.add u (SymConst.NonConst) d end
+  | Store (_, _, _) | Call (Void, _, _) -> UidM.add u (SymConst.UndefConst) d
+  | _ -> UidM.add u (SymConst.NonConst) d
 
 (* The flow function across terminators is trivial: they never change const info *)
 let terminator_flow (t:terminator) (d:fact) : fact = d
@@ -63,7 +117,25 @@ module Fact =
     (* The constprop analysis should take the meet over predecessors to compute the
        flow into a node. You may find the UidM.merge function useful *)
     let combine (ds:fact list) : fact = 
-      failwith "Constprop.Fact.combine unimplemented"
+      let meet_symconst x y = 
+        match x, y with 
+        | SymConst.Const c1, SymConst.Const c2 when c1 = c2 -> SymConst.Const c1
+        | SymConst.Const c1, SymConst.Const c2 -> SymConst.NonConst
+        | SymConst.NonConst, _ -> SymConst.NonConst 
+        | _, SymConst.NonConst -> SymConst.NonConst 
+        | SymConst.UndefConst, _ -> SymConst.UndefConst 
+        | _, SymConst.UndefConst -> SymConst.UndefConst 
+      in
+      let meet uid v1 v2 = 
+        match v1, v2 with 
+        | None, None -> None 
+        | Some x, None -> Some x
+        | None, Some y -> Some y 
+        | Some x, Some y -> Some (meet_symconst x y)
+      in
+      match ds with 
+      | [] -> UidM.empty
+      | _ -> List.fold_left (UidM.merge meet) (List.hd ds) ds 
   end
 
 (* instantiate the general framework ---------------------------------------- *)
