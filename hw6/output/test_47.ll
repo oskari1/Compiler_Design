@@ -1,65 +1,53 @@
-; generated from: llprograms/binary_gcd.ll
+; generated from: hw5programs/compile_return_struct.oat
 target triple = "x86_64-unknown-linux"
-define i64 @binary_gcd(i64 %u, i64 %v) {
-  %u_eq_v = icmp eq i64 %u, %v
-  br i1 %u_eq_v, label %ret_u, label %term1
-both_even:
-  %20 = lshr i64 %u, 1
-  %21 = lshr i64 %v, 1
-  %22 = call i64 @binary_gcd(i64 %20, i64 %21)
-  %23 = shl i64 %22, 1
-  ret i64 %23
-gcd:
-  %1 = xor i64 -1, %u
-  %2 = and i64 1, %1
-  %3 = icmp ne i64 0, %2
-  br i1 %3, label %u_even, label %u_odd
-ret_u:
-  ret i64 %u
-ret_v:
-  ret i64 %v
-term1:
-  %u_0 = icmp eq i64 0, %u
-  br i1 %u_0, label %ret_v, label %term2
-term2:
-  %v_0 = icmp eq i64 0, %v
-  br i1 %v_0, label %ret_u, label %gcd
-u_even:
-  %16 = and i64 %v, 1
-  %17 = icmp ne i64 0, %16
-  br i1 %17, label %ue_vo, label %both_even
-u_gt:
-  %11 = sub i64 %u, %v
-  %12 = lshr i64 %11, 1
-  %13 = call i64 @binary_gcd(i64 %12, i64 %v)
-  ret i64 %13
-u_odd:
-  %4 = xor i64 -1, %v
-  %5 = and i64 1, %4
-  %6 = icmp ne i64 0, %5
-  br i1 %6, label %v_even, label %v_odd
-ue_vo:
-  %18 = lshr i64 %u, 1
-  %19 = call i64 @binary_gcd(i64 %18, i64 %v)
-  ret i64 %19
-v_even:
-  %14 = lshr i64 %v, 1
-  %15 = call i64 @binary_gcd(i64 %u, i64 %14)
-  ret i64 %15
-v_gt:
-  %8 = sub i64 %v, %u
-  %9 = lshr i64 %8, 1
-  %10 = call i64 @binary_gcd(i64 %9, i64 %u)
-  ret i64 %10
-v_odd:
-  %7 = icmp sgt i64 %u, %v
-  br i1 %7, label %u_gt, label %v_gt
+%Pair = type { i1, i1 }
+
+define %Pair* @create_pair(i1 %_a6806, i1 %_b6803) {
+  %_a6807 = alloca i1
+  %_b6804 = alloca i1
+  store i1 %_a6806, i1* %_a6807
+  store i1 %_b6803, i1* %_b6804
+  %_raw_struct6809 = call i64* @oat_malloc(i64 16)
+  %_struct6810 = bitcast i64* %_raw_struct6809 to %Pair*
+  %_a6811 = load i1, i1* %_a6807
+  %_ind6812 = getelementptr %Pair, %Pair* %_struct6810, i32 0, i32 0
+  store i1 %_a6811, i1* %_ind6812
+  %_b6814 = load i1, i1* %_b6804
+  %_ind6815 = getelementptr %Pair, %Pair* %_struct6810, i32 0, i32 1
+  store i1 %_b6814, i1* %_ind6815
+  ret %Pair* %_struct6810
 }
 
-define i64 @main(i64 %argc, i8** %argv) {
-  %1 = call i64 @binary_gcd(i64 21, i64 15)
-  ret i64 %1
+define i64 @program(i64 %_argc6787, { i64, [0 x i8*] }* %_argv6784) {
+  %_p6791 = alloca %Pair*
+  %_result6790 = call %Pair* @create_pair(i1 1, i1 0)
+  store %Pair* %_result6790, %Pair** %_p6791
+  %_p6793 = load %Pair*, %Pair** %_p6791
+  %_index6794 = getelementptr %Pair, %Pair* %_p6793, i32 0, i32 0
+  %_proj6795 = load i1, i1* %_index6794
+  %_p6796 = load %Pair*, %Pair** %_p6791
+  %_index6797 = getelementptr %Pair, %Pair* %_p6796, i32 0, i32 1
+  %_proj6798 = load i1, i1* %_index6797
+  %_bop6799 = and i1 %_proj6795, %_proj6798
+  br i1 %_bop6799, label %_then6802, label %_else6801
+_else6801:
+  ret i64 0
+_merge6800:
+  ret i64 0
+_then6802:
+  ret i64 1
 }
 
 
-
+declare i64* @oat_malloc(i64)
+declare i64* @oat_alloc_array(i64)
+declare void @oat_assert_not_null(i8*)
+declare void @oat_assert_array_length(i64*, i64)
+declare { i64, [0 x i64] }* @array_of_string(i8*)
+declare i8* @string_of_array({ i64, [0 x i64] }*)
+declare i64 @length_of_string(i8*)
+declare i8* @string_of_int(i64)
+declare i8* @string_cat(i8*, i8*)
+declare void @print_string(i8*)
+declare void @print_int(i64)
+declare void @print_bool(i1)

@@ -212,7 +212,7 @@ let binop_tests =
 
 let calling_convention_tests =
   [ "llprograms/call.ll", "42"
-  ; "llprograms/call1.ll", "17" 
+  ; "llprograms/call1.ll", "17"
   ; "llprograms/call2.ll", "19"
   ; "llprograms/call3.ll", "34"
   ; "llprograms/call4.ll", "34"
@@ -225,7 +225,7 @@ let calling_convention_tests =
 let memory_tests =
   [ "llprograms/alloca1.ll", "17"
   ; "llprograms/alloca2.ll", "17"
-  ; "llprograms/global1.ll", "12"    
+  ; "llprograms/global1.ll", "12"
   ]
 
 let terminator_tests =
@@ -284,10 +284,10 @@ let large_tests = [ "llprograms/list1.ll", "3"
                   ]
 
 let ll_tests =
-  binop_tests 
+    binop_tests 
   @ terminator_tests 
-  @ memory_tests 
-  @ calling_convention_tests 
+  @ memory_tests
+  @ calling_convention_tests
   @ bitcast_tests
   @ gep_tests 
   @ arithmetic_tests 

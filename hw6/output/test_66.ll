@@ -1,24 +1,43 @@
-; generated from: oatprograms/run28.oat
+; generated from: oatprograms/run41.oat
 target triple = "x86_64-unknown-linux"
-define i64 @program(i64 %_argc271, { i64, [0 x i8*] }* %_argv268) {
-  %_i274 = alloca i64
-  %_j279 = alloca i64
-  store i64 9, i64* %_i274
-  %_i276 = load i64, i64* %_i274
-  %_i277 = load i64, i64* %_i274
-  %_bop278 = add i64 %_i276, %_i277
-  store i64 %_bop278, i64* %_j279
-  %_i281 = load i64, i64* %_i274
-  %_i282 = load i64, i64* %_i274
-  %_i283 = load i64, i64* %_i274
-  %_bop284 = mul i64 %_i282, %_i283
-  %_bop285 = add i64 %_i281, %_bop284
-  %_j286 = load i64, i64* %_j279
-  %_bop287 = sub i64 %_bop285, %_j286
-  %_bop288 = lshr i64 %_bop287, 2
-  %_bop289 = shl i64 %_bop288, 2
-  %_bop290 = ashr i64 %_bop289, 2
-  ret i64 %_bop290
+define i64 @f(i64 %_x18848, i64 %_x28845, i64 %_x38842, i64 %_x48839, i64 %_x58836, i64 %_x68833, i64 %_x78830, i64 %_x88827) {
+  %_x18849 = alloca i64
+  %_x28846 = alloca i64
+  %_x38843 = alloca i64
+  %_x48840 = alloca i64
+  %_x58837 = alloca i64
+  %_x68834 = alloca i64
+  %_x78831 = alloca i64
+  %_x88828 = alloca i64
+  store i64 %_x18848, i64* %_x18849
+  store i64 %_x28845, i64* %_x28846
+  store i64 %_x38842, i64* %_x38843
+  store i64 %_x48839, i64* %_x48840
+  store i64 %_x58836, i64* %_x58837
+  store i64 %_x68833, i64* %_x68834
+  store i64 %_x78830, i64* %_x78831
+  store i64 %_x88827, i64* %_x88828
+  %_x18851 = load i64, i64* %_x18849
+  %_x28852 = load i64, i64* %_x28846
+  %_bop8853 = add i64 %_x18851, %_x28852
+  %_x38854 = load i64, i64* %_x38843
+  %_bop8855 = add i64 %_bop8853, %_x38854
+  %_x48856 = load i64, i64* %_x48840
+  %_bop8857 = add i64 %_bop8855, %_x48856
+  %_x58858 = load i64, i64* %_x58837
+  %_bop8859 = add i64 %_bop8857, %_x58858
+  %_x68860 = load i64, i64* %_x68834
+  %_bop8861 = add i64 %_bop8859, %_x68860
+  %_x78862 = load i64, i64* %_x78831
+  %_bop8863 = add i64 %_bop8861, %_x78862
+  %_x88864 = load i64, i64* %_x88828
+  %_bop8865 = add i64 %_bop8863, %_x88864
+  ret i64 %_bop8865
+}
+
+define i64 @program(i64 %_argc8820, { i64, [0 x i8*] }* %_argv8817) {
+  %_result8826 = call i64 @f(i64 1, i64 2, i64 3, i64 4, i64 5, i64 -5, i64 -4, i64 -3)
+  ret i64 %_result8826
 }
 
 

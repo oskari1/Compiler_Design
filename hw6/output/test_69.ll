@@ -1,30 +1,27 @@
-; generated from: oatprograms/run33.oat
+; generated from: oatprograms/run54.oat
 target triple = "x86_64-unknown-linux"
-define i64 @program(i64 %_argc330, { i64, [0 x i8*] }* %_argv327) {
-  %_b339 = alloca { i64, [0 x i1] }*
-  %_i341 = alloca i64
-  %_raw_array333 = call i64* @oat_alloc_array(i64 2)
-  %_array334 = bitcast i64* %_raw_array333 to { i64, [0 x i1] }*
-  %_ind335 = getelementptr { i64, [0 x i1] }, { i64, [0 x i1] }* %_array334, i32 0, i32 1, i32 0
-  store i1 1, i1* %_ind335
-  %_ind337 = getelementptr { i64, [0 x i1] }, { i64, [0 x i1] }* %_array334, i32 0, i32 1, i32 1
-  store i1 0, i1* %_ind337
-  store { i64, [0 x i1] }* %_array334, { i64, [0 x i1] }** %_b339
-  store i64 0, i64* %_i341
-  %_b343 = load { i64, [0 x i1] }*, { i64, [0 x i1] }** %_b339
-  %_tmp345 = bitcast { i64, [0 x i1] }* %_b343 to i64*
-  call void @oat_assert_array_length(i64* %_tmp345, i64 0)
-  %_index_ptr346 = getelementptr { i64, [0 x i1] }, { i64, [0 x i1] }* %_b343, i32 0, i32 1, i32 0
-  %_index347 = load i1, i1* %_index_ptr346
-  br i1 %_index347, label %_then351, label %_else350
-_else350:
-  br label %_merge349
-_merge349:
-  %_i352 = load i64, i64* %_i341
-  ret i64 %_i352
-_then351:
-  store i64 1, i64* %_i341
-  br label %_merge349
+define i64 @f(i64 %_x18993, i64 %_x28990, i64 %_x38987, i64 %_x48984, i64 %_x58981, i64 %_x68978, i64 %_x78975, i64 %_x88972) {
+  %_x18994 = alloca i64
+  %_x28991 = alloca i64
+  %_x38988 = alloca i64
+  %_x48985 = alloca i64
+  store i64 %_x18993, i64* %_x18994
+  store i64 %_x28990, i64* %_x28991
+  store i64 %_x38987, i64* %_x38988
+  store i64 %_x48984, i64* %_x48985
+  %_x18996 = load i64, i64* %_x18994
+  %_x28997 = load i64, i64* %_x28991
+  %_bop8998 = add i64 %_x18996, %_x28997
+  %_x38999 = load i64, i64* %_x38988
+  %_bop9000 = add i64 %_bop8998, %_x38999
+  %_x49001 = load i64, i64* %_x48985
+  %_bop9002 = add i64 %_bop9000, %_x49001
+  ret i64 %_bop9002
+}
+
+define i64 @program(i64 %_argc8965, { i64, [0 x i8*] }* %_argv8962) {
+  %_result8971 = call i64 @f(i64 1, i64 2, i64 3, i64 4, i64 5, i64 -5, i64 -4, i64 -3)
+  ret i64 %_result8971
 }
 
 

@@ -1,111 +1,45 @@
-; generated from: llprograms/matmul.ll
+; generated from: hw5programs/compile_function_shadow.oat
 target triple = "x86_64-unknown-linux"
-%vec = type [2 x i64]
-%mat = type [2 x %vec]
-
-@mat1 = global %mat [ %vec [ i64 1, i64 2 ], %vec [ i64 3, i64 4 ] ]
-@mat2 = global %mat [ %vec [ i64 5, i64 6 ], %vec [ i64 7, i64 8 ] ]
-@mat3 = global %mat [ %vec [ i64 19, i64 22 ], %vec [ i64 43, i64 50 ] ]
-@matr = global %mat [ %vec [ i64 0, i64 0 ], %vec [ i64 0, i64 0 ] ]
-
-define i64 @main(i64 %argc, i8** %argv) {
-  %cnt = alloca i64
-  store i64 10000000, i64* %cnt
-  br label %loop
-body:
-  call void @matmul(%mat* @mat1, %mat* @mat2, %mat* @matr)
-  %ans = call i64 @mateq(%mat* @mat3, %mat* @matr)
-  %tmp2 = load i64, i64* %cnt
-  %tmp3 = sub i64 %tmp2, 1
-  store i64 %tmp3, i64* %cnt
-  br label %loop
-exit:
-  ret i64 0
-loop:
-  %tmp = load i64, i64* %cnt
-  %b = icmp eq i64 %tmp, 0
-  br i1 %b, label %exit, label %body
+define i64 @add(i64 %_arg17147, i64 %_arg27144) {
+  %_arg17148 = alloca i64
+  %_arg27145 = alloca i64
+  store i64 %_arg17147, i64* %_arg17148
+  store i64 %_arg27144, i64* %_arg27145
+  %_arg17150 = load i64, i64* %_arg17148
+  %_arg27151 = load i64, i64* %_arg27145
+  %_bop7152 = add i64 %_arg17150, %_arg27151
+  ret i64 %_bop7152
 }
 
-define void @matmul(%mat* %a, %mat* %b, %mat* %c) {
-  %i = alloca i64
-  %j = alloca i64
-  store i64 0, i64* %i
-  br label %starti
-endi:
-  ret void
-endj:
-  %iinc = add i64 %iv, 1
-  store i64 %iinc, i64* %i
-  br label %starti
-starti:
-  %iv = load i64, i64* %i
-  %ic = icmp slt i64 %iv, 2
-  br i1 %ic, label %theni, label %endi
-startj:
-  %jv = load i64, i64* %j
-  %jc = icmp slt i64 %jv, 2
-  br i1 %jc, label %thenj, label %endj
-theni:
-  store i64 0, i64* %j
-  br label %startj
-thenj:
-  %r = getelementptr %mat, %mat* %c, i32 0, i64 %iv, i64 %jv
-  %a1 = getelementptr %mat, %mat* %a, i32 0, i64 %iv, i32 0
-  %b1 = getelementptr %mat, %mat* %b, i32 0, i32 0, i64 %jv
-  %a2 = getelementptr %mat, %mat* %a, i32 0, i64 %iv, i32 1
-  %b2 = getelementptr %mat, %mat* %b, i32 0, i32 1, i64 %jv
-  %a1v = load i64, i64* %a1
-  %b1v = load i64, i64* %b1
-  %a2v = load i64, i64* %a2
-  %b2v = load i64, i64* %b2
-  %ab1 = mul i64 %a1v, %b1v
-  %ab2 = mul i64 %a2v, %b2v
-  %ab = add i64 %ab1, %ab2
-  store i64 %ab, i64* %r
-  %jinc = add i64 %jv, 1
-  store i64 %jinc, i64* %j
-  br label %startj
+define i64 @mul(i64 %_arg17138, i64 %_arg27135) {
+  %_arg17139 = alloca i64
+  %_arg27136 = alloca i64
+  store i64 %_arg17138, i64* %_arg17139
+  store i64 %_arg27135, i64* %_arg27136
+  %_arg17141 = load i64, i64* %_arg17139
+  %_arg27142 = load i64, i64* %_arg27136
+  %_bop7143 = mul i64 %_arg17141, %_arg27142
+  ret i64 %_bop7143
 }
 
-define i64 @mateq(%mat* %ma, %mat* %mb) {
-  %r = alloca i64
-  store i64 0, i64* %r
-  %i = alloca i64
-  %j = alloca i64
-  store i64 0, i64* %i
-  br label %starti1
-endi1:
-  %rv1 = load i64, i64* %r
-  ret i64 %rv1
-endj1:
-  %iinc = add i64 %iv, 1
-  store i64 %iinc, i64* %i
-  br label %starti1
-starti1:
-  %iv = load i64, i64* %i
-  %ic = icmp slt i64 %iv, 2
-  br i1 %ic, label %theni1, label %endi1
-startj1:
-  %jv = load i64, i64* %j
-  %jc = icmp slt i64 %jv, 2
-  br i1 %jc, label %thenj1, label %endj1
-theni1:
-  store i64 0, i64* %j
-  br label %startj1
-thenj1:
-  %a = getelementptr %mat, %mat* %ma, i32 0, i64 %iv, i64 %jv
-  %b = getelementptr %mat, %mat* %mb, i32 0, i64 %iv, i64 %jv
-  %av = load i64, i64* %a
-  %bv = load i64, i64* %b
-  %cmp = xor i64 %av, %bv
-  %rv = load i64, i64* %r
-  %tmp = or i64 %cmp, %rv
-  store i64 %tmp, i64* %r
-  %jinc = add i64 %jv, 1
-  store i64 %jinc, i64* %j
-  br label %startj1
+define i64 @program(i64 %_argc7128, { i64, [0 x i8*] }* %_argv7125) {
+  %_add7131 = alloca i64 (i64, i64)*
+  store i64 (i64, i64)* @mul, i64 (i64, i64)** %_add7131
+  %_add7133 = load i64 (i64, i64)*, i64 (i64, i64)** %_add7131
+  %_result7134 = call i64 %_add7133(i64 3, i64 4)
+  ret i64 %_result7134
 }
 
 
-
+declare i64* @oat_malloc(i64)
+declare i64* @oat_alloc_array(i64)
+declare void @oat_assert_not_null(i8*)
+declare void @oat_assert_array_length(i64*, i64)
+declare { i64, [0 x i64] }* @array_of_string(i8*)
+declare i8* @string_of_array({ i64, [0 x i64] }*)
+declare i64 @length_of_string(i8*)
+declare i8* @string_of_int(i64)
+declare i8* @string_cat(i8*, i8*)
+declare void @print_string(i8*)
+declare void @print_int(i64)
+declare void @print_bool(i1)
