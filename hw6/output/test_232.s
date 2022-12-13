@@ -4,37 +4,47 @@ program:
 	pushq	%rbp
 	movq	%rsp, %rbp
 	subq	$8, %rsp
-	movq	%rsp, %rsi
-	subq	$8, %rsp
 	movq	%rsp, %rdi
-	movq	$0, %rax
-	movq	%rsi, %rcx
+	pushq	%rdi
+	movq	$2, %rdi
+	callq	oat_alloc_array
+	popq	%rdi
+	movq	%rax, %rdx
+	movq	%rdx, %rax
+	movq	%rax, %rsi
+	movq	%rsi, %rax
+	addq	$0, %rax
+	addq	$8, %rax
+	addq	$0, %rax
+	movq	%rax, %rdx
+	movq	$1, %rax
+	movq	%rdx, %rcx
 	movq	%rax, (%rcx)
-	movq	$0, %rax
-	movq	%rdi, %rcx
+	movq	%rsi, %rax
+	addq	$0, %rax
+	addq	$8, %rax
+	addq	$8, %rax
+	movq	%rax, %rdx
+	movq	$2, %rax
+	movq	%rdx, %rcx
 	movq	%rax, (%rcx)
-	jmp	_cond40
-	.text
-_body39:
-	movq	(%rsi), %rdx
-	addq	$2, %rdx
-	movq	%rdx, (%rsi)
-	movq	(%rdi), %rdx
-	addq	$1, %rdx
-	movq	%rdx, (%rdi)
-	jmp	_cond40
-	.text
-_cond40:
-	movq	(%rdi), %rdx
-	cmpq	$3, %rdx
-	setl	%dl
-	andq	$1, %rdx
-	cmpq	$0, %rdx
-	jne	_body39
-	jmp	_post38
-	.text
-_post38:
-	movq	(%rsi), %rdx
+	movq	%rsi, (%rdi)
+	movq	(%rdi), %rsi
+	movq	%rsi, %rax
+	movq	%rax, %rdx
+	pushq	%rsi
+	pushq	%rdx
+	movq	$1, %rsi
+	movq	%rdx, %rdi
+	callq	oat_assert_array_length
+	popq	%rdx
+	popq	%rsi
+	movq	%rsi, %rax
+	addq	$0, %rax
+	addq	$8, %rax
+	addq	$8, %rax
+	movq	%rax, %rdx
+	movq	(%rdx), %rdx
 	movq	%rdx, %rax
 	movq	%rbp, %rsp
 	popq	%rbp

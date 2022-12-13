@@ -1,140 +1,88 @@
 	.data
-	.globl	_str_arr1737
-_str_arr1737:
-	.asciz	"abc"
-	.data
-	.globl	_str_arr1741
-_str_arr1741:
-	.asciz	"def"
-	.data
-	.globl	_str_arr1749
-_str_arr1749:
-	.asciz	"789"
-	.data
-	.globl	_str_arr1753
-_str_arr1753:
-	.asciz	"123"
+	.globl	i
+i:
+	.quad	0
+	.text
+	.globl	f
+f:
+	pushq	%rbp
+	movq	%rsp, %rbp
+	subq	$8, %rsp
+	movq	%rsp, %r9 
+	subq	$8, %rsp
+	movq	%rsp, %rdx
+	subq	$8, %rsp
+	movq	%rsp, %r8 
+	movq	%rdi, (%r9 )
+	movq	%rsi, (%rdx)
+	movq	$0, %rax
+	movq	%r8 , %rcx
+	movq	%rax, (%rcx)
+	movq	(%r9 ), %rsi
+	cmpq	$1, %rsi
+	setge	%sil
+	andq	$1, %rsi
+	cmpq	$0, %rsi
+	jne	_then930
+	jmp	_else929
+	.text
+_else929:
+	movq	(%r9 ), %rsi
+	movq	(%rdx), %rdx
+	addq	%rsi, %rdx
+	movq	%rdx, (%r8 )
+	jmp	_merge928
+	.text
+_merge928:
+	movq	(%r8 ), %rdx
+	movq	%rdx, %rax
+	movq	%rbp, %rsp
+	popq	%rbp
+	retq	
+	.text
+_then930:
+	movq	(%rdx), %rdx
+	movq	(%r9 ), %rsi
+	subq	$1, %rsi
+	pushq	%r8 
+	pushq	%rsi
+	movq	%rsi, %rdi
+	movq	%rdx, %rsi
+	callq	f
+	popq	%rsi
+	popq	%r8 
+	movq	%rax, %rdx
+	addq	$1, %rdx
+	movq	%rdx, (%r8 )
+	jmp	_merge928
 	.text
 	.globl	program
 program:
 	pushq	%rbp
 	movq	%rsp, %rbp
 	subq	$8, %rsp
+	movq	%rsp, %rsi
+	subq	$8, %rsp
 	movq	%rsp, %rdx
-	pushq	%rdx
-	movq	$2, %rdi
-	callq	oat_alloc_array
-	popq	%rdx
-	movq	%rax, %rsi
-	movq	%rsi, %rax
-	movq	%rax, %rdi
-	pushq	%rdi
-	pushq	%rdx
-	movq	$2, %rdi
-	callq	oat_alloc_array
-	popq	%rdx
-	popq	%rdi
-	movq	%rax, %rsi
-	movq	%rsi, %rax
-	movq	%rax, %r9 
-	leaq	_str_arr1737(%rip), %rax
-	addq	$0, %rax
-	addq	$0, %rax
-	movq	%rax, %rsi
-	movq	%r9 , %rax
-	addq	$0, %rax
-	addq	$8, %rax
-	addq	$0, %rax
-	movq	%rax, %r8 
-	movq	%rsi, (%r8 )
-	leaq	_str_arr1741(%rip), %rax
-	addq	$0, %rax
-	addq	$0, %rax
-	movq	%rax, %rsi
-	movq	%r9 , %rax
-	addq	$0, %rax
-	addq	$8, %rax
-	addq	$8, %rax
-	movq	%rax, %r8 
-	movq	%rsi, (%r8 )
-	movq	%rdi, %rax
-	addq	$0, %rax
-	addq	$8, %rax
-	addq	$0, %rax
-	movq	%rax, %rsi
-	movq	%r9 , (%rsi)
-	pushq	%rdi
-	pushq	%rdx
-	movq	$2, %rdi
-	callq	oat_alloc_array
-	popq	%rdx
-	popq	%rdi
-	movq	%rax, %rsi
-	movq	%rsi, %rax
-	movq	%rax, %r9 
-	leaq	_str_arr1749(%rip), %rax
-	addq	$0, %rax
-	addq	$0, %rax
-	movq	%rax, %rsi
-	movq	%r9 , %rax
-	addq	$0, %rax
-	addq	$8, %rax
-	addq	$0, %rax
-	movq	%rax, %r8 
-	movq	%rsi, (%r8 )
-	leaq	_str_arr1753(%rip), %rax
-	addq	$0, %rax
-	addq	$0, %rax
-	movq	%rax, %rsi
-	movq	%r9 , %rax
-	addq	$0, %rax
-	addq	$8, %rax
-	addq	$8, %rax
-	movq	%rax, %r8 
-	movq	%rsi, (%r8 )
-	movq	%rdi, %rax
-	addq	$0, %rax
-	addq	$8, %rax
-	addq	$8, %rax
-	movq	%rax, %rsi
-	movq	%r9 , (%rsi)
-	movq	%rdi, (%rdx)
-	movq	(%rdx), %rsi
-	movq	%rsi, %rax
-	movq	%rax, %rdx
-	pushq	%rsi
-	pushq	%rdx
-	movq	$1, %rsi
-	movq	%rdx, %rdi
-	callq	oat_assert_array_length
-	popq	%rdx
-	popq	%rsi
-	movq	%rsi, %rax
-	addq	$0, %rax
-	addq	$8, %rax
-	addq	$8, %rax
-	movq	%rax, %rdx
-	movq	(%rdx), %rsi
-	movq	%rsi, %rax
-	movq	%rax, %rdx
-	pushq	%rsi
-	pushq	%rdx
-	movq	$1, %rsi
-	movq	%rdx, %rdi
-	callq	oat_assert_array_length
-	popq	%rdx
-	popq	%rsi
-	movq	%rsi, %rax
-	addq	$0, %rax
-	addq	$8, %rax
-	addq	$8, %rax
-	movq	%rax, %rdx
+	movq	$3, %rax
+	movq	%rsi, %rcx
+	movq	%rax, (%rcx)
+	movq	$3, %rax
+	movq	%rdx, %rcx
+	movq	%rax, (%rcx)
 	movq	(%rdx), %rdx
-	pushq	%rdx
-	movq	%rdx, %rdi
-	callq	print_string
-	popq	%rdx
-	movq	$0, %rax
+	movq	(%rsi), %rsi
+	pushq	%rsi
+	movq	%rsi, %rdi
+	movq	%rdx, %rsi
+	callq	f
+	popq	%rsi
+	movq	%rax, %rdx
+	leaq	i(%rip), %rax
+	movq	(%rax), %rax
+	movq	%rax, %rsi
+	addq	%rsi, %rdx
+	movq	%rdx, %rax
 	movq	%rbp, %rsp
 	popq	%rbp
 	retq	

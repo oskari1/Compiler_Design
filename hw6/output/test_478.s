@@ -1,18 +1,24 @@
 	.text
-	.globl	main
-main:
+	.globl	program
+program:
 	pushq	%rbp
 	movq	%rsp, %rbp
-	pushq	%rdi
-	movq	%rsi, %rdi
-	popq	%rsi
-	subq	$8, %rsp
-	movq	%rsp, %rdx
-	movq	$17, %rax
-	movq	%rdx, %rcx
-	movq	%rax, (%rcx)
-	movq	(%rdx), %rdx
-	movq	%rdx, %rax
+	jmp	_then56
+	.text
+_else55:
+	movq	$4, %rax
+	movq	%rbp, %rsp
+	popq	%rbp
+	retq	
+	.text
+_merge54:
+	movq	$0, %rax
+	movq	%rbp, %rsp
+	popq	%rbp
+	retq	
+	.text
+_then56:
+	movq	$9, %rax
 	movq	%rbp, %rsp
 	popq	%rbp
 	retq	

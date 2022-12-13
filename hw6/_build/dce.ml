@@ -35,6 +35,7 @@ let dce_block (lb:uid -> Liveness.Fact.t)
       in
       match insn with 
       | Call (_, _, _) -> false
+      | Store (_, _, Gid _) -> false
       | Store (_, _, Id dst) ->
         if is_live dst || maybe_aliased dst then false 
         else true

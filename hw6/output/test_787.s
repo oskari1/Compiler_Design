@@ -4,76 +4,73 @@ program:
 	pushq	%rbp
 	movq	%rsp, %rbp
 	subq	$8, %rsp
-	movq	%rsp, %rdi
+	movq	%rsp, %r10
+	subq	$8, %rsp
+	movq	%rsp, %r9 
+	subq	$8, %rsp
+	movq	%rsp, %r8 
+	movq	%rdi, (%r10)
+	movq	%rsi, (%r9 )
+	movq	$1, %rax
+	movq	%r8 , %rcx
+	movq	%rax, (%rcx)
+	jmp	_cond2358
+	.text
+_body2357:
+	movq	(%r9 ), %rdi
+	movq	(%r8 ), %rsi
+	movq	%rdi, %rax
+	movq	%rax, %rdx
+	pushq	%r10
+	pushq	%r9 
+	pushq	%r8 
 	pushq	%rdi
-	movq	$16, %rdi
-	callq	oat_malloc
+	pushq	%rsi
+	pushq	%rdx
+	movq	%rdx, %rdi
+	callq	oat_assert_array_length
+	popq	%rdx
+	popq	%rsi
 	popq	%rdi
-	movq	%rax, %rdx
-	movq	%rdx, %rax
-	movq	%rax, %rdx
-	movq	%rdx, %rax
-	addq	$0, %rax
-	addq	$0, %rax
-	movq	%rax, %rsi
-	movq	$3, %rax
-	movq	%rsi, %rcx
-	movq	%rax, (%rcx)
-	movq	%rdx, %rax
+	popq	%r8 
+	popq	%r9 
+	popq	%r10
+	movq	%rdi, %rax
 	addq	$0, %rax
 	addq	$8, %rax
-	movq	%rax, %rsi
-	movq	$4, %rax
-	movq	%rsi, %rcx
-	movq	%rax, (%rcx)
-	movq	%rdx, (%rdi)
-	movq	(%rdi), %rdx
-	movq	%rdx, %rax
-	addq	$0, %rax
-	addq	$0, %rax
-	movq	%rax, %rdx
-	movq	$5, %rax
-	movq	%rdx, %rcx
-	movq	%rax, (%rcx)
-	movq	(%rdi), %rdx
-	movq	%rdx, %rax
-	addq	$0, %rax
-	addq	$8, %rax
-	movq	%rax, %r8 
-	movq	(%rdi), %rdx
-	movq	%rdx, %rax
-	addq	$0, %rax
-	addq	$0, %rax
-	movq	%rax, %rdx
-	movq	(%rdx), %rsi
-	movq	(%rdi), %rdx
-	movq	%rdx, %rax
-	addq	$0, %rax
-	addq	$8, %rax
+	movq	%rax, %rcx
+	movq	%rsi, %rax
+	imulq	$8, %rax
+	addq	%rcx, %rax
 	movq	%rax, %rdx
 	movq	(%rdx), %rdx
-	addq	%rsi, %rdx
-	addq	$3, %rdx
+	pushq	%r10
+	pushq	%r9 
+	pushq	%r8 
+	pushq	%rdx
+	movq	%rdx, %rdi
+	callq	print_string
+	popq	%rdx
+	popq	%r8 
+	popq	%r9 
+	popq	%r10
+	movq	(%r8 ), %rdx
+	addq	$1, %rdx
 	movq	%rdx, (%r8 )
-	movq	(%rdi), %rdx
-	movq	%rdx, %rax
-	addq	$0, %rax
-	addq	$0, %rax
-	movq	%rax, %rsi
-	movq	(%rdi), %rdx
-	movq	%rdx, %rax
-	addq	$0, %rax
-	addq	$8, %rax
-	movq	%rax, %rdx
-	movq	(%rdx), %rdx
-	addq	$4, %rdx
-	movq	%rdx, (%rsi)
-	movq	(%rdi), %rdx
-	movq	%rdx, %rax
-	addq	$0, %rax
-	addq	$0, %rax
-	movq	%rax, %rdx
-	movq	(%rdx), %rdx
+	jmp	_cond2358
+	.text
+_cond2358:
+	movq	(%r8 ), %rdx
+	movq	(%r10), %rsi
+	cmpq	%rsi, %rdx
+	setl	%dl
+	andq	$1, %rdx
+	cmpq	$0, %rdx
+	jne	_body2357
+	jmp	_post2356
+	.text
+_post2356:
+	movq	(%r10), %rdx
 	movq	%rdx, %rax
 	movq	%rbp, %rsp
 	popq	%rbp

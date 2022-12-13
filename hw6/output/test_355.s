@@ -1,21 +1,21 @@
+	.data
+	.globl	_str_arr754
+_str_arr754:
+	.asciz	"abc"
 	.text
-	.globl	main
-main:
+	.globl	program
+program:
 	pushq	%rbp
 	movq	%rsp, %rbp
-	pushq	%rdi
-	movq	%rsi, %rdi
-	popq	%rsi
-	jmp	else
-	.text
-else:
-	movq	$9, %rax
-	movq	%rbp, %rsp
-	popq	%rbp
-	retq	
-	.text
-then:
-	movq	$7, %rax
+	leaq	_str_arr754(%rip), %rax
+	addq	$0, %rax
+	addq	$0, %rax
+	movq	%rax, %rdx
+	pushq	%rdx
+	movq	%rdx, %rdi
+	callq	print_string
+	popq	%rdx
+	movq	$0, %rax
 	movq	%rbp, %rsp
 	popq	%rbp
 	retq	

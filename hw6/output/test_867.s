@@ -1,57 +1,64 @@
 	.text
-	.globl	bar
-bar:
+	.globl	program
+program:
 	pushq	%rbp
 	movq	%rsp, %rbp
-	subq	$24, %rsp
-	movq	%rcx, -8(%rbp)
-	pushq	16(%rbp)
-	popq	-16(%rbp)
-	pushq	24(%rbp)
-	popq	-24(%rbp)
-	addq	%rdi, %rsi
-	addq	%rsi, %rdx
-	addq	-8(%rbp), %rdx
-	addq	%r8 , %rdx
-	addq	%r9 , %rdx
-	addq	-16(%rbp), %rdx
-	addq	-24(%rbp), %rdx
+	subq	$8, %rsp
+	movq	%rsp, %rdx
+	pushq	%rdx
+	movq	$5, %rdi
+	callq	oat_alloc_array
+	popq	%rdx
+	movq	%rax, %rsi
+	movq	%rsi, %rax
+	movq	%rax, %rdi
+	movq	%rdi, %rax
+	addq	$0, %rax
+	addq	$8, %rax
+	addq	$0, %rax
+	movq	%rax, %rsi
+	movq	$3, %rax
+	movq	%rsi, %rcx
+	movq	%rax, (%rcx)
+	movq	%rdi, %rax
+	addq	$0, %rax
+	addq	$8, %rax
+	addq	$8, %rax
+	movq	%rax, %rsi
+	movq	$4, %rax
+	movq	%rsi, %rcx
+	movq	%rax, (%rcx)
+	movq	%rdi, %rax
+	addq	$0, %rax
+	addq	$8, %rax
+	addq	$16, %rax
+	movq	%rax, %rsi
+	movq	$5, %rax
+	movq	%rsi, %rcx
+	movq	%rax, (%rcx)
+	movq	%rdi, %rax
+	addq	$0, %rax
+	addq	$8, %rax
+	addq	$24, %rax
+	movq	%rax, %rsi
+	movq	$6, %rax
+	movq	%rsi, %rcx
+	movq	%rax, (%rcx)
+	movq	%rdi, %rax
+	addq	$0, %rax
+	addq	$8, %rax
+	addq	$32, %rax
+	movq	%rax, %rsi
+	movq	$7, %rax
+	movq	%rsi, %rcx
+	movq	%rax, (%rcx)
+	movq	%rdi, (%rdx)
+	movq	(%rdx), %rdx
 	movq	%rdx, %rax
-	movq	%rbp, %rsp
-	popq	%rbp
-	retq	
-	.text
-	.globl	foo
-foo:
-	pushq	%rbp
-	movq	%rsp, %rbp
-	pushq	%rdi
-	pushq	%rdi
-	pushq	%rdi
-	movq	%rdi, %r9 
-	movq	%rdi, %r8 
-	movq	%rdi, %rcx
-	movq	%rdi, %rdx
-	movq	%rdi, %rsi
-	callq	bar
-	addq	$16, %rsp
-	popq	%rdi
+	addq	$0, %rax
+	addq	$0, %rax
 	movq	%rax, %rdx
-	movq	%rdx, %rax
-	movq	%rbp, %rsp
-	popq	%rbp
-	retq	
-	.text
-	.globl	main
-main:
-	pushq	%rbp
-	movq	%rsp, %rbp
-	pushq	%rdi
-	movq	%rsi, %rdi
-	popq	%rsi
-	movq	$3, %rdi
-	callq	foo
-	movq	%rax, %rdx
+	movq	(%rdx), %rdx
 	movq	%rdx, %rax
 	movq	%rbp, %rsp
 	popq	%rbp

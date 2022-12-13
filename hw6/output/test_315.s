@@ -1,17 +1,24 @@
 	.text
-	.globl	main
-main:
+	.globl	program
+program:
 	pushq	%rbp
 	movq	%rsp, %rbp
-	movq	%rdi, %rdx
-	movq	%rsi, %rdx
-	jmp	next
+	jmp	_then8241
 	.text
-end:
-	movq	$17, %rax
+_else8240:
+	movq	$4, %rax
 	movq	%rbp, %rsp
 	popq	%rbp
 	retq	
 	.text
-next:
-	jmp	end
+_merge8239:
+	movq	$0, %rax
+	movq	%rbp, %rsp
+	popq	%rbp
+	retq	
+	.text
+_then8241:
+	movq	$9, %rax
+	movq	%rbp, %rsp
+	popq	%rbp
+	retq	

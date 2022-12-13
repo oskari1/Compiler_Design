@@ -1,30 +1,65 @@
-	.data
-	.globl	y
-y:
-	.quad	1
 	.text
 	.globl	program
 program:
 	pushq	%rbp
 	movq	%rsp, %rbp
-	leaq	y(%rip), %rax
-	movq	(%rax), %rax
+	subq	$8, %rsp
+	movq	%rsp, %rdx
+	pushq	%rdx
+	movq	$5, %rdi
+	callq	oat_alloc_array
+	popq	%rdx
+	movq	%rax, %rsi
+	movq	%rsi, %rax
+	movq	%rax, %rdi
+	movq	%rdi, %rax
+	addq	$0, %rax
+	addq	$8, %rax
+	addq	$0, %rax
+	movq	%rax, %rsi
+	movq	$3, %rax
+	movq	%rsi, %rcx
+	movq	%rax, (%rcx)
+	movq	%rdi, %rax
+	addq	$0, %rax
+	addq	$8, %rax
+	addq	$8, %rax
+	movq	%rax, %rsi
+	movq	$4, %rax
+	movq	%rsi, %rcx
+	movq	%rax, (%rcx)
+	movq	%rdi, %rax
+	addq	$0, %rax
+	addq	$8, %rax
+	addq	$16, %rax
+	movq	%rax, %rsi
+	movq	$5, %rax
+	movq	%rsi, %rcx
+	movq	%rax, (%rcx)
+	movq	%rdi, %rax
+	addq	$0, %rax
+	addq	$8, %rax
+	addq	$24, %rax
+	movq	%rax, %rsi
+	movq	$6, %rax
+	movq	%rsi, %rcx
+	movq	%rax, (%rcx)
+	movq	%rdi, %rax
+	addq	$0, %rax
+	addq	$8, %rax
+	addq	$32, %rax
+	movq	%rax, %rsi
+	movq	$7, %rax
+	movq	%rsi, %rcx
+	movq	%rax, (%rcx)
+	movq	%rdi, (%rdx)
+	movq	(%rdx), %rdx
+	movq	%rdx, %rax
+	addq	$0, %rax
+	addq	$0, %rax
 	movq	%rax, %rdx
-	cmpq	$0, %rdx
-	jne	_then8155
-	jmp	_else8154
-	.text
-_else8154:
-	jmp	_merge8153
-	.text
-_merge8153:
-	movq	$15, %rax
-	movq	%rbp, %rsp
-	popq	%rbp
-	retq	
-	.text
-_then8155:
-	movq	$17, %rax
+	movq	(%rdx), %rdx
+	movq	%rdx, %rax
 	movq	%rbp, %rsp
 	popq	%rbp
 	retq	

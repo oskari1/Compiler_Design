@@ -1,37 +1,25 @@
+	.data
+	.globl	_str_arr2339
+_str_arr2339:
+	.asciz	"Hello world!"
 	.text
-	.globl	bar
-bar:
+	.globl	program
+program:
 	pushq	%rbp
 	movq	%rsp, %rbp
-	movq	%rdi, %rdx
-	addq	%rsi, %rdx
-	movq	%rdx, %rax
-	movq	%rbp, %rsp
-	popq	%rbp
-	retq	
-	.text
-	.globl	foo
-foo:
-	pushq	%rbp
-	movq	%rsp, %rbp
-	pushq	%rdi
-	movq	%rdi, %rsi
-	callq	bar
-	popq	%rdi
-	movq	%rax, %rdx
-	movq	%rdx, %rax
-	movq	%rbp, %rsp
-	popq	%rbp
-	retq	
-	.text
-	.globl	main
-main:
-	pushq	%rbp
-	movq	%rsp, %rbp
-	movq	$17, %rdi
-	callq	foo
-	movq	%rax, %rdx
-	movq	%rdx, %rax
+	subq	$8, %rsp
+	movq	%rsp, %rdx
+	leaq	_str_arr2339(%rip), %rax
+	addq	$0, %rax
+	addq	$0, %rax
+	movq	%rax, %rsi
+	movq	%rsi, (%rdx)
+	movq	(%rdx), %rdx
+	pushq	%rdx
+	movq	%rdx, %rdi
+	callq	print_string
+	popq	%rdx
+	movq	$0, %rax
 	movq	%rbp, %rsp
 	popq	%rbp
 	retq	

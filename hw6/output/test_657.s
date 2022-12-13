@@ -1,24 +1,30 @@
+	.data
+	.globl	y
+y:
+	.quad	1
 	.text
 	.globl	program
 program:
 	pushq	%rbp
 	movq	%rsp, %rbp
-	jmp	_then8254
+	leaq	y(%rip), %rax
+	movq	(%rax), %rax
+	movq	%rax, %rdx
+	cmpq	$0, %rdx
+	jne	_then8155
+	jmp	_else8154
 	.text
-_else8253:
-	movq	$46, %rax
+_else8154:
+	jmp	_merge8153
+	.text
+_merge8153:
+	movq	$15, %rax
 	movq	%rbp, %rsp
 	popq	%rbp
 	retq	
 	.text
-_merge8252:
-	movq	$0, %rax
-	movq	%rbp, %rsp
-	popq	%rbp
-	retq	
-	.text
-_then8254:
-	movq	$23, %rax
+_then8155:
+	movq	$17, %rax
 	movq	%rbp, %rsp
 	popq	%rbp
 	retq	

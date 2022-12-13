@@ -1,36 +1,18 @@
-	.data
-	.globl	b
-b:
-	.quad	1
 	.text
-	.globl	program
-program:
+	.globl	main
+main:
 	pushq	%rbp
 	movq	%rsp, %rbp
-	subq	$8, %rsp
-	movq	%rsp, %rdx
-	movq	$0, %rax
-	movq	%rdx, %rcx
-	movq	%rax, (%rcx)
-	leaq	b(%rip), %rax
-	movq	(%rax), %rax
-	movq	%rax, %rsi
-	cmpq	$0, %rsi
-	jne	_then8309
-	jmp	_else8308
+	pushq	%rdi
+	movq	%rsi, %rdi
+	popq	%rsi
+	jmp	next
 	.text
-_else8308:
-	jmp	_merge8307
-	.text
-_merge8307:
-	movq	(%rdx), %rdx
-	movq	%rdx, %rax
+end:
+	movq	$17, %rax
 	movq	%rbp, %rsp
 	popq	%rbp
 	retq	
 	.text
-_then8309:
-	movq	$1, %rax
-	movq	%rdx, %rcx
-	movq	%rax, (%rcx)
-	jmp	_merge8307
+next:
+	jmp	end

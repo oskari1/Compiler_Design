@@ -1,47 +1,76 @@
+	.data
+	.globl	test1
+test1:
+	.quad	0
+	.quad	0
+	.quad	100
+	.data
+	.globl	test2
+test2:
+	.quad	test1
+	.quad	0
+	.quad	10
+	.data
+	.globl	test3
+test3:
+	.quad	0
+	.quad	0
+	.quad	1
+	.data
+	.globl	test
+test:
+	.quad	test2
+	.quad	test3
+	.quad	5
 	.text
-	.globl	gcd_rec
-gcd_rec:
+	.globl	sum_tree
+sum_tree:
 	pushq	%rbp
 	movq	%rsp, %rbp
-	subq	$8, %rsp
-	movq	%rsp, %r8 
-	movq	%rdi, (%r8 )
-	cmpq	$0, %rsi
-	setne	%dl
+	cmpq	$0, %rdi
+	sete	%dl
 	andq	$1, %rdx
 	cmpq	$0, %rdx
-	jne	neq0
-	jmp	eq0
+	jne	then
+	jmp	else
 	.text
-eq0:
+else:
 	movq	%rdi, %rax
+	addq	$0, %rax
+	addq	$16, %rax
+	movq	%rax, %rdx
+	movq	(%rdx), %rsi
+	movq	%rdi, %rax
+	addq	$0, %rax
+	addq	$8, %rax
+	movq	%rax, %rdx
+	movq	(%rdx), %rdx
+	pushq	%rdi
+	pushq	%rsi
+	movq	%rdx, %rdi
+	callq	sum_tree
+	popq	%rsi
+	popq	%rdi
+	movq	%rax, %rdx
+	addq	%rdx, %rsi
+	movq	%rdi, %rax
+	addq	$0, %rax
+	addq	$0, %rax
+	movq	%rax, %rdx
+	movq	(%rdx), %rdx
+	pushq	%rsi
+	movq	%rdx, %rdi
+	callq	sum_tree
+	popq	%rsi
+	movq	%rax, %rdx
+	addq	%rsi, %rdx
+	movq	%rdx, %rax
 	movq	%rbp, %rsp
 	popq	%rbp
 	retq	
 	.text
-neq0:
-	movq	(%r8 ), %rdx
-	movq	%rdx, %rdi
-	subq	%rsi, %rdi
-	movq	%rdi, (%r8 )
-	cmpq	%rsi, %rdi
-	setg	%dl
-	andq	$1, %rdx
-	cmpq	$0, %rdx
-	jne	neq0
-	jmp	recurse
-	.text
-recurse:
-	pushq	%rdi
-	pushq	%rsi
-	pushq	%rdi
-	movq	%rsi, %rdi
-	popq	%rsi
-	callq	gcd_rec
-	popq	%rsi
-	popq	%rdi
-	movq	%rax, %rdx
-	movq	%rdx, %rax
+then:
+	movq	$0, %rax
 	movq	%rbp, %rsp
 	popq	%rbp
 	retq	
@@ -50,12 +79,8 @@ recurse:
 main:
 	pushq	%rbp
 	movq	%rsp, %rbp
-	pushq	%rdi
-	movq	%rsi, %rdi
-	popq	%rsi
-	movq	$34, %rsi
-	movq	$424, %rdi
-	callq	gcd_rec
+	leaq	test(%rip), %rdi
+	callq	sum_tree
 	movq	%rax, %rdx
 	movq	%rdx, %rax
 	movq	%rbp, %rsp

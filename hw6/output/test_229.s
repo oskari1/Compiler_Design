@@ -1,63 +1,59 @@
 	.text
-	.globl	foo
-foo:
-	pushq	%rbp
-	movq	%rsp, %rbp
-	movq	$42, %rax
-	movq	%rbp, %rsp
-	popq	%rbp
-	retq	
-	.text
-	.globl	bar
-bar:
-	pushq	%rbp
-	movq	%rsp, %rbp
-	movq	$0, %rax
-	movq	%rbp, %rsp
-	popq	%rbp
-	retq	
-	.text
-	.globl	main
-main:
+	.globl	fact
+fact:
 	pushq	%rbp
 	movq	%rsp, %rbp
 	subq	$8, %rsp
 	movq	%rsp, %rsi
 	subq	$8, %rsp
-	movq	%rsp, %rdx
-	movq	$0, %rax
-	movq	%rsi, %rcx
+	movq	%rsp, %r8 
+	movq	%rdi, (%rsi)
+	movq	$1, %rax
+	movq	%r8 , %rcx
 	movq	%rax, (%rcx)
-	movq	$100, %rax
-	movq	%rdx, %rcx
-	movq	%rax, (%rcx)
-	movq	(%rdx), %rdx
+	jmp	_cond793
+	.text
+_body792:
+	movq	(%r8 ), %rdi
+	movq	(%rsi), %rdx
+	imulq	%rdi, %rdx
+	movq	%rdx, (%r8 )
+	movq	(%rsi), %rdx
+	subq	$1, %rdx
+	movq	%rdx, (%rsi)
+	jmp	_cond793
+	.text
+_cond793:
+	movq	(%rsi), %rdx
 	cmpq	$0, %rdx
-	setne	%dl
+	setg	%dl
 	andq	$1, %rdx
 	cmpq	$0, %rdx
-	jne	then
-	jmp	else
+	jne	_body792
+	jmp	_post791
 	.text
-else:
-	pushq	%rsi
-	callq	bar
-	popq	%rsi
-	movq	%rax, %rdx
-	movq	%rdx, (%rsi)
-	jmp	end
-	.text
-end:
-	movq	(%rsi), %rdx
+_post791:
+	movq	(%r8 ), %rdx
 	movq	%rdx, %rax
 	movq	%rbp, %rsp
 	popq	%rbp
 	retq	
 	.text
-then:
-	pushq	%rsi
-	callq	foo
-	popq	%rsi
+	.globl	program
+program:
+	pushq	%rbp
+	movq	%rsp, %rbp
+	movq	$5, %rdi
+	callq	fact
 	movq	%rax, %rdx
-	movq	%rdx, (%rsi)
-	jmp	end
+	movq	%rdx, %rdi
+	callq	string_of_int
+	movq	%rax, %rdx
+	pushq	%rdx
+	movq	%rdx, %rdi
+	callq	print_string
+	popq	%rdx
+	movq	$0, %rax
+	movq	%rbp, %rsp
+	popq	%rbp
+	retq	

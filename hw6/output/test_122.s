@@ -1,87 +1,112 @@
 	.data
-	.globl	i
-i:
-	.quad	0
+	.globl	c
+c:
+	.quad	_global_struct7166
+	.data
+	.globl	_global_struct7166
+_global_struct7166:
+	.quad	10
+	.quad	20
+	.quad	30
+	.quad	rot
 	.text
-	.globl	f
-f:
+	.globl	rot
+rot:
 	pushq	%rbp
 	movq	%rsp, %rbp
 	subq	$8, %rsp
+	movq	%rsp, %r9 
+	subq	$8, %rsp
 	movq	%rsp, %r8 
-	subq	$8, %rsp
-	movq	%rsp, %rdx
-	subq	$8, %rsp
-	movq	%rsp, %rdi
-	movq	%rdi, (%r8 )
-	movq	%rsi, (%rdx)
-	movq	$0, %rax
-	movq	%rdi, %rcx
-	movq	%rax, (%rcx)
-	movq	(%r8 ), %rsi
-	cmpq	$1, %rsi
-	setge	%sil
-	andq	$1, %rsi
-	cmpq	$0, %rsi
-	jne	_then930
-	jmp	_else929
-	.text
-_else929:
-	movq	(%r8 ), %rsi
-	movq	(%rdx), %rdx
-	addq	%rsi, %rdx
-	movq	%rdx, (%rdi)
-	jmp	_merge928
-	.text
-_merge928:
-	movq	(%rdi), %rdx
+	movq	%rdi, (%r9 )
+	pushq	%r9 
+	pushq	%r8 
+	movq	$32, %rdi
+	callq	oat_malloc
+	popq	%r8 
+	popq	%r9 
+	movq	%rax, %rdx
+	movq	%rdx, %rax
+	movq	%rax, %rdx
+	movq	(%r9 ), %rsi
+	movq	%rsi, %rax
+	addq	$0, %rax
+	addq	$8, %rax
+	movq	%rax, %rsi
+	movq	(%rsi), %rsi
+	movq	%rdx, %rax
+	addq	$0, %rax
+	addq	$0, %rax
+	movq	%rax, %rdi
+	movq	%rsi, (%rdi)
+	movq	(%r9 ), %rsi
+	movq	%rsi, %rax
+	addq	$0, %rax
+	addq	$16, %rax
+	movq	%rax, %rsi
+	movq	(%rsi), %rsi
+	movq	%rdx, %rax
+	addq	$0, %rax
+	addq	$8, %rax
+	movq	%rax, %rdi
+	movq	%rsi, (%rdi)
+	movq	(%r9 ), %rsi
+	movq	%rsi, %rax
+	addq	$0, %rax
+	addq	$0, %rax
+	movq	%rax, %rsi
+	movq	(%rsi), %rsi
+	movq	%rdx, %rax
+	addq	$0, %rax
+	addq	$16, %rax
+	movq	%rax, %rdi
+	movq	%rsi, (%rdi)
+	movq	(%r9 ), %rsi
+	movq	%rsi, %rax
+	addq	$0, %rax
+	addq	$24, %rax
+	movq	%rax, %rsi
+	movq	(%rsi), %rsi
+	movq	%rdx, %rax
+	addq	$0, %rax
+	addq	$24, %rax
+	movq	%rax, %rdi
+	movq	%rsi, (%rdi)
+	movq	%rdx, (%r8 )
+	movq	(%r8 ), %rdx
 	movq	%rdx, %rax
 	movq	%rbp, %rsp
 	popq	%rbp
 	retq	
 	.text
-_then930:
-	movq	(%rdx), %rdx
-	movq	(%r8 ), %rsi
-	subq	$1, %rsi
-	pushq	%rdi
-	pushq	%rsi
-	movq	%rsi, %rdi
-	movq	%rdx, %rsi
-	callq	f
-	popq	%rsi
-	popq	%rdi
-	movq	%rax, %rdx
-	addq	$1, %rdx
-	movq	%rdx, (%rdi)
-	jmp	_merge928
-	.text
 	.globl	program
 program:
 	pushq	%rbp
 	movq	%rsp, %rbp
-	subq	$8, %rsp
-	movq	%rsp, %rsi
-	subq	$8, %rsp
-	movq	%rsp, %rdx
-	movq	$3, %rax
-	movq	%rsi, %rcx
-	movq	%rax, (%rcx)
-	movq	$3, %rax
-	movq	%rdx, %rcx
-	movq	%rax, (%rcx)
-	movq	(%rdx), %rdx
-	movq	(%rsi), %rsi
-	pushq	%rsi
-	movq	%rsi, %rdi
-	movq	%rdx, %rsi
-	callq	f
-	popq	%rsi
+	leaq	c(%rip), %rax
+	movq	(%rax), %rax
 	movq	%rax, %rdx
-	leaq	i(%rip), %rax
+	movq	%rdx, %rax
+	addq	$0, %rax
+	addq	$24, %rax
+	movq	%rax, %rdx
+	movq	(%rdx), %rdx
+	leaq	c(%rip), %rax
 	movq	(%rax), %rax
 	movq	%rax, %rsi
-	addq	%rsi, %rdx
+	pushq	%r15
+	movq	%rdx, %r15
+	pushq	%rsi
+	movq	%rsi, %rdi
+	callq	*%r15
+	popq	%rsi
+	popq	%r15
+	movq	%rax, %rdx
+	movq	%rdx, %rax
+	addq	$0, %rax
+	addq	$0, %rax
+	movq	%rax, %rdx
+	movq	(%rdx), %rdx
 	movq	%rdx, %rax
 	movq	%rbp, %rsp
 	popq	%rbp

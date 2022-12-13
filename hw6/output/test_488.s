@@ -1,36 +1,106 @@
 	.text
-	.globl	bar
-bar:
+	.globl	f1
+f1:
 	pushq	%rbp
 	movq	%rsp, %rbp
-	subq	$24, %rsp
-	movq	%rcx, -8(%rbp)
-	pushq	16(%rbp)
-	popq	-16(%rbp)
-	pushq	24(%rbp)
-	popq	-24(%rbp)
-	movq	-16(%rbp), %rax
+	callq	f2
+	movq	%rax, %rdx
+	movq	%rdx, %rax
 	movq	%rbp, %rsp
 	popq	%rbp
 	retq	
 	.text
-	.globl	main
-main:
+	.globl	f2
+f2:
 	pushq	%rbp
 	movq	%rsp, %rbp
-	pushq	%rdi
-	movq	%rsi, %rdi
-	popq	%rsi
-	pushq	$8
-	pushq	$7
-	movq	$6, %r9 
-	movq	$5, %r8 
-	movq	$4, %rcx
-	movq	$3, %rdx
-	movq	$2, %rsi
-	movq	$1, %rdi
-	callq	bar
-	addq	$16, %rsp
+	callq	f3
+	movq	%rax, %rdx
+	movq	%rdx, %rax
+	movq	%rbp, %rsp
+	popq	%rbp
+	retq	
+	.text
+	.globl	f3
+f3:
+	pushq	%rbp
+	movq	%rsp, %rbp
+	callq	f4
+	movq	%rax, %rdx
+	movq	%rdx, %rax
+	movq	%rbp, %rsp
+	popq	%rbp
+	retq	
+	.text
+	.globl	f4
+f4:
+	pushq	%rbp
+	movq	%rsp, %rbp
+	callq	f5
+	movq	%rax, %rdx
+	movq	%rdx, %rax
+	movq	%rbp, %rsp
+	popq	%rbp
+	retq	
+	.text
+	.globl	f5
+f5:
+	pushq	%rbp
+	movq	%rsp, %rbp
+	callq	f6
+	movq	%rax, %rdx
+	movq	%rdx, %rax
+	movq	%rbp, %rsp
+	popq	%rbp
+	retq	
+	.text
+	.globl	f6
+f6:
+	pushq	%rbp
+	movq	%rsp, %rbp
+	callq	f7
+	movq	%rax, %rdx
+	movq	%rdx, %rax
+	movq	%rbp, %rsp
+	popq	%rbp
+	retq	
+	.text
+	.globl	f7
+f7:
+	pushq	%rbp
+	movq	%rsp, %rbp
+	callq	f8
+	movq	%rax, %rdx
+	movq	%rdx, %rax
+	movq	%rbp, %rsp
+	popq	%rbp
+	retq	
+	.text
+	.globl	f8
+f8:
+	pushq	%rbp
+	movq	%rsp, %rbp
+	callq	f9
+	movq	%rax, %rdx
+	movq	%rdx, %rax
+	movq	%rbp, %rsp
+	popq	%rbp
+	retq	
+	.text
+	.globl	f9
+f9:
+	pushq	%rbp
+	movq	%rsp, %rbp
+	movq	$31, %rax
+	movq	%rbp, %rsp
+	popq	%rbp
+	retq	
+	.text
+	.globl	program
+program:
+	pushq	%rbp
+	movq	%rsp, %rbp
+	callq	f1
 	movq	%rax, %rdx
 	movq	%rdx, %rax
 	movq	%rbp, %rsp

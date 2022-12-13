@@ -1,21 +1,16 @@
+	.data
+	.globl	x
+x:
+	.quad	42
 	.text
-	.globl	main
-main:
+	.globl	program
+program:
 	pushq	%rbp
 	movq	%rsp, %rbp
-	pushq	%rdi
-	movq	%rsi, %rdi
-	popq	%rsi
-	jmp	then
-	.text
-else:
-	movq	$9, %rax
-	movq	%rbp, %rsp
-	popq	%rbp
-	retq	
-	.text
-then:
-	movq	$7, %rax
+	leaq	x(%rip), %rax
+	movq	(%rax), %rax
+	movq	%rax, %rdx
+	movq	%rdx, %rax
 	movq	%rbp, %rsp
 	popq	%rbp
 	retq	

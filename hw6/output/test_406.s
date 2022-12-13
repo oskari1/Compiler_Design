@@ -1,101 +1,52 @@
 	.text
-	.globl	baz
-baz:
+	.globl	program
+program:
 	pushq	%rbp
 	movq	%rsp, %rbp
-	subq	$24, %rsp
-	movq	%rcx, -8(%rbp)
-	pushq	16(%rbp)
-	popq	-16(%rbp)
-	pushq	24(%rbp)
-	popq	-24(%rbp)
-	addq	%rdi, %rsi
-	addq	%rsi, %rdx
-	addq	-8(%rbp), %rdx
-	addq	%r8 , %rdx
-	addq	%r9 , %rdx
-	addq	-16(%rbp), %rdx
-	addq	-24(%rbp), %rdx
-	movq	%rdx, %rax
-	movq	%rbp, %rsp
-	popq	%rbp
-	retq	
-	.text
-	.globl	bar
-bar:
-	pushq	%rbp
-	movq	%rsp, %rbp
-	subq	$32, %rsp
-	movq	%rcx, -8(%rbp)
-	pushq	16(%rbp)
-	popq	-16(%rbp)
-	pushq	24(%rbp)
-	popq	-24(%rbp)
-	movq	%rdi, %rax
-	addq	%rsi, %rax
-	movq	%rax, -32(%rbp)
-	movq	-32(%rbp), %rsi
-	addq	%rdx, %rsi
-	movq	%rsi, %rdi
-	addq	-8(%rbp), %rdi
-	movq	%rdi, %rdx
-	addq	%r8 , %rdx
-	pushq	%r9 
-	pushq	%r8 
+	subq	$8, %rsp
+	movq	%rsp, %rdi
 	pushq	%rdi
-	pushq	%rdx
-	pushq	-24(%rbp)
-	pushq	-16(%rbp)
-	movq	%rdx, %rcx
-	movq	%rdi, %rdx
-	movq	-32(%rbp), %rdi
-	callq	baz
-	addq	$16, %rsp
-	popq	%rdx
+	movq	$24, %rdi
+	callq	oat_malloc
 	popq	%rdi
-	popq	%r8 
-	popq	%r9 
+	movq	%rax, %rdx
+	movq	%rdx, %rax
+	movq	%rax, %rdx
+	movq	%rdx, %rax
+	addq	$0, %rax
+	addq	$0, %rax
 	movq	%rax, %rsi
-	addq	%r9 , %rdx
-	addq	-16(%rbp), %rdx
-	addq	-24(%rbp), %rdx
+	movq	$3, %rax
+	movq	%rsi, %rcx
+	movq	%rax, (%rcx)
+	movq	%rdx, %rax
+	addq	$0, %rax
+	addq	$8, %rax
+	movq	%rax, %rsi
+	movq	$4, %rax
+	movq	%rsi, %rcx
+	movq	%rax, (%rcx)
+	movq	%rdx, %rax
+	addq	$0, %rax
+	addq	$16, %rax
+	movq	%rax, %rsi
+	movq	$5, %rax
+	movq	%rsi, %rcx
+	movq	%rax, (%rcx)
+	movq	%rdx, (%rdi)
+	movq	(%rdi), %rdx
+	movq	%rdx, %rax
+	addq	$0, %rax
+	addq	$0, %rax
+	movq	%rax, %rdx
+	movq	(%rdx), %rsi
+	movq	(%rdi), %rdx
+	movq	%rdx, %rax
+	addq	$0, %rax
+	addq	$8, %rax
+	movq	%rax, %rdx
+	movq	(%rdx), %rdx
 	addq	%rsi, %rdx
-	movq	%rdx, %rax
-	movq	%rbp, %rsp
-	popq	%rbp
-	retq	
-	.text
-	.globl	foo
-foo:
-	pushq	%rbp
-	movq	%rsp, %rbp
-	pushq	%rdi
-	pushq	%rdi
-	pushq	%rdi
-	movq	%rdi, %r9 
-	movq	%rdi, %r8 
-	movq	%rdi, %rcx
-	movq	%rdi, %rdx
-	movq	%rdi, %rsi
-	callq	bar
-	addq	$16, %rsp
-	popq	%rdi
-	movq	%rax, %rdx
-	movq	%rdx, %rax
-	movq	%rbp, %rsp
-	popq	%rbp
-	retq	
-	.text
-	.globl	main
-main:
-	pushq	%rbp
-	movq	%rsp, %rbp
-	pushq	%rdi
-	movq	%rsi, %rdi
-	popq	%rsi
-	movq	$1, %rdi
-	callq	foo
-	movq	%rax, %rdx
 	movq	%rdx, %rax
 	movq	%rbp, %rsp
 	popq	%rbp

@@ -3,9 +3,7 @@
 foo:
 	pushq	%rbp
 	movq	%rsp, %rbp
-	subq	$8, %rsp
-	movq	%rcx, -8(%rbp)
-	movq	%r9 , %rax
+	movq	$42, %rax
 	movq	%rbp, %rsp
 	popq	%rbp
 	retq	
@@ -14,20 +12,7 @@ foo:
 bar:
 	pushq	%rbp
 	movq	%rsp, %rbp
-	subq	$8, %rsp
-	movq	%rcx, -8(%rbp)
-	movq	16(%rbp), %rax
-	movq	%rbp, %rsp
-	popq	%rbp
-	retq	
-	.text
-	.globl	baz
-baz:
-	pushq	%rbp
-	movq	%rsp, %rbp
-	subq	$8, %rsp
-	movq	%rcx, -8(%rbp)
-	movq	24(%rbp), %rax
+	movq	$0, %rax
 	movq	%rbp, %rsp
 	popq	%rbp
 	retq	
@@ -36,48 +21,46 @@ baz:
 main:
 	pushq	%rbp
 	movq	%rsp, %rbp
-	pushq	$8
-	pushq	$7
-	movq	$6, %r9 
-	movq	$5, %r8 
-	movq	$4, %rcx
-	movq	$3, %rdx
-	movq	$2, %rsi
-	movq	$1, %rdi
-	callq	foo
-	addq	$16, %rsp
-	movq	%rax, %rdi
 	pushq	%rdi
-	pushq	$8
-	pushq	$7
-	movq	$6, %r9 
-	movq	$5, %r8 
-	movq	$4, %rcx
-	movq	$3, %rdx
-	movq	$2, %rsi
-	movq	$1, %rdi
+	movq	%rsi, %rdi
+	popq	%rsi
+	subq	$8, %rsp
+	movq	%rsp, %rsi
+	subq	$8, %rsp
+	movq	%rsp, %rdx
+	movq	$0, %rax
+	movq	%rsi, %rcx
+	movq	%rax, (%rcx)
+	movq	$100, %rax
+	movq	%rdx, %rcx
+	movq	%rax, (%rcx)
+	movq	(%rdx), %rdx
+	cmpq	$0, %rdx
+	setne	%dl
+	andq	$1, %rdx
+	cmpq	$0, %rdx
+	jne	then
+	jmp	else
+	.text
+else:
+	pushq	%rsi
 	callq	bar
-	addq	$16, %rsp
-	popq	%rdi
+	popq	%rsi
 	movq	%rax, %rdx
-	pushq	%rdi
-	pushq	%rdx
-	pushq	$8
-	pushq	$7
-	movq	$6, %r9 
-	movq	$5, %r8 
-	movq	$4, %rcx
-	movq	$3, %rdx
-	movq	$2, %rsi
-	movq	$1, %rdi
-	callq	baz
-	addq	$16, %rsp
-	popq	%rdx
-	popq	%rdi
-	movq	%rax, %rsi
-	addq	%rdi, %rdx
-	addq	%rsi, %rdx
+	movq	%rdx, (%rsi)
+	jmp	end
+	.text
+end:
+	movq	(%rsi), %rdx
 	movq	%rdx, %rax
 	movq	%rbp, %rsp
 	popq	%rbp
 	retq	
+	.text
+then:
+	pushq	%rsi
+	callq	foo
+	popq	%rsi
+	movq	%rax, %rdx
+	movq	%rdx, (%rsi)
+	jmp	end

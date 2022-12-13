@@ -3,13 +3,10 @@
 main:
 	pushq	%rbp
 	movq	%rsp, %rbp
-	subq	$8, %rsp
-	movq	%rsp, %rdx
-	movq	$17, %rax
-	movq	%rdx, %rcx
-	movq	%rax, (%rcx)
-	movq	(%rdx), %rdx
-	movq	%rdx, %rax
+	pushq	%rdi
+	movq	%rsi, %rdi
+	popq	%rsi
+	movq	$18, %rax
 	movq	%rbp, %rsp
 	popq	%rbp
 	retq	

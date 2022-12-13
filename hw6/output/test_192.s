@@ -3,7 +3,10 @@
 main:
 	pushq	%rbp
 	movq	%rsp, %rbp
-	movq	$0, %rax
+	pushq	%rdi
+	movq	%rsi, %rdi
+	popq	%rsi
+	movq	$29, %rax
 	movq	%rbp, %rsp
 	popq	%rbp
 	retq	

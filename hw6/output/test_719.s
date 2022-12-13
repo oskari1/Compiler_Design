@@ -1,66 +1,58 @@
-	.text
-	.globl	foo
-foo:
-	pushq	%rbp
-	movq	%rsp, %rbp
-	movq	$42, %rax
-	movq	%rbp, %rsp
-	popq	%rbp
-	retq	
-	.text
-	.globl	bar
-bar:
-	pushq	%rbp
-	movq	%rsp, %rbp
-	movq	$0, %rax
-	movq	%rbp, %rsp
-	popq	%rbp
-	retq	
+	.data
+	.globl	gint
+gint:
+	.quad	42
+	.data
+	.globl	v1
+v1:
+	.quad	0
+	.quad	gint
+	.data
+	.globl	v2
+v2:
+	.quad	1
+	.quad	0
+	.data
+	.globl	gstr
+gstr:
+	.asciz	"hello, world!"
 	.text
 	.globl	main
 main:
 	pushq	%rbp
 	movq	%rsp, %rbp
-	pushq	%rdi
-	movq	%rsi, %rdi
-	popq	%rsi
-	subq	$8, %rsp
-	movq	%rsp, %rsi
-	subq	$8, %rsp
-	movq	%rsp, %rdx
-	movq	$0, %rax
+	leaq	v2(%rip), %rax
+	addq	$0, %rax
+	addq	$0, %rax
+	movq	%rax, %rsi
+	movq	$5, %rax
 	movq	%rsi, %rcx
 	movq	%rax, (%rcx)
-	movq	$100, %rax
-	movq	%rdx, %rcx
-	movq	%rax, (%rcx)
-	movq	(%rdx), %rdx
-	cmpq	$0, %rdx
-	setne	%dl
-	andq	$1, %rdx
-	cmpq	$0, %rdx
-	jne	then
-	jmp	else
-	.text
-else:
-	pushq	%rsi
-	callq	bar
-	popq	%rsi
+	leaq	v2(%rip), %rax
 	movq	%rax, %rdx
-	movq	%rdx, (%rsi)
-	jmp	end
-	.text
-end:
+	pushq	%rsi
+	pushq	%rdx
+	movq	%rdx, %rdi
+	callq	foo
+	popq	%rdx
+	popq	%rsi
 	movq	(%rsi), %rdx
 	movq	%rdx, %rax
 	movq	%rbp, %rsp
 	popq	%rbp
 	retq	
 	.text
-then:
-	pushq	%rsi
-	callq	foo
-	popq	%rsi
+	.globl	foo
+foo:
+	pushq	%rbp
+	movq	%rsp, %rbp
+	movq	%rdi, %rax
+	addq	$0, %rax
+	addq	$0, %rax
 	movq	%rax, %rdx
-	movq	%rdx, (%rsi)
-	jmp	end
+	movq	$6, %rax
+	movq	%rdx, %rcx
+	movq	%rax, (%rcx)
+	movq	%rbp, %rsp
+	popq	%rbp
+	retq	

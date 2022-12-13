@@ -1,26 +1,24 @@
 	.text
-	.globl	foo
-foo:
+	.globl	program
+program:
 	pushq	%rbp
 	movq	%rsp, %rbp
-	movq	%rdi, %rdx
-	addq	%rdi, %rdx
-	movq	%rdx, %rax
+	jmp	_then8241
+	.text
+_else8240:
+	movq	$4, %rax
 	movq	%rbp, %rsp
 	popq	%rbp
 	retq	
 	.text
-	.globl	main
-main:
-	pushq	%rbp
-	movq	%rsp, %rbp
-	pushq	%rdi
-	movq	%rsi, %rdi
-	popq	%rsi
-	movq	$17, %rdi
-	callq	foo
-	movq	%rax, %rdx
-	movq	%rdx, %rax
+_merge8239:
+	movq	$0, %rax
+	movq	%rbp, %rsp
+	popq	%rbp
+	retq	
+	.text
+_then8241:
+	movq	$9, %rax
 	movq	%rbp, %rsp
 	popq	%rbp
 	retq	

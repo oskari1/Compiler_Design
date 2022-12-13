@@ -1,185 +1,75 @@
 	.text
-	.globl	binary_gcd
-binary_gcd:
+	.globl	program
+program:
 	pushq	%rbp
 	movq	%rsp, %rbp
-	cmpq	%rsi, %rdi
-	sete	%dl
-	andq	$1, %rdx
-	cmpq	$0, %rdx
-	jne	ret_u
-	jmp	term1
-	.text
-both_even:
-	movq	%rdi, %rax
-	movq	$1, %rcx
-	shrq	%cl, %rax
-	movq	%rax, %rdi
-	movq	%rsi, %rax
-	movq	$1, %rcx
-	shrq	%cl, %rax
-	movq	%rax, %rdx
+	subq	$8, %rsp
+	movq	%rsp, %rdi
+	subq	$8, %rsp
+	movq	%rsp, %rsi
 	pushq	%rdi
-	movq	%rdx, %rsi
-	callq	binary_gcd
-	popq	%rdi
-	movq	%rax, %rdx
-	movq	%rdx, %rax
-	movq	$1, %rcx
-	shlq	%cl, %rax
-	movq	%rax, %rdx
-	movq	%rdx, %rax
-	movq	%rbp, %rsp
-	popq	%rbp
-	retq	
-	.text
-gcd:
-	movq	$-1, %rdx
-	xorq	%rdi, %rdx
-	andq	$1, %rdx
-	movq	$0, %rax
-	cmpq	%rdx, %rax
-	setne	%dl
-	andq	$1, %rdx
-	cmpq	$0, %rdx
-	jne	u_even
-	jmp	u_odd
-	.text
-ret_u:
-	movq	%rdi, %rax
-	movq	%rbp, %rsp
-	popq	%rbp
-	retq	
-	.text
-ret_v:
-	movq	%rsi, %rax
-	movq	%rbp, %rsp
-	popq	%rbp
-	retq	
-	.text
-term1:
-	movq	$0, %rax
-	cmpq	%rdi, %rax
-	sete	%dl
-	andq	$1, %rdx
-	cmpq	$0, %rdx
-	jne	ret_v
-	jmp	term2
-	.text
-term2:
-	movq	$0, %rax
-	cmpq	%rsi, %rax
-	sete	%dl
-	andq	$1, %rdx
-	cmpq	$0, %rdx
-	jne	ret_u
-	jmp	gcd
-	.text
-u_even:
-	movq	%rsi, %rdx
-	andq	$1, %rdx
-	movq	$0, %rax
-	cmpq	%rdx, %rax
-	setne	%dl
-	andq	$1, %rdx
-	cmpq	$0, %rdx
-	jne	ue_vo
-	jmp	both_even
-	.text
-u_gt:
-	movq	%rdi, %rdx
-	subq	%rsi, %rdx
-	movq	%rdx, %rax
-	movq	$1, %rcx
-	shrq	%cl, %rax
-	movq	%rax, %rdx
 	pushq	%rsi
-	movq	%rdx, %rdi
-	callq	binary_gcd
+	movq	$2, %rdi
+	callq	oat_alloc_array
 	popq	%rsi
+	popq	%rdi
 	movq	%rax, %rdx
 	movq	%rdx, %rax
-	movq	%rbp, %rsp
-	popq	%rbp
-	retq	
-	.text
-u_odd:
-	movq	$-1, %rdx
-	xorq	%rsi, %rdx
-	andq	$1, %rdx
+	movq	%rax, %r8 
+	movq	%r8 , %rax
+	addq	$0, %rax
+	addq	$8, %rax
+	addq	$0, %rax
+	movq	%rax, %rdx
+	movq	$1, %rax
+	movq	%rdx, %rcx
+	movq	%rax, (%rcx)
+	movq	%r8 , %rax
+	addq	$0, %rax
+	addq	$8, %rax
+	addq	$8, %rax
+	movq	%rax, %rdx
 	movq	$0, %rax
-	cmpq	%rdx, %rax
-	setne	%dl
-	andq	$1, %rdx
-	cmpq	$0, %rdx
-	jne	v_even
-	jmp	v_odd
-	.text
-ue_vo:
+	movq	%rdx, %rcx
+	movq	%rax, (%rcx)
+	movq	%r8 , (%rdi)
+	movq	$0, %rax
+	movq	%rsi, %rcx
+	movq	%rax, (%rcx)
+	movq	(%rdi), %rdi
 	movq	%rdi, %rax
-	movq	$1, %rcx
-	shrq	%cl, %rax
 	movq	%rax, %rdx
+	pushq	%rdi
 	pushq	%rsi
+	pushq	%rdx
+	movq	$0, %rsi
 	movq	%rdx, %rdi
-	callq	binary_gcd
+	callq	oat_assert_array_length
+	popq	%rdx
 	popq	%rsi
-	movq	%rax, %rdx
-	movq	%rdx, %rax
-	movq	%rbp, %rsp
-	popq	%rbp
-	retq	
-	.text
-v_even:
-	movq	%rsi, %rax
-	movq	$1, %rcx
-	shrq	%cl, %rax
-	movq	%rax, %rdx
-	pushq	%rdi
-	movq	%rdx, %rsi
-	callq	binary_gcd
 	popq	%rdi
+	movq	%rdi, %rax
+	addq	$0, %rax
+	addq	$8, %rax
+	addq	$0, %rax
 	movq	%rax, %rdx
-	movq	%rdx, %rax
-	movq	%rbp, %rsp
-	popq	%rbp
-	retq	
-	.text
-v_gt:
-	movq	%rsi, %rdx
-	subq	%rdi, %rdx
-	movq	%rdx, %rax
-	movq	$1, %rcx
-	shrq	%cl, %rax
-	movq	%rax, %rdx
-	pushq	%rdi
-	movq	%rdi, %rsi
-	movq	%rdx, %rdi
-	callq	binary_gcd
-	popq	%rdi
-	movq	%rax, %rdx
-	movq	%rdx, %rax
-	movq	%rbp, %rsp
-	popq	%rbp
-	retq	
-	.text
-v_odd:
-	cmpq	%rsi, %rdi
-	setg	%dl
-	andq	$1, %rdx
+	movq	(%rdx), %rdx
 	cmpq	$0, %rdx
-	jne	u_gt
-	jmp	v_gt
+	jne	_then351
+	jmp	_else350
 	.text
-	.globl	main
-main:
-	pushq	%rbp
-	movq	%rsp, %rbp
-	movq	$15, %rsi
-	movq	$21, %rdi
-	callq	binary_gcd
-	movq	%rax, %rdx
+_else350:
+	jmp	_merge349
+	.text
+_merge349:
+	movq	(%rsi), %rdx
 	movq	%rdx, %rax
 	movq	%rbp, %rsp
 	popq	%rbp
 	retq	
+	.text
+_then351:
+	movq	$1, %rax
+	movq	%rsi, %rcx
+	movq	%rax, (%rcx)
+	jmp	_merge349

@@ -1,21 +1,36 @@
 	.data
-	.globl	gbl
-gbl:
+	.globl	arr
+arr:
+	.quad	_global_arr118
+	.data
+	.globl	_global_arr118
+_global_arr118:
+	.quad	4
 	.quad	1
 	.quad	2
 	.quad	3
 	.quad	4
-	.quad	5
-	.quad	6
-	.quad	7
 	.text
-	.globl	main
-main:
+	.globl	program
+program:
 	pushq	%rbp
 	movq	%rsp, %rbp
-	leaq	gbl(%rip), %rax
+	leaq	arr(%rip), %rax
+	movq	(%rax), %rax
+	movq	%rax, %rsi
+	movq	%rsi, %rax
+	movq	%rax, %rdx
+	pushq	%rsi
+	pushq	%rdx
+	movq	$2, %rsi
+	movq	%rdx, %rdi
+	callq	oat_assert_array_length
+	popq	%rdx
+	popq	%rsi
+	movq	%rsi, %rax
 	addq	$0, %rax
-	addq	$48, %rax
+	addq	$8, %rax
+	addq	$16, %rax
 	movq	%rax, %rdx
 	movq	(%rdx), %rdx
 	movq	%rdx, %rax

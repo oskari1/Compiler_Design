@@ -1,61 +1,58 @@
 	.text
-	.globl	gcd_rec
-gcd_rec:
+	.globl	f
+f:
 	pushq	%rbp
 	movq	%rsp, %rbp
+	subq	$32, %rsp
+	movq	%rcx, -8(%rbp)
+	pushq	16(%rbp)
+	popq	-16(%rbp)
+	pushq	24(%rbp)
+	popq	-24(%rbp)
+	subq	$8, %rsp
+	movq	%rsp, -32(%rbp)
+	subq	$8, %rsp
+	movq	%rsp, %r10
+	subq	$8, %rsp
+	movq	%rsp, %r9 
 	subq	$8, %rsp
 	movq	%rsp, %r8 
-	movq	%rdi, (%r8 )
-	cmpq	$0, %rsi
-	setne	%dl
-	andq	$1, %rdx
-	cmpq	$0, %rdx
-	jne	neq0
-	jmp	eq0
-	.text
-eq0:
 	movq	%rdi, %rax
-	movq	%rbp, %rsp
-	popq	%rbp
-	retq	
-	.text
-neq0:
+	movq	-32(%rbp), %rcx
+	movq	%rax, (%rcx)
+	movq	%rsi, (%r10)
+	movq	%rdx, (%r9 )
+	movq	-8(%rbp), %rax
+	movq	%r8 , %rcx
+	movq	%rax, (%rcx)
+	movq	-32(%rbp), %rax
+	movq	(%rax), %rax
+	movq	%rax, %rsi
+	movq	(%r10), %rdx
+	addq	%rdx, %rsi
+	movq	(%r9 ), %rdx
+	addq	%rdx, %rsi
 	movq	(%r8 ), %rdx
-	movq	%rdx, %rdi
-	subq	%rsi, %rdi
-	movq	%rdi, (%r8 )
-	cmpq	%rsi, %rdi
-	setg	%dl
-	andq	$1, %rdx
-	cmpq	$0, %rdx
-	jne	neq0
-	jmp	recurse
-	.text
-recurse:
-	pushq	%rdi
-	pushq	%rsi
-	pushq	%rdi
-	movq	%rsi, %rdi
-	popq	%rsi
-	callq	gcd_rec
-	popq	%rsi
-	popq	%rdi
-	movq	%rax, %rdx
+	addq	%rsi, %rdx
 	movq	%rdx, %rax
 	movq	%rbp, %rsp
 	popq	%rbp
 	retq	
 	.text
-	.globl	main
-main:
+	.globl	program
+program:
 	pushq	%rbp
 	movq	%rsp, %rbp
-	pushq	%rdi
-	movq	%rsi, %rdi
-	popq	%rsi
-	movq	$34, %rsi
-	movq	$424, %rdi
-	callq	gcd_rec
+	pushq	$-3
+	pushq	$-4
+	movq	$-5, %r9 
+	movq	$5, %r8 
+	movq	$4, %rcx
+	movq	$3, %rdx
+	movq	$2, %rsi
+	movq	$1, %rdi
+	callq	f
+	addq	$16, %rsp
 	movq	%rax, %rdx
 	movq	%rdx, %rax
 	movq	%rbp, %rsp

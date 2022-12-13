@@ -1,21 +1,27 @@
+	.data
+	.globl	gbl
+gbl:
+	.quad	1
+	.quad	2
+	.quad	3
+	.quad	4
+	.quad	5
+	.quad	6
+	.quad	7
 	.text
-	.globl	program
-program:
+	.globl	main
+main:
 	pushq	%rbp
 	movq	%rsp, %rbp
-	subq	$8, %rsp
-	movq	%rsp, %rsi
-	subq	$8, %rsp
-	movq	%rsp, %rdx
-	movq	$17, %rax
-	movq	%rsi, %rcx
-	movq	%rax, (%rcx)
-	movq	$18, %rax
-	movq	%rdx, %rcx
-	movq	%rax, (%rcx)
-	movq	(%rsi), %rsi
+	pushq	%rdi
+	movq	%rsi, %rdi
+	popq	%rsi
+	leaq	gbl(%rip), %rax
+	addq	$0, %rax
+	addq	$8, %rax
+	addq	$40, %rax
+	movq	%rax, %rdx
 	movq	(%rdx), %rdx
-	addq	%rsi, %rdx
 	movq	%rdx, %rax
 	movq	%rbp, %rsp
 	popq	%rbp

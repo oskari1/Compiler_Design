@@ -6,7 +6,16 @@ main:
 	pushq	%rdi
 	movq	%rsi, %rdi
 	popq	%rsi
-	movq	$4, %rax
+	jmp	else
+	.text
+else:
+	movq	$9, %rax
+	movq	%rbp, %rsp
+	popq	%rbp
+	retq	
+	.text
+then:
+	movq	$7, %rax
 	movq	%rbp, %rsp
 	popq	%rbp
 	retq	

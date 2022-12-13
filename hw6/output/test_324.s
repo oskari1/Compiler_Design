@@ -1,25 +1,24 @@
 	.text
-	.globl	foo
-foo:
+	.globl	f
+f:
 	pushq	%rbp
 	movq	%rsp, %rbp
-	movq	%rdi, %rdx
+	subq	$8, %rsp
+	movq	%rsp, %rdx
+	movq	%rdi, (%rdx)
+	movq	(%rdx), %rdx
 	movq	%rdx, %rax
 	movq	%rbp, %rsp
 	popq	%rbp
 	retq	
 	.text
-	.globl	main
-main:
+	.globl	program
+program:
 	pushq	%rbp
 	movq	%rsp, %rbp
-	movq	%rdi, %rdx
-	movq	%rsi, %rdx
-	movq	$17, %rdi
-	callq	foo
-	movq	%rax, %rdx
-	movq	$19, %rdi
-	callq	foo
+	movq	$2, %rsi
+	movq	$1, %rdi
+	callq	f
 	movq	%rax, %rdx
 	movq	%rdx, %rax
 	movq	%rbp, %rsp

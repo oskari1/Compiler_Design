@@ -1,44 +1,39 @@
 	.text
-	.globl	factorial
-factorial:
+	.globl	program
+program:
 	pushq	%rbp
 	movq	%rsp, %rbp
-	movq	%rdi, %rdx
-	cmpq	$0, %rdx
-	sete	%dl
-	andq	$1, %rdx
-	cmpq	$0, %rdx
-	jne	ret1
-	jmp	recurse
-	.text
-recurse:
-	movq	%rdx, %rsi
-	subq	$1, %rsi
-	pushq	%rdx
-	movq	%rsi, %rdi
-	callq	factorial
-	popq	%rdx
-	movq	%rax, %rsi
-	imulq	%rsi, %rdx
+	subq	$8, %rsp
+	movq	%rsp, %r9 
+	subq	$8, %rsp
+	movq	%rsp, %rdx
+	movq	$9, %rax
+	movq	%r9 , %rcx
+	movq	%rax, (%rcx)
+	movq	(%r9 ), %rdi
+	movq	(%r9 ), %rsi
+	addq	%rdi, %rsi
+	movq	%rsi, (%rdx)
+	movq	(%r9 ), %r8 
+	movq	(%r9 ), %rdi
+	movq	(%r9 ), %rsi
+	imulq	%rdi, %rsi
+	addq	%r8 , %rsi
+	movq	(%rdx), %rdx
+	movq	%rsi, %rax
+	subq	%rdx, %rax
+	movq	%rax, %rdx
 	movq	%rdx, %rax
-	movq	%rbp, %rsp
-	popq	%rbp
-	retq	
-	.text
-ret1:
-	movq	$1, %rax
-	movq	%rbp, %rsp
-	popq	%rbp
-	retq	
-	.text
-	.globl	main
-main:
-	pushq	%rbp
-	movq	%rsp, %rbp
-	movq	%rdi, %rdx
-	movq	%rsi, %rdx
-	movq	$5, %rdi
-	callq	factorial
+	movq	$2, %rcx
+	shrq	%cl, %rax
+	movq	%rax, %rdx
+	movq	%rdx, %rax
+	movq	$2, %rcx
+	shlq	%cl, %rax
+	movq	%rax, %rdx
+	movq	%rdx, %rax
+	movq	$2, %rcx
+	sarq	%cl, %rax
 	movq	%rax, %rdx
 	movq	%rdx, %rax
 	movq	%rbp, %rsp

@@ -3,13 +3,10 @@
 main:
 	pushq	%rbp
 	movq	%rsp, %rbp
-	jmp	next
-	.text
-end:
-	movq	$17, %rax
+	pushq	%rdi
+	movq	%rsi, %rdi
+	popq	%rsi
+	movq	$18, %rax
 	movq	%rbp, %rsp
 	popq	%rbp
 	retq	
-	.text
-next:
-	jmp	end

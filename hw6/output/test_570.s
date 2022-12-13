@@ -1,39 +1,33 @@
+	.data
+	.globl	i
+i:
+	.quad	11
 	.text
-	.globl	fact
-fact:
+	.globl	f
+f:
 	pushq	%rbp
 	movq	%rsp, %rbp
 	subq	$8, %rsp
-	movq	%rsp, %rsi
-	subq	$8, %rsp
-	movq	%rsp, %r8 
-	movq	%rdi, (%rsi)
-	movq	$1, %rax
-	movq	%r8 , %rcx
+	movq	%rsp, %rdx
+	movq	$12, %rax
+	movq	%rdx, %rcx
 	movq	%rax, (%rcx)
-	jmp	_cond793
+	movq	(%rdx), %rdx
+	movq	%rdx, %rax
+	movq	%rbp, %rsp
+	popq	%rbp
+	retq	
 	.text
-_body792:
-	movq	(%r8 ), %rdi
-	movq	(%rsi), %rdx
-	imulq	%rdi, %rdx
-	movq	%rdx, (%r8 )
-	movq	(%rsi), %rdx
-	subq	$1, %rdx
-	movq	%rdx, (%rsi)
-	jmp	_cond793
-	.text
-_cond793:
-	movq	(%rsi), %rdx
-	cmpq	$0, %rdx
-	setg	%dl
-	andq	$1, %rdx
-	cmpq	$0, %rdx
-	jne	_body792
-	jmp	_post791
-	.text
-_post791:
-	movq	(%r8 ), %rdx
+	.globl	g
+g:
+	pushq	%rbp
+	movq	%rsp, %rbp
+	subq	$8, %rsp
+	movq	%rsp, %rdx
+	movq	$10, %rax
+	movq	%rdx, %rcx
+	movq	%rax, (%rcx)
+	movq	(%rdx), %rdx
 	movq	%rdx, %rax
 	movq	%rbp, %rsp
 	popq	%rbp
@@ -43,17 +37,18 @@ _post791:
 program:
 	pushq	%rbp
 	movq	%rsp, %rbp
-	movq	$5, %rdi
-	callq	fact
+	callq	f
+	movq	%rax, %rsi
+	pushq	%rsi
+	callq	g
+	popq	%rsi
 	movq	%rax, %rdx
-	movq	%rdx, %rdi
-	callq	string_of_int
+	addq	%rdx, %rsi
+	leaq	i(%rip), %rax
+	movq	(%rax), %rax
 	movq	%rax, %rdx
-	pushq	%rdx
-	movq	%rdx, %rdi
-	callq	print_string
-	popq	%rdx
-	movq	$0, %rax
+	addq	%rsi, %rdx
+	movq	%rdx, %rax
 	movq	%rbp, %rsp
 	popq	%rbp
 	retq	

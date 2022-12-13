@@ -1,75 +1,88 @@
+	.data
+	.globl	test1
+test1:
+	.quad	0
+	.quad	0
+	.quad	100
+	.data
+	.globl	test2
+test2:
+	.quad	test1
+	.quad	0
+	.quad	10
+	.data
+	.globl	test3
+test3:
+	.quad	0
+	.quad	0
+	.quad	1
+	.data
+	.globl	test
+test:
+	.quad	test2
+	.quad	test3
+	.quad	5
 	.text
-	.globl	program
-program:
+	.globl	sum_tree
+sum_tree:
 	pushq	%rbp
 	movq	%rsp, %rbp
-	subq	$8, %rsp
-	movq	%rsp, %rdi
-	subq	$8, %rsp
-	movq	%rsp, %rsi
-	pushq	%rdi
-	pushq	%rsi
-	movq	$2, %rdi
-	callq	oat_alloc_array
-	popq	%rsi
-	popq	%rdi
-	movq	%rax, %rdx
-	movq	%rdx, %rax
-	movq	%rax, %r8 
-	movq	%r8 , %rax
-	addq	$0, %rax
-	addq	$8, %rax
-	addq	$0, %rax
-	movq	%rax, %rdx
-	movq	$1, %rax
-	movq	%rdx, %rcx
-	movq	%rax, (%rcx)
-	movq	%r8 , %rax
-	addq	$0, %rax
-	addq	$8, %rax
-	addq	$8, %rax
-	movq	%rax, %rdx
-	movq	$0, %rax
-	movq	%rdx, %rcx
-	movq	%rax, (%rcx)
-	movq	%r8 , (%rdi)
-	movq	$0, %rax
-	movq	%rsi, %rcx
-	movq	%rax, (%rcx)
-	movq	(%rdi), %rdi
+	cmpq	$0, %rdi
+	sete	%dl
+	andq	$1, %rdx
+	cmpq	$0, %rdx
+	jne	then
+	jmp	else
+	.text
+else:
 	movq	%rdi, %rax
+	addq	$0, %rax
+	addq	$16, %rax
 	movq	%rax, %rdx
+	movq	(%rdx), %rsi
+	movq	%rdi, %rax
+	addq	$0, %rax
+	addq	$8, %rax
+	movq	%rax, %rdx
+	movq	(%rdx), %rdx
 	pushq	%rdi
 	pushq	%rsi
-	pushq	%rdx
-	movq	$0, %rsi
 	movq	%rdx, %rdi
-	callq	oat_assert_array_length
-	popq	%rdx
+	callq	sum_tree
 	popq	%rsi
 	popq	%rdi
+	movq	%rax, %rdx
+	addq	%rdx, %rsi
 	movq	%rdi, %rax
 	addq	$0, %rax
-	addq	$8, %rax
 	addq	$0, %rax
 	movq	%rax, %rdx
 	movq	(%rdx), %rdx
-	cmpq	$0, %rdx
-	jne	_then351
-	jmp	_else350
-	.text
-_else350:
-	jmp	_merge349
-	.text
-_merge349:
-	movq	(%rsi), %rdx
+	pushq	%rsi
+	movq	%rdx, %rdi
+	callq	sum_tree
+	popq	%rsi
+	movq	%rax, %rdx
+	addq	%rsi, %rdx
 	movq	%rdx, %rax
 	movq	%rbp, %rsp
 	popq	%rbp
 	retq	
 	.text
-_then351:
-	movq	$1, %rax
-	movq	%rsi, %rcx
-	movq	%rax, (%rcx)
-	jmp	_merge349
+then:
+	movq	$0, %rax
+	movq	%rbp, %rsp
+	popq	%rbp
+	retq	
+	.text
+	.globl	main
+main:
+	pushq	%rbp
+	movq	%rsp, %rbp
+	leaq	test(%rip), %rdi
+	callq	sum_tree
+	movq	%rax, %rdx
+	movq	%rdx, %rax
+	movq	%rbp, %rsp
+	popq	%rbp
+	retq	

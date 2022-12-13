@@ -1,21 +1,15 @@
 	.text
-	.globl	foo
-foo:
-	pushq	%rbp
-	movq	%rsp, %rbp
-	movq	%rdi, %rax
-	movq	%rbp, %rsp
-	popq	%rbp
-	retq	
-	.text
 	.globl	main
 main:
 	pushq	%rbp
 	movq	%rsp, %rbp
-	movq	$17, %rdi
-	callq	foo
-	movq	%rax, %rdx
-	movq	%rdx, %rax
+	pushq	%rdi
+	movq	%rsi, %rdi
+	popq	%rsi
+	jmp	end
+	.text
+end:
+	movq	$9, %rax
 	movq	%rbp, %rsp
 	popq	%rbp
 	retq	

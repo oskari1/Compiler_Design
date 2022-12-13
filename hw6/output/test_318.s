@@ -1,20 +1,15 @@
 	.text
-	.globl	main
-main:
+	.globl	program
+program:
 	pushq	%rbp
 	movq	%rsp, %rbp
-	movq	%rdi, %rdx
-	movq	%rsi, %rdx
-	jmp	else
-	.text
-else:
-	movq	$9, %rax
-	movq	%rbp, %rsp
-	popq	%rbp
-	retq	
-	.text
-then:
-	movq	$7, %rax
+	subq	$8, %rsp
+	movq	%rsp, %rdx
+	movq	$17, %rax
+	movq	%rdx, %rcx
+	movq	%rax, (%rcx)
+	movq	(%rdx), %rdx
+	movq	%rdx, %rax
 	movq	%rbp, %rsp
 	popq	%rbp
 	retq	

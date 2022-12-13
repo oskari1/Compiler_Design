@@ -1,52 +1,36 @@
-	.text
-	.globl	call
-call:
-	pushq	%rbp
-	movq	%rsp, %rbp
-	subq	$8, %rsp
-	movq	%rsp, %rdx
-	subq	$8, %rsp
-	movq	%rsp, %rdi
-	movq	%rdi, (%rdx)
-	movq	%rsi, (%rdi)
-	movq	(%rdx), %rdx
-	movq	(%rdi), %rsi
-	pushq	%r15
-	movq	%rdx, %r15
-	pushq	%rsi
-	movq	%rsi, %rdi
-	callq	*%r15
-	popq	%rsi
-	popq	%r15
-	movq	%rax, %rdx
-	movq	%rdx, %rax
-	movq	%rbp, %rsp
-	popq	%rbp
-	retq	
-	.text
-	.globl	inc
-inc:
-	pushq	%rbp
-	movq	%rsp, %rbp
-	subq	$8, %rsp
-	movq	%rsp, %rdx
-	movq	%rdi, (%rdx)
-	movq	(%rdx), %rdx
-	addq	$1, %rdx
-	movq	%rdx, %rax
-	movq	%rbp, %rsp
-	popq	%rbp
-	retq	
+	.data
+	.globl	b
+b:
+	.quad	1
 	.text
 	.globl	program
 program:
 	pushq	%rbp
 	movq	%rsp, %rbp
-	movq	$3, %rsi
-	leaq	inc(%rip), %rdi
-	callq	call
-	movq	%rax, %rdx
+	subq	$8, %rsp
+	movq	%rsp, %rdx
+	movq	$0, %rax
+	movq	%rdx, %rcx
+	movq	%rax, (%rcx)
+	leaq	b(%rip), %rax
+	movq	(%rax), %rax
+	movq	%rax, %rsi
+	cmpq	$0, %rsi
+	jne	_then8309
+	jmp	_else8308
+	.text
+_else8308:
+	jmp	_merge8307
+	.text
+_merge8307:
+	movq	(%rdx), %rdx
 	movq	%rdx, %rax
 	movq	%rbp, %rsp
 	popq	%rbp
 	retq	
+	.text
+_then8309:
+	movq	$1, %rax
+	movq	%rdx, %rcx
+	movq	%rax, (%rcx)
+	jmp	_merge8307

@@ -1,24 +1,54 @@
-	.data
-	.globl	gbl
-gbl:
-	.quad	1
-	.quad	2
-	.quad	3
-	.quad	4
-	.quad	5
-	.quad	6
-	.quad	7
+	.text
+	.globl	factorial
+factorial:
+	pushq	%rbp
+	movq	%rsp, %rbp
+	subq	$8, %rsp
+	movq	%rsp, %r8 
+	subq	$8, %rsp
+	movq	%rsp, %rdx
+	movq	%rdi, (%r8 )
+	movq	$1, %rax
+	movq	%rdx, %rcx
+	movq	%rax, (%rcx)
+	jmp	start
+	.text
+end:
+	movq	(%rdx), %rdx
+	movq	%rdx, %rax
+	movq	%rbp, %rsp
+	popq	%rbp
+	retq	
+	.text
+start:
+	movq	(%r8 ), %rsi
+	cmpq	$0, %rsi
+	setg	%sil
+	andq	$1, %rsi
+	cmpq	$0, %rsi
+	jne	then
+	jmp	end
+	.text
+then:
+	movq	(%rdx), %rdi
+	movq	(%r8 ), %rsi
+	imulq	%rdi, %rsi
+	movq	%rsi, (%rdx)
+	movq	(%r8 ), %rsi
+	subq	$1, %rsi
+	movq	%rsi, (%r8 )
+	jmp	start
 	.text
 	.globl	main
 main:
 	pushq	%rbp
 	movq	%rsp, %rbp
-	leaq	gbl(%rip), %rax
-	addq	$0, %rax
-	addq	$8, %rax
-	addq	$0, %rax
+	pushq	%rdi
+	movq	%rsi, %rdi
+	popq	%rsi
+	movq	$5, %rdi
+	callq	factorial
 	movq	%rax, %rdx
-	movq	(%rdx), %rdx
 	movq	%rdx, %rax
 	movq	%rbp, %rsp
 	popq	%rbp

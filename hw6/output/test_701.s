@@ -3,17 +3,13 @@
 main:
 	pushq	%rbp
 	movq	%rsp, %rbp
-	subq	$8, %rsp
-	movq	%rsp, %rdx
-	movq	$3, %rax
-	movq	%rdx, %rcx
-	movq	%rax, (%rcx)
-	movq	%rdx, %rax
-	movq	%rax, %rdx
-	movq	%rdx, %rax
-	movq	%rax, %rdx
-	movq	(%rdx), %rdx
-	movq	%rdx, %rax
+	pushq	%rdi
+	movq	%rsi, %rdi
+	popq	%rsi
+	jmp	end
+	.text
+end:
+	movq	$9, %rax
 	movq	%rbp, %rsp
 	popq	%rbp
 	retq	

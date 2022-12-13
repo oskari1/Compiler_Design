@@ -1,47 +1,38 @@
-	.data
-	.globl	_str_arr7201
-_str_arr7201:
-	.asciz	"ab"
 	.text
-	.globl	run2
-run2:
+	.globl	add
+add:
 	pushq	%rbp
 	movq	%rsp, %rbp
-	pushq	%rdi
-	movq	%rsi, %rdi
-	popq	%rsi
 	subq	$8, %rsp
 	movq	%rsp, %r8 
 	subq	$8, %rsp
-	movq	%rsp, %r9 
-	movq	%rsi, (%r8 )
-	movq	%rdi, (%r9 )
-	movq	(%r8 ), %rdx
-	movq	(%r9 ), %rsi
-	pushq	%r15
-	movq	%rdx, %r15
-	pushq	%r9 
-	pushq	%r8 
-	pushq	%rsi
-	pushq	%rdx
-	movq	%rsi, %rdi
-	callq	*%r15
-	popq	%rdx
-	popq	%rsi
-	popq	%r8 
-	popq	%r9 
-	popq	%r15
-	movq	(%r8 ), %rdx
-	movq	(%r9 ), %rsi
-	pushq	%r15
-	movq	%rdx, %r15
-	pushq	%rsi
-	pushq	%rdx
-	movq	%rsi, %rdi
-	callq	*%r15
-	popq	%rdx
-	popq	%rsi
-	popq	%r15
+	movq	%rsp, %rdx
+	movq	%rdi, (%r8 )
+	movq	%rsi, (%rdx)
+	movq	(%r8 ), %rsi
+	movq	(%rdx), %rdx
+	addq	%rsi, %rdx
+	movq	%rdx, %rax
+	movq	%rbp, %rsp
+	popq	%rbp
+	retq	
+	.text
+	.globl	sub
+sub:
+	pushq	%rbp
+	movq	%rsp, %rbp
+	subq	$8, %rsp
+	movq	%rsp, %r8 
+	subq	$8, %rsp
+	movq	%rsp, %rdx
+	movq	%rdi, (%r8 )
+	movq	%rsi, (%rdx)
+	movq	(%r8 ), %rsi
+	movq	(%rdx), %rdx
+	movq	%rsi, %rax
+	subq	%rdx, %rax
+	movq	%rax, %rdx
+	movq	%rdx, %rax
 	movq	%rbp, %rsp
 	popq	%rbp
 	retq	
@@ -50,16 +41,56 @@ run2:
 program:
 	pushq	%rbp
 	movq	%rsp, %rbp
-	leaq	_str_arr7201(%rip), %rax
+	subq	$8, %rsp
+	movq	%rsp, %rsi
+	pushq	%rsi
+	movq	$2, %rdi
+	callq	oat_alloc_array
+	popq	%rsi
+	movq	%rax, %rdx
+	movq	%rdx, %rax
+	movq	%rax, %rdi
+	movq	%rdi, %rax
 	addq	$0, %rax
+	addq	$8, %rax
 	addq	$0, %rax
 	movq	%rax, %rdx
+	leaq	add(%rip), %rax
+	movq	%rdx, %rcx
+	movq	%rax, (%rcx)
+	movq	%rdi, %rax
+	addq	$0, %rax
+	addq	$8, %rax
+	addq	$8, %rax
+	movq	%rax, %rdx
+	leaq	sub(%rip), %rax
+	movq	%rdx, %rcx
+	movq	%rax, (%rcx)
+	movq	%rdi, (%rsi)
+	movq	(%rsi), %rsi
+	movq	%rsi, %rax
+	movq	%rax, %rdx
+	pushq	%rsi
 	pushq	%rdx
-	movq	%rdx, %rsi
-	leaq	print_string(%rip), %rdi
-	callq	run2
+	movq	$0, %rsi
+	movq	%rdx, %rdi
+	callq	oat_assert_array_length
 	popq	%rdx
-	movq	$0, %rax
+	popq	%rsi
+	movq	%rsi, %rax
+	addq	$0, %rax
+	addq	$8, %rax
+	addq	$0, %rax
+	movq	%rax, %rdx
+	movq	(%rdx), %rdx
+	pushq	%r15
+	movq	%rdx, %r15
+	movq	$1, %rsi
+	movq	$1, %rdi
+	callq	*%r15
+	popq	%r15
+	movq	%rax, %rdx
+	movq	%rdx, %rax
 	movq	%rbp, %rsp
 	popq	%rbp
 	retq	

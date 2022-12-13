@@ -1,59 +1,107 @@
 	.text
-	.globl	fact
-fact:
+	.globl	naive_mod
+naive_mod:
 	pushq	%rbp
 	movq	%rsp, %rbp
+	pushq	%rdi
+	movq	%rsi, %rdi
+	popq	%rsi
 	subq	$8, %rsp
-	movq	%rsp, %rsi
-	subq	$8, %rsp
-	movq	%rsp, %r8 
-	movq	%rdi, (%rsi)
-	movq	$1, %rax
-	movq	%r8 , %rcx
+	movq	%rsp, %rdx
+	movq	$0, %rax
+	movq	%rdx, %rcx
 	movq	%rax, (%rcx)
-	jmp	_cond793
+	jmp	start
 	.text
-_body792:
-	movq	(%r8 ), %rdi
-	movq	(%rsi), %rdx
-	imulq	%rdi, %rdx
-	movq	%rdx, (%r8 )
-	movq	(%rsi), %rdx
-	subq	$1, %rdx
-	movq	%rdx, (%rsi)
-	jmp	_cond793
-	.text
-_cond793:
-	movq	(%rsi), %rdx
-	cmpq	$0, %rdx
-	setg	%dl
-	andq	$1, %rdx
-	cmpq	$0, %rdx
-	jne	_body792
-	jmp	_post791
-	.text
-_post791:
-	movq	(%r8 ), %rdx
+final:
+	movq	(%rdx), %rdx
+	subq	%rdi, %rdx
+	movq	%rsi, %rax
+	subq	%rdx, %rax
+	movq	%rax, %rdx
 	movq	%rdx, %rax
 	movq	%rbp, %rsp
 	popq	%rbp
 	retq	
 	.text
-	.globl	program
-program:
+start:
+	movq	(%rdx), %r8 
+	addq	%rdi, %r8 
+	movq	%r8 , (%rdx)
+	cmpq	%rsi, %r8 
+	setg	%r8b
+	andq	$1, %r8 
+	cmpq	$0, %r8 
+	jne	final
+	jmp	start
+	.text
+	.globl	naive_prime
+naive_prime:
 	pushq	%rbp
 	movq	%rsp, %rbp
-	movq	$5, %rdi
-	callq	fact
-	movq	%rax, %rdx
-	movq	%rdx, %rdi
-	callq	string_of_int
-	movq	%rax, %rdx
-	pushq	%rdx
-	movq	%rdx, %rdi
-	callq	print_string
-	popq	%rdx
+	subq	$8, %rsp
+	movq	%rsp, %rsi
+	movq	$2, %rax
+	movq	%rsi, %rcx
+	movq	%rax, (%rcx)
+	jmp	loop
+	.text
+final_false:
 	movq	$0, %rax
+	movq	%rbp, %rsp
+	popq	%rbp
+	retq	
+	.text
+final_true:
+	movq	$1, %rax
+	movq	%rbp, %rsp
+	popq	%rbp
+	retq	
+	.text
+inc:
+	movq	(%rsi), %r8 
+	movq	$1, %rdx
+	addq	%r9 , %rdx
+	movq	%rdx, (%rsi)
+	pushq	%r8 
+	pushq	%rdi
+	pushq	%rsi
+	movq	%r8 , %rsi
+	callq	naive_mod
+	popq	%rsi
+	popq	%rdi
+	popq	%r8 
+	movq	%rax, %rdx
+	movq	$0, %rax
+	cmpq	%rdx, %rax
+	sete	%dl
+	andq	$1, %rdx
+	cmpq	$0, %rdx
+	jne	final_false
+	jmp	loop
+	.text
+loop:
+	movq	(%rsi), %r9 
+	movq	%r9 , %rdx
+	imulq	%r9 , %rdx
+	cmpq	%rdi, %rdx
+	setg	%dl
+	andq	$1, %rdx
+	cmpq	$0, %rdx
+	jne	final_true
+	jmp	inc
+	.text
+	.globl	main
+main:
+	pushq	%rbp
+	movq	%rsp, %rbp
+	pushq	%rdi
+	movq	%rsi, %rdi
+	popq	%rsi
+	movq	$19, %rdi
+	callq	naive_prime
+	movq	%rax, %rdx
+	movq	%rdx, %rax
 	movq	%rbp, %rsp
 	popq	%rbp
 	retq	

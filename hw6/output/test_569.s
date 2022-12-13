@@ -1,24 +1,41 @@
-	.data
-	.globl	s
-s:
-	.quad	_str774
-	.data
-	.globl	_str774
-_str774:
-	.asciz	"341"
 	.text
 	.globl	program
 program:
 	pushq	%rbp
 	movq	%rsp, %rbp
-	leaq	s(%rip), %rax
-	movq	(%rax), %rax
+	subq	$8, %rsp
+	movq	%rsp, %r9 
+	subq	$8, %rsp
+	movq	%rsp, %rdx
+	movq	$9, %rax
+	movq	%r9 , %rcx
+	movq	%rax, (%rcx)
+	movq	(%r9 ), %rdi
+	movq	(%r9 ), %rsi
+	addq	%rdi, %rsi
+	movq	%rsi, (%rdx)
+	movq	(%r9 ), %r8 
+	movq	(%r9 ), %rdi
+	movq	(%r9 ), %rsi
+	imulq	%rdi, %rsi
+	addq	%r8 , %rsi
+	movq	(%rdx), %rdx
+	movq	%rsi, %rax
+	subq	%rdx, %rax
 	movq	%rax, %rdx
-	pushq	%rdx
-	movq	%rdx, %rdi
-	callq	print_string
-	popq	%rdx
-	movq	$0, %rax
+	movq	%rdx, %rax
+	movq	$2, %rcx
+	shrq	%cl, %rax
+	movq	%rax, %rdx
+	movq	%rdx, %rax
+	movq	$2, %rcx
+	shlq	%cl, %rax
+	movq	%rax, %rdx
+	movq	%rdx, %rax
+	movq	$2, %rcx
+	sarq	%cl, %rax
+	movq	%rax, %rdx
+	movq	%rdx, %rax
 	movq	%rbp, %rsp
 	popq	%rbp
 	retq	

@@ -1,12 +1,16 @@
+	.data
+	.globl	i
+i:
+	.quad	3
 	.text
-	.globl	main
-main:
+	.globl	program
+program:
 	pushq	%rbp
 	movq	%rsp, %rbp
-	pushq	%rdi
-	movq	%rsi, %rdi
-	popq	%rsi
-	movq	$42, %rax
+	leaq	i(%rip), %rax
+	movq	(%rax), %rax
+	movq	%rax, %rdx
+	movq	%rdx, %rax
 	movq	%rbp, %rsp
 	popq	%rbp
 	retq	
