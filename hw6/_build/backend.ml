@@ -743,9 +743,16 @@ type colour = Colour of Alloc.loc | Marked
 module Graph = struct 
   open Datastructures
   type t = {nodes : UidS.t; edges : UidS.t UidM.t; colours : colour UidM.t}
-  let init nodes edges = {nodes=nodes; edges=edges; colours=UidM.empty} 
+  let init nodes edges colours = {nodes=nodes; edges=edges; colours=colours} 
   let node_amt g = UidS.cardinal g.nodes 
+  let is_coloured n g = 
+      match UidM.find_opt n g.colours with 
+      | None -> false 
+      | Some c -> true 
+  let uncoloured_nodes g =  UidS.filter (fun n -> not (is_coloured n g)) g.nodes 
+  let uncoloured_node_amt g = UidS.cardinal (uncoloured_nodes g) 
   let choose g = UidS.choose g.nodes 
+  let choose_uncoloured g = UidS.choose (uncoloured_nodes g) 
   let neighbours_of n g = 
     match UidM.find_opt n g.edges with  
     | None -> UidS.empty
@@ -763,6 +770,7 @@ module Graph = struct
     edges = (let e = UidM.remove n g.edges in UidM.map (fun ns -> UidS.remove n ns) e);
     colours = g.colours
   } 
+  let remove_nodes ns g = UidS.fold (fun n g_tmp -> remove_node n g_tmp) ns g 
   let insert_node n e g = {
     nodes = UidS.add n g.nodes;
     edges = (
@@ -774,14 +782,14 @@ module Graph = struct
     match UidM.find_opt n g.edges with 
     | None -> 0
     | Some s -> UidS.cardinal s
-  let rec extract_node_with_degree_lt_k g k = 
+  let rec extract_uncoloured_node_with_degree_lt_k g k = 
     (*match UidS.choose_opt (UidS.filter (fun n -> UidS.cardinal (UidM.find n g.edges) < k) g.nodes) with*)
-    match UidS.choose_opt (UidS.filter (fun n -> degree_of n g < k) g.nodes) with
+    match UidS.choose_opt (UidS.filter (fun n -> degree_of n g < k && not (is_coloured n g)) g.nodes) with
     | None ->
       let marked = UidS.choose g.nodes in
       let g = { g with colours = UidM.add marked Marked g.colours } in 
       let g = remove_node marked g in 
-      extract_node_with_degree_lt_k g k 
+      extract_uncoloured_node_with_degree_lt_k g k 
     | Some n -> n, g
 end
 
@@ -796,11 +804,20 @@ let better_layout (f:Ll.fdecl) (live:liveness) : layout =
      Corner case: argument 3, in Rcx occupies a register used for other
      purposes by the compiler.  We therefore always spill it.
   *)
-  let alloc_arg () =
+  (*let alloc_arg () =
     let res =
       match arg_loc !n_arg with
       | Alloc.LReg Rcx -> spill ()
       | x -> x
+    in
+    incr n_arg; res
+  in*)
+  let alloc_arg () =
+    let res =
+      match arg_loc !n_arg with
+      | Alloc.LReg Rcx -> Marked 
+      | Alloc.LStk _ -> Marked
+      | x -> Colour x
     in
     incr n_arg; res
   in
@@ -826,7 +843,7 @@ let better_layout (f:Ll.fdecl) (live:liveness) : layout =
       (*(fun uids _ -> uids)*)
       (fun (uids, args) (x, _) -> uids, UidS.add x args)
       (fun (uids, args) _ -> uids, args)
-      (fun (uids, args) (x, i) -> if insn_assigns i then UidS.add x uids, args else uids, args)
+      (fun (uids, args) (x, i) ->  if insn_assigns i then UidS.add x uids, args else uids, args)
       (fun (uids, args) _ -> uids, args)
       (UidS.empty, UidS.empty) f
   in
@@ -872,7 +889,7 @@ let better_layout (f:Ll.fdecl) (live:liveness) : layout =
 
   let k = LocSet.cardinal pal in
 
-  let rec k_colour g = 
+  (*let rec k_colour g = 
     match Graph.node_amt g with  
     | amt when amt < 1 -> g  
     | amt when amt = 1 -> 
@@ -906,8 +923,52 @@ let better_layout (f:Ll.fdecl) (live:liveness) : layout =
             | _ -> failwith "invariant violated 2" *)
       in 
       Graph.colour_node node node_colour (Graph.insert_node node neighbours coloured_sub_g') 
-  in  
-  let colour_of_uid = (k_colour (Graph.init (UidS.union uid_set arg_set) neighbours)).colours in 
+  in *) 
+  let rec k_colour g = 
+    let res =
+    let uncoloured_nodes = Graph.uncoloured_node_amt g in
+    match uncoloured_nodes (*Graph.uncoloured_node_amt g*) with  
+    | amt when amt < 1 -> g  
+(*    | amt when amt = 1 -> 
+      let node_colour = LocSet.choose pal in
+      (*let node = Graph.choose g in*)
+      let node = Graph.choose_uncoloured g in
+      Graph.colour_node node node_colour g*) 
+    | amt ->
+      let node, g' = Graph.extract_uncoloured_node_with_degree_lt_k g k in 
+      let neighbours = Graph.neighbours_of node g in
+      let sub_g' = Graph.remove_node node g' in
+      let coloured_sub_g' = k_colour sub_g' in 
+      let neighbour_colours = Graph.colours_of neighbours coloured_sub_g' in
+      let node_colour = LocSet.choose (LocSet.diff pal neighbour_colours)(*
+        let move_related_nodes = 
+          match UidM.find_opt node move_related_nodes_of with 
+          | None -> UidS.empty
+          | Some s -> s
+        in
+        if UidS.cardinal move_related_nodes = 0 then 
+          LocSet.choose (LocSet.diff pal neighbour_colours) 
+        else 
+          let move_related_non_adjacent_nodes = UidS.diff move_related_nodes neighbours in
+          if UidS.cardinal move_related_non_adjacent_nodes = 0 then
+            LocSet.choose (LocSet.diff pal neighbour_colours) 
+          else
+            let chosen_node = (UidS.choose move_related_non_adjacent_nodes) in
+            print_endline ("chosen node: " ^ chosen_node);
+            match Graph.colour_of chosen_node coloured_sub_g' with 
+            | Some (Colour colour) -> colour 
+            | Some c -> failwith "invariant violated 1"
+            | _ -> failwith "invariant violated 2" *)
+      in 
+      Graph.colour_node node node_colour (Graph.insert_node node neighbours coloured_sub_g') 
+    in res
+  in
+
+  (*let whole_graph = Graph.init (UidS.union uid_set arg_set) neighbours UidM.empty in*)
+  (*let arg_subgraph = Graph.remove_nodes uid_set whole_graph in*)
+  (*let precoloured_subgraph = k_colour arg_subgraph in*) 
+  let subgraph_colours = UidS.fold (fun n map -> let loc = alloc_arg() in UidM.add n loc map) arg_set UidM.empty in
+  let colour_of_uid = (k_colour (Graph.init (UidS.union uid_set arg_set) neighbours subgraph_colours)).colours in 
 
   let allocate lo uid =
     let loc = 
@@ -931,8 +992,8 @@ let better_layout (f:Ll.fdecl) (live:liveness) : layout =
 
   let lo =
     fold_fdecl
-      (fun lo (x, _) -> (x, alloc_arg())::lo)
-      (*(fun lo (x, _) -> (x, (allocate lo x))::lo)*)
+      (*(fun lo (x, _) -> (x, alloc_arg())::lo)*)
+      (fun lo (x, _) -> (x, (allocate lo x))::lo)
       (fun lo l -> (l, Alloc.LLbl (Platform.mangle l))::lo)
       (fun lo (x, i) ->
         if insn_assigns i 
