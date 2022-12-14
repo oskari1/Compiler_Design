@@ -1,60 +1,75 @@
 	.text
-	.globl	f
-f:
+	.globl	program
+program:
 	pushq	%rbp
 	movq	%rsp, %rbp
 	subq	$8, %rsp
-	movq	%rsp, %r8 
+	movq	%rsp, %rdi
 	subq	$8, %rsp
 	movq	%rsp, %rsi
-	movq	%rdi, (%r8 )
-	movq	$0, %rax
-	movq	%rsi, %rcx
-	movq	%rax, (%rcx)
-	movq	(%r8 ), %rdx
-	cmpq	$0, %rdx
-	sete	%dl
-	andq	$1, %rdx
-	cmpq	$0, %rdx
-	jne	_then2792
-	jmp	_else2791
-	.text
-_else2791:
-	movq	(%r8 ), %rdi
-	movq	(%r8 ), %rdx
-	subq	$1, %rdx
 	pushq	%rdi
 	pushq	%rsi
-	movq	%rdx, %rdi
-	callq	f
+	movq	$2, %rdi
+	callq	oat_alloc_array
 	popq	%rsi
 	popq	%rdi
 	movq	%rax, %rdx
-	imulq	%rdi, %rdx
-	movq	%rdx, (%rsi)
-	jmp	_merge2790
+	movq	%rdx, %rax
+	movq	%rax, %r8 
+	movq	%r8 , %rax
+	addq	$0, %rax
+	addq	$8, %rax
+	addq	$0, %rax
+	movq	%rax, %rdx
+	movq	$1, %rax
+	movq	%rdx, %rcx
+	movq	%rax, (%rcx)
+	movq	%r8 , %rax
+	addq	$0, %rax
+	addq	$8, %rax
+	addq	$8, %rax
+	movq	%rax, %rdx
+	movq	$0, %rax
+	movq	%rdx, %rcx
+	movq	%rax, (%rcx)
+	movq	%r8 , (%rdi)
+	movq	$0, %rax
+	movq	%rsi, %rcx
+	movq	%rax, (%rcx)
+	movq	(%rdi), %rdi
+	movq	%rdi, %rax
+	movq	%rax, %rdx
+	pushq	%rdi
+	pushq	%rsi
+	pushq	%rdx
+	movq	$0, %rsi
+	movq	%rdx, %rdi
+	callq	oat_assert_array_length
+	popq	%rdx
+	popq	%rsi
+	popq	%rdi
+	movq	%rdi, %rax
+	addq	$0, %rax
+	addq	$8, %rax
+	addq	$0, %rax
+	movq	%rax, %rdx
+	movq	(%rdx), %rdx
+	cmpq	$0, %rdx
+	jne	_then351
+	jmp	_else350
 	.text
-_merge2790:
+_else350:
+	jmp	_merge349
+	.text
+_merge349:
 	movq	(%rsi), %rdx
 	movq	%rdx, %rax
 	movq	%rbp, %rsp
 	popq	%rbp
 	retq	
 	.text
-_then2792:
+_then351:
 	movq	$1, %rax
 	movq	%rsi, %rcx
 	movq	%rax, (%rcx)
-	jmp	_merge2790
-	.text
-	.globl	program
-program:
-	pushq	%rbp
-	movq	%rsp, %rbp
-	movq	$5, %rdi
-	callq	f
-	movq	%rax, %rdx
-	movq	%rdx, %rax
-	movq	%rbp, %rsp
-	popq	%rbp
-	retq	
+	jmp	_merge349

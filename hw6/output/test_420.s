@@ -1,57 +1,26 @@
+	.data
+	.globl	gbl
+gbl:
+	.quad	1
+	.quad	2
+	.quad	3
+	.quad	0
+	.quad	0
+	.quad	0
+	.quad	0
 	.text
-	.globl	add
-add:
+	.globl	main
+main:
 	pushq	%rbp
 	movq	%rsp, %rbp
-	subq	$8, %rsp
-	movq	%rsp, %r8 
-	subq	$8, %rsp
-	movq	%rsp, %rdx
-	movq	%rdi, (%r8 )
-	movq	%rsi, (%rdx)
-	movq	(%r8 ), %rsi
-	movq	(%rdx), %rdx
-	addq	%rsi, %rdx
-	movq	%rdx, %rax
-	movq	%rbp, %rsp
-	popq	%rbp
-	retq	
-	.text
-	.globl	mul
-mul:
-	pushq	%rbp
-	movq	%rsp, %rbp
-	subq	$8, %rsp
-	movq	%rsp, %r8 
-	subq	$8, %rsp
-	movq	%rsp, %rdx
-	movq	%rdi, (%r8 )
-	movq	%rsi, (%rdx)
-	movq	(%r8 ), %rsi
-	movq	(%rdx), %rdx
-	imulq	%rsi, %rdx
-	movq	%rdx, %rax
-	movq	%rbp, %rsp
-	popq	%rbp
-	retq	
-	.text
-	.globl	program
-program:
-	pushq	%rbp
-	movq	%rsp, %rbp
-	subq	$8, %rsp
-	movq	%rsp, %rdx
-	leaq	mul(%rip), %rax
-	movq	%rdx, %rcx
-	movq	%rax, (%rcx)
-	movq	(%rdx), %rdx
-	pushq	%r15
-	movq	%rdx, %r15
-	movq	$4, %rsi
-	movq	$3, %rdi
-	callq	*%r15
-	popq	%r15
+	leaq	gbl(%rip), %rax
+	addq	$0, %rax
+	addq	$0, %rax
+	addq	$0, %rax
+	addq	$8, %rax
+	addq	$8, %rax
 	movq	%rax, %rdx
+	movq	(%rdx), %rdx
 	movq	%rdx, %rax
 	movq	%rbp, %rsp
 	popq	%rbp

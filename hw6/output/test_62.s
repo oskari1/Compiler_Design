@@ -1,40 +1,28 @@
+	.data
+	.globl	arr
+arr:
+	.quad	_global_arr118
+	.data
+	.globl	_global_arr118
+_global_arr118:
+	.quad	4
+	.quad	1
+	.quad	2
+	.quad	3
+	.quad	4
 	.text
 	.globl	program
 program:
 	pushq	%rbp
 	movq	%rsp, %rbp
-	subq	$8, %rsp
-	movq	%rsp, %rdi
-	pushq	%rdi
-	movq	$2, %rdi
-	callq	oat_alloc_array
-	popq	%rdi
-	movq	%rax, %rdx
-	movq	%rdx, %rax
+	leaq	arr(%rip), %rax
+	movq	(%rax), %rax
 	movq	%rax, %rsi
-	movq	%rsi, %rax
-	addq	$0, %rax
-	addq	$8, %rax
-	addq	$0, %rax
-	movq	%rax, %rdx
-	movq	$1, %rax
-	movq	%rdx, %rcx
-	movq	%rax, (%rcx)
-	movq	%rsi, %rax
-	addq	$0, %rax
-	addq	$8, %rax
-	addq	$8, %rax
-	movq	%rax, %rdx
-	movq	$2, %rax
-	movq	%rdx, %rcx
-	movq	%rax, (%rcx)
-	movq	%rsi, (%rdi)
-	movq	(%rdi), %rsi
 	movq	%rsi, %rax
 	movq	%rax, %rdx
 	pushq	%rsi
 	pushq	%rdx
-	movq	$1, %rsi
+	movq	$2, %rsi
 	movq	%rdx, %rdi
 	callq	oat_assert_array_length
 	popq	%rdx
@@ -42,7 +30,7 @@ program:
 	movq	%rsi, %rax
 	addq	$0, %rax
 	addq	$8, %rax
-	addq	$8, %rax
+	addq	$16, %rax
 	movq	%rax, %rdx
 	movq	(%rdx), %rdx
 	movq	%rdx, %rax

@@ -1,31 +1,25 @@
 	.text
-	.globl	factorial
-factorial:
+	.globl	bar
+bar:
 	pushq	%rbp
 	movq	%rsp, %rbp
-	cmpq	$0, %rdi
-	sete	%dl
-	andq	$1, %rdx
-	cmpq	$0, %rdx
-	jne	ret1
-	jmp	recurse
-	.text
-recurse:
 	movq	%rdi, %rdx
-	subq	$1, %rdx
-	pushq	%rdi
-	movq	%rdx, %rdi
-	callq	factorial
-	popq	%rdi
-	movq	%rax, %rdx
-	imulq	%rdi, %rdx
+	addq	%rsi, %rdx
 	movq	%rdx, %rax
 	movq	%rbp, %rsp
 	popq	%rbp
 	retq	
 	.text
-ret1:
-	movq	$1, %rax
+	.globl	foo
+foo:
+	pushq	%rbp
+	movq	%rsp, %rbp
+	pushq	%rdi
+	movq	%rdi, %rsi
+	callq	bar
+	popq	%rdi
+	movq	%rax, %rdx
+	movq	%rdx, %rax
 	movq	%rbp, %rsp
 	popq	%rbp
 	retq	
@@ -37,8 +31,8 @@ main:
 	pushq	%rdi
 	movq	%rsi, %rdi
 	popq	%rsi
-	movq	$5, %rdi
-	callq	factorial
+	movq	$17, %rdi
+	callq	foo
 	movq	%rax, %rdx
 	movq	%rdx, %rax
 	movq	%rbp, %rsp

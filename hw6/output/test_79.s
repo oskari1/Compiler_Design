@@ -1,25 +1,51 @@
-	.data
-	.globl	_str_arr2339
-_str_arr2339:
-	.asciz	"Hello world!"
 	.text
 	.globl	program
 program:
 	pushq	%rbp
 	movq	%rsp, %rbp
 	subq	$8, %rsp
-	movq	%rsp, %rdx
-	leaq	_str_arr2339(%rip), %rax
-	addq	$0, %rax
-	addq	$0, %rax
+	movq	%rsp, %rdi
+	pushq	%rdi
+	movq	$2, %rdi
+	callq	oat_alloc_array
+	popq	%rdi
+	movq	%rax, %rdx
+	movq	%rdx, %rax
 	movq	%rax, %rsi
-	movq	%rsi, (%rdx)
-	movq	(%rdx), %rdx
+	movq	%rsi, %rax
+	addq	$0, %rax
+	addq	$8, %rax
+	addq	$0, %rax
+	movq	%rax, %rdx
+	movq	$1, %rax
+	movq	%rdx, %rcx
+	movq	%rax, (%rcx)
+	movq	%rsi, %rax
+	addq	$0, %rax
+	addq	$8, %rax
+	addq	$8, %rax
+	movq	%rax, %rdx
+	movq	$2, %rax
+	movq	%rdx, %rcx
+	movq	%rax, (%rcx)
+	movq	%rsi, (%rdi)
+	movq	(%rdi), %rsi
+	movq	%rsi, %rax
+	movq	%rax, %rdx
+	pushq	%rsi
 	pushq	%rdx
+	movq	$1, %rsi
 	movq	%rdx, %rdi
-	callq	print_string
+	callq	oat_assert_array_length
 	popq	%rdx
-	movq	$0, %rax
+	popq	%rsi
+	movq	%rsi, %rax
+	addq	$0, %rax
+	addq	$8, %rax
+	addq	$8, %rax
+	movq	%rax, %rdx
+	movq	(%rdx), %rdx
+	movq	%rdx, %rax
 	movq	%rbp, %rsp
 	popq	%rbp
 	retq	

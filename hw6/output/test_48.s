@@ -1,78 +1,77 @@
+	.data
+	.globl	glist
+glist:
+	.quad	1
+	.quad	2
+	.quad	3
+	.quad	4
+	.quad	5
 	.text
-	.globl	program
-program:
+	.globl	search
+search:
 	pushq	%rbp
 	movq	%rsp, %rbp
+	pushq	%rdi
+	movq	%rsi, %rdi
+	popq	%rsi
 	subq	$8, %rsp
 	movq	%rsp, %r8 
-	pushq	%r8 
-	movq	$3, %rdi
-	callq	oat_alloc_array
-	popq	%r8 
-	movq	%rax, %rdx
-	movq	%rdx, %rax
-	movq	%rax, %rdx
-	subq	$8, %rsp
-	movq	%rsp, %r9 
-	movq	$3, %rax
-	movq	%r9 , %rcx
-	movq	%rax, (%rcx)
-	subq	$8, %rsp
-	movq	%rsp, %rsi
-	movq	%rdx, (%rsi)
 	movq	$0, %rax
 	movq	%r8 , %rcx
 	movq	%rax, (%rcx)
-	jmp	_cond254
+	jmp	loop
 	.text
-_body253:
-	movq	(%rsi), %r10
-	movq	(%r8 ), %rdi
-	movq	%r10, %rax
-	movq	%rax, %rdx
-	pushq	%r10
-	pushq	%r9 
-	pushq	%r8 
-	pushq	%rdi
-	pushq	%rsi
-	pushq	%rdx
-	movq	%rdi, %rsi
-	movq	%rdx, %rdi
-	callq	oat_assert_array_length
-	popq	%rdx
-	popq	%rsi
-	popq	%rdi
-	popq	%r8 
-	popq	%r9 
-	popq	%r10
-	movq	%r10, %rax
-	addq	$0, %rax
-	addq	$8, %rax
-	movq	%rax, %rcx
+check:
 	movq	%rdi, %rax
+	addq	$0, %rax
+	movq	%rax, %rcx
+	movq	%r9 , %rax
 	imulq	$8, %rax
 	addq	%rcx, %rax
 	movq	%rax, %rdx
-	movq	$0, %rax
-	movq	%rdx, %rcx
-	movq	%rax, (%rcx)
-	movq	(%r8 ), %rdx
-	addq	$1, %rdx
-	movq	%rdx, (%r8 )
-	jmp	_cond254
+	movq	(%rdx), %rdx
+	cmpq	%rdx, %rsi
+	sete	%dl
+	andq	$1, %rdx
+	addq	$1, %r9 
+	movq	%r9 , (%r8 )
+	cmpq	$0, %rdx
+	jne	true
+	jmp	loop
 	.text
-_cond254:
-	movq	(%r8 ), %rdx
-	movq	(%r9 ), %rdi
-	cmpq	%rdi, %rdx
-	setl	%dl
+false:
+	movq	$0, %rax
+	movq	%rbp, %rsp
+	popq	%rbp
+	retq	
+	.text
+loop:
+	movq	(%r8 ), %r9 
+	cmpq	$5, %r9 
+	sete	%dl
 	andq	$1, %rdx
 	cmpq	$0, %rdx
-	jne	_body253
-	jmp	_post252
+	jne	false
+	jmp	check
 	.text
-_post252:
-	movq	$0, %rax
+true:
+	movq	$1, %rax
+	movq	%rbp, %rsp
+	popq	%rbp
+	retq	
+	.text
+	.globl	main
+main:
+	pushq	%rbp
+	movq	%rsp, %rbp
+	pushq	%rdi
+	movq	%rsi, %rdi
+	popq	%rsi
+	leaq	glist(%rip), %rsi
+	movq	$3, %rdi
+	callq	search
+	movq	%rax, %rdx
+	movq	%rdx, %rax
 	movq	%rbp, %rsp
 	popq	%rbp
 	retq	

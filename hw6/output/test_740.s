@@ -1,106 +1,176 @@
+	.data
+	.globl	x
+x:
+	.quad	_global_arr8801
+	.data
+	.globl	_global_arr8801
+_global_arr8801:
+	.quad	3
+	.quad	1
+	.quad	2
+	.quad	3
+	.data
+	.globl	y
+y:
+	.quad	_global_arr8800
+	.data
+	.globl	_global_arr8800
+_global_arr8800:
+	.quad	3
+	.quad	4
+	.quad	5
+	.quad	6
 	.text
-	.globl	naive_mod
-naive_mod:
+	.globl	f
+f:
 	pushq	%rbp
 	movq	%rsp, %rbp
 	pushq	%rdi
-	movq	%rsi, %rdi
+	movq	%rdx, %rdi
+	movq	%rsi, %rdx
 	popq	%rsi
 	subq	$8, %rsp
-	movq	%rsp, %rdx
-	movq	$0, %rax
-	movq	%rdx, %rcx
-	movq	%rax, (%rcx)
-	jmp	start
+	movq	%rsp, %r9 
+	subq	$8, %rsp
+	movq	%rsp, %r8 
+	subq	$8, %rsp
+	movq	%rsp, %r10
+	movq	%rsi, (%r9 )
+	movq	%rdx, (%r8 )
+	movq	%rdi, (%r10)
+	movq	(%r10), %rdx
+	cmpq	$0, %rdx
+	jne	_then8816
+	jmp	_else8815
 	.text
-final:
-	movq	(%rdx), %rdx
-	subq	%rdi, %rdx
-	movq	%rsi, %rax
-	subq	%rdx, %rax
-	movq	%rax, %rdx
+_else8815:
+	movq	(%r8 ), %rdx
 	movq	%rdx, %rax
 	movq	%rbp, %rsp
 	popq	%rbp
 	retq	
 	.text
-start:
-	movq	(%rdx), %r8 
-	addq	%rdi, %r8 
-	movq	%r8 , (%rdx)
-	cmpq	%rsi, %r8 
-	setg	%r8b
-	andq	$1, %r8 
-	cmpq	$0, %r8 
-	jne	final
-	jmp	start
+_merge8814:
+	movq	$0, %rax
+	movq	%rbp, %rsp
+	popq	%rbp
+	retq	
 	.text
-	.globl	naive_prime
-naive_prime:
+_then8816:
+	movq	(%r9 ), %rdx
+	movq	%rdx, %rax
+	movq	%rbp, %rsp
+	popq	%rbp
+	retq	
+	.text
+	.globl	program
+program:
 	pushq	%rbp
 	movq	%rsp, %rbp
 	subq	$8, %rsp
-	movq	%rsp, %rsi
-	movq	$2, %rax
-	movq	%rsi, %rcx
-	movq	%rax, (%rcx)
-	jmp	loop
-	.text
-final_false:
-	movq	$0, %rax
-	movq	%rbp, %rsp
-	popq	%rbp
-	retq	
-	.text
-final_true:
-	movq	$1, %rax
-	movq	%rbp, %rsp
-	popq	%rbp
-	retq	
-	.text
-inc:
-	movq	(%rsi), %r8 
+	movq	%rsp, %rdx
+	leaq	y(%rip), %rax
+	movq	(%rax), %rax
+	movq	%rax, %rsi
+	leaq	x(%rip), %rax
+	movq	(%rax), %rax
+	movq	%rax, %rdi
+	pushq	%rsi
+	pushq	%rdx
 	movq	$1, %rdx
-	addq	%r9 , %rdx
-	movq	%rdx, (%rsi)
-	pushq	%r8 
+	callq	f
+	popq	%rdx
+	popq	%rsi
+	movq	%rax, %rdi
+	movq	%rdi, %rax
+	movq	%rax, %rsi
 	pushq	%rdi
 	pushq	%rsi
-	movq	%r8 , %rsi
-	callq	naive_mod
+	pushq	%rdx
+	movq	%rsi, %rdi
+	movq	$0, %rsi
+	callq	oat_assert_array_length
+	popq	%rdx
 	popq	%rsi
 	popq	%rdi
-	popq	%r8 
-	movq	%rax, %rdx
-	movq	$0, %rax
-	cmpq	%rdx, %rax
-	sete	%dl
-	andq	$1, %rdx
-	cmpq	$0, %rdx
-	jne	final_false
-	jmp	loop
-	.text
-loop:
-	movq	(%rsi), %r9 
-	movq	%r9 , %rdx
-	imulq	%r9 , %rdx
-	cmpq	%rdi, %rdx
-	setg	%dl
-	andq	$1, %rdx
-	cmpq	$0, %rdx
-	jne	final_true
-	jmp	inc
-	.text
-	.globl	main
-main:
-	pushq	%rbp
-	movq	%rsp, %rbp
+	movq	%rdi, %rax
+	addq	$0, %rax
+	addq	$8, %rax
+	addq	$0, %rax
+	movq	%rax, %rsi
+	movq	$17, %rax
+	movq	%rsi, %rcx
+	movq	%rax, (%rcx)
+	leaq	y(%rip), %rax
+	movq	(%rax), %rax
+	movq	%rax, %rsi
+	leaq	x(%rip), %rax
+	movq	(%rax), %rax
+	movq	%rax, %rdi
+	pushq	%rsi
+	pushq	%rdx
+	movq	$1, %rdx
+	callq	f
+	popq	%rdx
+	popq	%rsi
+	movq	%rax, %rdi
+	movq	%rdi, %rax
+	movq	%rax, %rsi
+	pushq	%rdi
+	pushq	%rsi
+	pushq	%rdx
+	movq	%rsi, %rdi
+	movq	$0, %rsi
+	callq	oat_assert_array_length
+	popq	%rdx
+	popq	%rsi
+	popq	%rdi
+	movq	%rdi, %rax
+	addq	$0, %rax
+	addq	$8, %rax
+	addq	$0, %rax
+	movq	%rax, %rsi
+	movq	(%rsi), %r8 
+	leaq	x(%rip), %rax
+	movq	(%rax), %rax
+	movq	%rax, %rdi
+	leaq	y(%rip), %rax
+	movq	(%rax), %rax
+	movq	%rax, %rsi
+	pushq	%r8 
+	pushq	%rsi
+	pushq	%rdx
+	movq	$0, %rdx
 	pushq	%rdi
 	movq	%rsi, %rdi
 	popq	%rsi
-	movq	$19, %rdi
-	callq	naive_prime
-	movq	%rax, %rdx
+	callq	f
+	popq	%rdx
+	popq	%rsi
+	popq	%r8 
+	movq	%rax, %rdi
+	movq	%rdi, %rax
+	movq	%rax, %rsi
+	pushq	%r8 
+	pushq	%rdi
+	pushq	%rsi
+	pushq	%rdx
+	movq	%rsi, %rdi
+	movq	$0, %rsi
+	callq	oat_assert_array_length
+	popq	%rdx
+	popq	%rsi
+	popq	%rdi
+	popq	%r8 
+	movq	%rdi, %rax
+	addq	$0, %rax
+	addq	$8, %rax
+	addq	$0, %rax
+	movq	%rax, %rsi
+	movq	(%rsi), %rsi
+	addq	%r8 , %rsi
+	movq	%rsi, (%rdx)
+	movq	(%rdx), %rdx
 	movq	%rdx, %rax
 	movq	%rbp, %rsp
 	popq	%rbp

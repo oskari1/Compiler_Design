@@ -1,67 +1,63 @@
-	.data
-	.globl	_str_arr1711
-_str_arr1711:
-	.asciz	"abc"
-	.data
-	.globl	_str_arr1715
-_str_arr1715:
-	.asciz	"def"
 	.text
-	.globl	program
-program:
+	.globl	gcd_rec
+gcd_rec:
 	pushq	%rbp
 	movq	%rsp, %rbp
 	subq	$8, %rsp
-	movq	%rsp, %rdx
-	pushq	%rdx
-	movq	$2, %rdi
-	callq	oat_alloc_array
-	popq	%rdx
-	movq	%rax, %rsi
-	movq	%rsi, %rax
-	movq	%rax, %r8 
-	leaq	_str_arr1711(%rip), %rax
-	addq	$0, %rax
-	addq	$0, %rax
-	movq	%rax, %rsi
-	movq	%r8 , %rax
-	addq	$0, %rax
-	addq	$8, %rax
-	addq	$0, %rax
-	movq	%rax, %rdi
-	movq	%rsi, (%rdi)
-	leaq	_str_arr1715(%rip), %rax
-	addq	$0, %rax
-	addq	$0, %rax
-	movq	%rax, %rsi
-	movq	%r8 , %rax
-	addq	$0, %rax
-	addq	$8, %rax
-	addq	$8, %rax
-	movq	%rax, %rdi
-	movq	%rsi, (%rdi)
-	movq	%r8 , (%rdx)
-	movq	(%rdx), %rsi
-	movq	%rsi, %rax
-	movq	%rax, %rdx
+	movq	%rsp, %r8 
+	movq	%rdi, (%r8 )
+	cmpq	$0, %rsi
+	setne	%dl
+	andq	$1, %rdx
+	cmpq	$0, %rdx
+	jne	neq0
+	jmp	eq0
+	.text
+eq0:
+	movq	%rdi, %rax
+	movq	%rbp, %rsp
+	popq	%rbp
+	retq	
+	.text
+neq0:
+	movq	(%r8 ), %rdx
+	movq	%rdx, %rdi
+	subq	%rsi, %rdi
+	movq	%rdi, (%r8 )
+	cmpq	%rsi, %rdi
+	setg	%dl
+	andq	$1, %rdx
+	cmpq	$0, %rdx
+	jne	neq0
+	jmp	recurse
+	.text
+recurse:
+	pushq	%rdi
 	pushq	%rsi
-	pushq	%rdx
-	movq	$0, %rsi
-	movq	%rdx, %rdi
-	callq	oat_assert_array_length
-	popq	%rdx
+	pushq	%rdi
+	movq	%rsi, %rdi
 	popq	%rsi
-	movq	%rsi, %rax
-	addq	$0, %rax
-	addq	$8, %rax
-	addq	$0, %rax
+	callq	gcd_rec
+	popq	%rsi
+	popq	%rdi
 	movq	%rax, %rdx
-	movq	(%rdx), %rdx
-	pushq	%rdx
-	movq	%rdx, %rdi
-	callq	print_string
-	popq	%rdx
-	movq	$0, %rax
+	movq	%rdx, %rax
+	movq	%rbp, %rsp
+	popq	%rbp
+	retq	
+	.text
+	.globl	main
+main:
+	pushq	%rbp
+	movq	%rsp, %rbp
+	pushq	%rdi
+	movq	%rsi, %rdi
+	popq	%rsi
+	movq	$34, %rsi
+	movq	$424, %rdi
+	callq	gcd_rec
+	movq	%rax, %rdx
+	movq	%rdx, %rax
 	movq	%rbp, %rsp
 	popq	%rbp
 	retq	

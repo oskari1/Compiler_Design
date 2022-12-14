@@ -1,21 +1,46 @@
-	.data
-	.globl	_str_arr763
-_str_arr763:
-	.asciz	"abcde"
 	.text
-	.globl	program
-program:
+	.globl	factorial
+factorial:
 	pushq	%rbp
 	movq	%rsp, %rbp
-	leaq	_str_arr763(%rip), %rax
-	addq	$0, %rax
-	addq	$0, %rax
-	movq	%rax, %rdx
-	pushq	%rdx
+	cmpq	$0, %rdi
+	sete	%dl
+	andq	$1, %rdx
+	cmpq	$0, %rdx
+	jne	ret1
+	jmp	recurse
+	.text
+recurse:
+	movq	%rdi, %rdx
+	subq	$1, %rdx
+	pushq	%rdi
 	movq	%rdx, %rdi
-	callq	print_string
-	popq	%rdx
-	movq	$0, %rax
+	callq	factorial
+	popq	%rdi
+	movq	%rax, %rdx
+	imulq	%rdi, %rdx
+	movq	%rdx, %rax
+	movq	%rbp, %rsp
+	popq	%rbp
+	retq	
+	.text
+ret1:
+	movq	$1, %rax
+	movq	%rbp, %rsp
+	popq	%rbp
+	retq	
+	.text
+	.globl	main
+main:
+	pushq	%rbp
+	movq	%rsp, %rbp
+	pushq	%rdi
+	movq	%rsi, %rdi
+	popq	%rsi
+	movq	$5, %rdi
+	callq	factorial
+	movq	%rax, %rdx
+	movq	%rdx, %rax
 	movq	%rbp, %rsp
 	popq	%rbp
 	retq	

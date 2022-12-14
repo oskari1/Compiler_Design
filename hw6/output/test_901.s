@@ -1,57 +1,79 @@
 	.text
-	.globl	bar
-bar:
+	.globl	program
+program:
 	pushq	%rbp
 	movq	%rsp, %rbp
-	subq	$24, %rsp
-	movq	%rcx, -8(%rbp)
-	pushq	16(%rbp)
-	popq	-16(%rbp)
-	pushq	24(%rbp)
-	popq	-24(%rbp)
-	addq	%rdi, %rsi
-	addq	%rsi, %rdx
-	addq	-8(%rbp), %rdx
-	addq	%r8 , %rdx
-	addq	%r9 , %rdx
-	addq	-16(%rbp), %rdx
-	addq	-24(%rbp), %rdx
-	movq	%rdx, %rax
-	movq	%rbp, %rsp
-	popq	%rbp
-	retq	
-	.text
-	.globl	foo
-foo:
-	pushq	%rbp
-	movq	%rsp, %rbp
+	subq	$8, %rsp
+	movq	%rsp, %rdi
 	pushq	%rdi
-	pushq	%rdi
-	pushq	%rdi
-	movq	%rdi, %r9 
-	movq	%rdi, %r8 
-	movq	%rdi, %rcx
-	movq	%rdi, %rdx
-	movq	%rdi, %rsi
-	callq	bar
-	addq	$16, %rsp
+	movq	$16, %rdi
+	callq	oat_malloc
 	popq	%rdi
 	movq	%rax, %rdx
 	movq	%rdx, %rax
-	movq	%rbp, %rsp
-	popq	%rbp
-	retq	
-	.text
-	.globl	main
-main:
-	pushq	%rbp
-	movq	%rsp, %rbp
-	pushq	%rdi
-	movq	%rsi, %rdi
-	popq	%rsi
-	movq	$3, %rdi
-	callq	foo
+	movq	%rax, %rsi
+	movq	%rsi, %rax
+	addq	$0, %rax
+	addq	$0, %rax
 	movq	%rax, %rdx
+	movq	$3, %rax
+	movq	%rdx, %rcx
+	movq	%rax, (%rcx)
+	movq	%rsi, %rax
+	addq	$0, %rax
+	addq	$8, %rax
+	movq	%rax, %rdx
+	movq	$4, %rax
+	movq	%rdx, %rcx
+	movq	%rax, (%rcx)
+	movq	%rsi, (%rdi)
+	movq	(%rdi), %rdx
+	movq	%rdx, %rax
+	addq	$0, %rax
+	addq	$0, %rax
+	movq	%rax, %rdx
+	movq	$5, %rax
+	movq	%rdx, %rcx
+	movq	%rax, (%rcx)
+	movq	(%rdi), %rdx
+	movq	%rdx, %rax
+	addq	$0, %rax
+	addq	$8, %rax
+	movq	%rax, %r8 
+	movq	(%rdi), %rdx
+	movq	%rdx, %rax
+	addq	$0, %rax
+	addq	$0, %rax
+	movq	%rax, %rdx
+	movq	(%rdx), %rsi
+	movq	(%rdi), %rdx
+	movq	%rdx, %rax
+	addq	$0, %rax
+	addq	$8, %rax
+	movq	%rax, %rdx
+	movq	(%rdx), %rdx
+	addq	%rsi, %rdx
+	addq	$3, %rdx
+	movq	%rdx, (%r8 )
+	movq	(%rdi), %rdx
+	movq	%rdx, %rax
+	addq	$0, %rax
+	addq	$0, %rax
+	movq	%rax, %rsi
+	movq	(%rdi), %rdx
+	movq	%rdx, %rax
+	addq	$0, %rax
+	addq	$8, %rax
+	movq	%rax, %rdx
+	movq	(%rdx), %rdx
+	addq	$4, %rdx
+	movq	%rdx, (%rsi)
+	movq	(%rdi), %rdx
+	movq	%rdx, %rax
+	addq	$0, %rax
+	addq	$0, %rax
+	movq	%rax, %rdx
+	movq	(%rdx), %rdx
 	movq	%rdx, %rax
 	movq	%rbp, %rsp
 	popq	%rbp

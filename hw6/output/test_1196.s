@@ -1,54 +1,73 @@
 	.text
-	.globl	call
-call:
+	.globl	main
+main:
 	pushq	%rbp
 	movq	%rsp, %rbp
 	pushq	%rdi
 	movq	%rsi, %rdi
 	popq	%rsi
 	subq	$8, %rsp
-	movq	%rsp, %rdx
+	movq	%rsp, %r9 
 	subq	$8, %rsp
 	movq	%rsp, %r8 
-	movq	%rsi, (%rdx)
-	movq	%rdi, (%r8 )
-	movq	(%rdx), %rdx
-	movq	(%r8 ), %rsi
-	pushq	%r15
-	movq	%rdx, %r15
-	pushq	%rsi
-	movq	%rsi, %rdi
-	callq	*%r15
-	popq	%rsi
-	popq	%r15
-	movq	%rax, %rdx
+	movq	$8, %rax
+	movq	%r9 , %rcx
+	movq	%rax, (%rcx)
+	movq	$10, %rax
+	movq	%r8 , %rcx
+	movq	%rax, (%rcx)
+	jmp	gcd
+	.text
+continue_loop:
+	movq	(%r9 ), %rsi
+	cmpq	%rdi, %rsi
+	setg	%dl
+	andq	$1, %rdx
+	cmpq	$0, %rdx
+	jne	if
+	jmp	else
+	.text
+else:
+	movq	%rdi, %rdx
+	subq	%rsi, %rdx
+	movq	%rdx, (%r8 )
+	jmp	loop
+	.text
+gcd:
+	movq	(%r9 ), %rdx
+	movq	$0, %rax
+	cmpq	%rdx, %rax
+	sete	%dl
+	andq	$1, %rdx
+	cmpq	$0, %rdx
+	jne	ret_b
+	jmp	loop
+	.text
+if:
+	movq	%rsi, %rdx
+	subq	%rdi, %rdx
+	movq	%rdx, (%r9 )
+	jmp	loop
+	.text
+loop:
+	movq	(%r8 ), %rdi
+	movq	$0, %rax
+	cmpq	%rdi, %rax
+	sete	%dl
+	andq	$1, %rdx
+	cmpq	$0, %rdx
+	jne	ret_a
+	jmp	continue_loop
+	.text
+ret_a:
+	movq	(%r9 ), %rdx
 	movq	%rdx, %rax
 	movq	%rbp, %rsp
 	popq	%rbp
 	retq	
 	.text
-	.globl	inc
-inc:
-	pushq	%rbp
-	movq	%rsp, %rbp
-	subq	$8, %rsp
-	movq	%rsp, %rdx
-	movq	%rdi, (%rdx)
-	movq	(%rdx), %rdx
-	addq	$1, %rdx
-	movq	%rdx, %rax
-	movq	%rbp, %rsp
-	popq	%rbp
-	retq	
-	.text
-	.globl	program
-program:
-	pushq	%rbp
-	movq	%rsp, %rbp
-	movq	$3, %rsi
-	leaq	inc(%rip), %rdi
-	callq	call
-	movq	%rax, %rdx
+ret_b:
+	movq	(%r8 ), %rdx
 	movq	%rdx, %rax
 	movq	%rbp, %rsp
 	popq	%rbp

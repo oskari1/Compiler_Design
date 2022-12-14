@@ -1,10 +1,14 @@
 	.data
-	.globl	_str_arr7201
-_str_arr7201:
-	.asciz	"ab"
+	.globl	glist
+glist:
+	.quad	1
+	.quad	2
+	.quad	3
+	.quad	4
+	.quad	5
 	.text
-	.globl	run2
-run2:
+	.globl	search
+search:
 	pushq	%rbp
 	movq	%rsp, %rbp
 	pushq	%rdi
@@ -12,54 +16,62 @@ run2:
 	popq	%rsi
 	subq	$8, %rsp
 	movq	%rsp, %r8 
-	subq	$8, %rsp
-	movq	%rsp, %r9 
-	movq	%rsi, (%r8 )
-	movq	%rdi, (%r9 )
-	movq	(%r8 ), %rdx
-	movq	(%r9 ), %rsi
-	pushq	%r15
-	movq	%rdx, %r15
-	pushq	%r9 
-	pushq	%r8 
-	pushq	%rsi
-	pushq	%rdx
-	movq	%rsi, %rdi
-	callq	*%r15
-	popq	%rdx
-	popq	%rsi
-	popq	%r8 
-	popq	%r9 
-	popq	%r15
-	movq	(%r8 ), %rdx
-	movq	(%r9 ), %rsi
-	pushq	%r15
-	movq	%rdx, %r15
-	pushq	%rsi
-	pushq	%rdx
-	movq	%rsi, %rdi
-	callq	*%r15
-	popq	%rdx
-	popq	%rsi
-	popq	%r15
+	movq	$0, %rax
+	movq	%r8 , %rcx
+	movq	%rax, (%rcx)
+	jmp	loop
+	.text
+check:
+	movq	%rdi, %rax
+	addq	$0, %rax
+	movq	%rax, %rcx
+	movq	%r9 , %rax
+	imulq	$8, %rax
+	addq	%rcx, %rax
+	movq	%rax, %rdx
+	movq	(%rdx), %rdx
+	cmpq	%rdx, %rsi
+	sete	%dl
+	andq	$1, %rdx
+	addq	$1, %r9 
+	movq	%r9 , (%r8 )
+	cmpq	$0, %rdx
+	jne	true
+	jmp	loop
+	.text
+false:
+	movq	$0, %rax
 	movq	%rbp, %rsp
 	popq	%rbp
 	retq	
 	.text
-	.globl	program
-program:
+loop:
+	movq	(%r8 ), %r9 
+	cmpq	$5, %r9 
+	sete	%dl
+	andq	$1, %rdx
+	cmpq	$0, %rdx
+	jne	false
+	jmp	check
+	.text
+true:
+	movq	$1, %rax
+	movq	%rbp, %rsp
+	popq	%rbp
+	retq	
+	.text
+	.globl	main
+main:
 	pushq	%rbp
 	movq	%rsp, %rbp
-	leaq	_str_arr7201(%rip), %rax
-	addq	$0, %rax
-	addq	$0, %rax
+	pushq	%rdi
+	movq	%rsi, %rdi
+	popq	%rsi
+	leaq	glist(%rip), %rsi
+	movq	$3, %rdi
+	callq	search
 	movq	%rax, %rdx
-	pushq	%rdx
-	movq	%rdx, %rsi
-	leaq	print_string(%rip), %rdi
-	callq	run2
-	popq	%rdx
-	movq	$0, %rax
+	movq	%rdx, %rax
 	movq	%rbp, %rsp
 	popq	%rbp
 	retq	

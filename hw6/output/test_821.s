@@ -1,94 +1,86 @@
+	.data
+	.globl	test1
+test1:
+	.quad	0
+	.quad	0
+	.quad	100
+	.data
+	.globl	test2
+test2:
+	.quad	test1
+	.quad	0
+	.quad	10
+	.data
+	.globl	test3
+test3:
+	.quad	0
+	.quad	0
+	.quad	1
+	.data
+	.globl	test
+test:
+	.quad	test2
+	.quad	test3
+	.quad	5
 	.text
-	.globl	add
-add:
+	.globl	sum_tree
+sum_tree:
 	pushq	%rbp
 	movq	%rsp, %rbp
-	subq	$8, %rsp
-	movq	%rsp, %r8 
-	subq	$8, %rsp
-	movq	%rsp, %rdx
-	movq	%rdi, (%r8 )
-	movq	%rsi, (%rdx)
-	movq	(%r8 ), %rsi
+	cmpq	$0, %rdi
+	sete	%dl
+	andq	$1, %rdx
+	cmpq	$0, %rdx
+	jne	then
+	jmp	else
+	.text
+else:
+	movq	%rdi, %rax
+	addq	$0, %rax
+	addq	$16, %rax
+	movq	%rax, %rdx
+	movq	(%rdx), %rsi
+	movq	%rdi, %rax
+	addq	$0, %rax
+	addq	$8, %rax
+	movq	%rax, %rdx
 	movq	(%rdx), %rdx
+	pushq	%rdi
+	pushq	%rsi
+	movq	%rdx, %rdi
+	callq	sum_tree
+	popq	%rsi
+	popq	%rdi
+	movq	%rax, %rdx
+	addq	%rdx, %rsi
+	movq	%rdi, %rax
+	addq	$0, %rax
+	addq	$0, %rax
+	movq	%rax, %rdx
+	movq	(%rdx), %rdx
+	pushq	%rsi
+	movq	%rdx, %rdi
+	callq	sum_tree
+	popq	%rsi
+	movq	%rax, %rdx
 	addq	%rsi, %rdx
 	movq	%rdx, %rax
 	movq	%rbp, %rsp
 	popq	%rbp
 	retq	
 	.text
-	.globl	sub
-sub:
-	pushq	%rbp
-	movq	%rsp, %rbp
-	subq	$8, %rsp
-	movq	%rsp, %r8 
-	subq	$8, %rsp
-	movq	%rsp, %rdx
-	movq	%rdi, (%r8 )
-	movq	%rsi, (%rdx)
-	movq	(%r8 ), %rsi
-	movq	(%rdx), %rdx
-	movq	%rsi, %rax
-	subq	%rdx, %rax
-	movq	%rax, %rdx
-	movq	%rdx, %rax
+then:
+	movq	$0, %rax
 	movq	%rbp, %rsp
 	popq	%rbp
 	retq	
 	.text
-	.globl	program
-program:
+	.globl	main
+main:
 	pushq	%rbp
 	movq	%rsp, %rbp
-	subq	$8, %rsp
-	movq	%rsp, %rsi
-	pushq	%rsi
-	movq	$2, %rdi
-	callq	oat_alloc_array
-	popq	%rsi
-	movq	%rax, %rdx
-	movq	%rdx, %rax
-	movq	%rax, %rdi
-	movq	%rdi, %rax
-	addq	$0, %rax
-	addq	$8, %rax
-	addq	$0, %rax
-	movq	%rax, %rdx
-	leaq	add(%rip), %rax
-	movq	%rdx, %rcx
-	movq	%rax, (%rcx)
-	movq	%rdi, %rax
-	addq	$0, %rax
-	addq	$8, %rax
-	addq	$8, %rax
-	movq	%rax, %rdx
-	leaq	sub(%rip), %rax
-	movq	%rdx, %rcx
-	movq	%rax, (%rcx)
-	movq	%rdi, (%rsi)
-	movq	(%rsi), %rsi
-	movq	%rsi, %rax
-	movq	%rax, %rdx
-	pushq	%rsi
-	pushq	%rdx
-	movq	$0, %rsi
-	movq	%rdx, %rdi
-	callq	oat_assert_array_length
-	popq	%rdx
-	popq	%rsi
-	movq	%rsi, %rax
-	addq	$0, %rax
-	addq	$8, %rax
-	addq	$0, %rax
-	movq	%rax, %rdx
-	movq	(%rdx), %rdx
-	pushq	%r15
-	movq	%rdx, %r15
-	movq	$1, %rsi
-	movq	$1, %rdi
-	callq	*%r15
-	popq	%r15
+	leaq	test(%rip), %rdi
+	callq	sum_tree
 	movq	%rax, %rdx
 	movq	%rdx, %rax
 	movq	%rbp, %rsp

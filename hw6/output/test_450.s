@@ -1,36 +1,59 @@
-	.data
-	.globl	b
-b:
-	.quad	1
 	.text
-	.globl	program
-program:
+	.globl	fact
+fact:
 	pushq	%rbp
 	movq	%rsp, %rbp
 	subq	$8, %rsp
-	movq	%rsp, %rdx
-	movq	$0, %rax
-	movq	%rdx, %rcx
+	movq	%rsp, %rsi
+	subq	$8, %rsp
+	movq	%rsp, %r8 
+	movq	%rdi, (%rsi)
+	movq	$1, %rax
+	movq	%r8 , %rcx
 	movq	%rax, (%rcx)
-	leaq	b(%rip), %rax
-	movq	(%rax), %rax
-	movq	%rax, %rsi
-	cmpq	$0, %rsi
-	jne	_then8309
-	jmp	_else8308
+	jmp	_cond793
 	.text
-_else8308:
-	jmp	_merge8307
+_body792:
+	movq	(%r8 ), %rdi
+	movq	(%rsi), %rdx
+	imulq	%rdi, %rdx
+	movq	%rdx, (%r8 )
+	movq	(%rsi), %rdx
+	subq	$1, %rdx
+	movq	%rdx, (%rsi)
+	jmp	_cond793
 	.text
-_merge8307:
-	movq	(%rdx), %rdx
+_cond793:
+	movq	(%rsi), %rdx
+	cmpq	$0, %rdx
+	setg	%dl
+	andq	$1, %rdx
+	cmpq	$0, %rdx
+	jne	_body792
+	jmp	_post791
+	.text
+_post791:
+	movq	(%r8 ), %rdx
 	movq	%rdx, %rax
 	movq	%rbp, %rsp
 	popq	%rbp
 	retq	
 	.text
-_then8309:
-	movq	$1, %rax
-	movq	%rdx, %rcx
-	movq	%rax, (%rcx)
-	jmp	_merge8307
+	.globl	program
+program:
+	pushq	%rbp
+	movq	%rsp, %rbp
+	movq	$5, %rdi
+	callq	fact
+	movq	%rax, %rdx
+	movq	%rdx, %rdi
+	callq	string_of_int
+	movq	%rax, %rdx
+	pushq	%rdx
+	movq	%rdx, %rdi
+	callq	print_string
+	popq	%rdx
+	movq	$0, %rax
+	movq	%rbp, %rsp
+	popq	%rbp
+	retq	

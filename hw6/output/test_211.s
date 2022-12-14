@@ -1,43 +1,57 @@
 	.text
-	.globl	program
-program:
+	.globl	bar
+bar:
 	pushq	%rbp
 	movq	%rsp, %rbp
-	subq	$8, %rsp
-	movq	%rsp, %rdx
-	subq	$8, %rsp
-	movq	%rsp, %rdi
-	movq	$0, %rax
-	movq	%rdx, %rcx
-	movq	%rax, (%rcx)
-	movq	$0, %rax
+	subq	$24, %rsp
+	movq	%rcx, -8(%rbp)
+	pushq	16(%rbp)
+	popq	-16(%rbp)
+	pushq	24(%rbp)
+	popq	-24(%rbp)
+	addq	%rdi, %rsi
+	addq	%rsi, %rdx
+	addq	-8(%rbp), %rdx
+	addq	%r8 , %rdx
+	addq	%r9 , %rdx
+	addq	-16(%rbp), %rdx
+	addq	-24(%rbp), %rdx
+	movq	%rdx, %rax
+	movq	%rbp, %rsp
+	popq	%rbp
+	retq	
+	.text
+	.globl	foo
+foo:
+	pushq	%rbp
+	movq	%rsp, %rbp
+	pushq	%rdi
+	pushq	%rdi
+	pushq	%rdi
+	movq	%rdi, %r9 
+	movq	%rdi, %r8 
 	movq	%rdi, %rcx
-	movq	%rax, (%rcx)
-	jmp	_cond15
+	movq	%rdi, %rdx
+	movq	%rdi, %rsi
+	callq	bar
+	addq	$16, %rsp
+	popq	%rdi
+	movq	%rax, %rdx
+	movq	%rdx, %rax
+	movq	%rbp, %rsp
+	popq	%rbp
+	retq	
 	.text
-_body14:
-	movq	(%rdx), %rsi
-	movq	(%rdi), %r8 
-	addq	%rsi, %r8 
-	movq	(%rdi), %rsi
-	imulq	%r8 , %rsi
-	movq	%rsi, (%rdx)
-	movq	(%rdi), %rsi
-	addq	$1, %rsi
-	movq	%rsi, (%rdi)
-	jmp	_cond15
-	.text
-_cond15:
-	movq	(%rdi), %rsi
-	cmpq	$10, %rsi
-	setl	%sil
-	andq	$1, %rsi
-	cmpq	$0, %rsi
-	jne	_body14
-	jmp	_post13
-	.text
-_post13:
-	movq	(%rdx), %rdx
+	.globl	main
+main:
+	pushq	%rbp
+	movq	%rsp, %rbp
+	pushq	%rdi
+	movq	%rsi, %rdi
+	popq	%rsi
+	movq	$3, %rdi
+	callq	foo
+	movq	%rax, %rdx
 	movq	%rdx, %rax
 	movq	%rbp, %rsp
 	popq	%rbp

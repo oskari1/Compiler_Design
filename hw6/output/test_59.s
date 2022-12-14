@@ -1,59 +1,41 @@
 	.text
-	.globl	fact
-fact:
+	.globl	program
+program:
 	pushq	%rbp
 	movq	%rsp, %rbp
 	subq	$8, %rsp
 	movq	%rsp, %rsi
 	subq	$8, %rsp
-	movq	%rsp, %r8 
-	movq	%rdi, (%rsi)
-	movq	$1, %rax
-	movq	%r8 , %rcx
+	movq	%rsp, %rdi
+	movq	$0, %rax
+	movq	%rsi, %rcx
 	movq	%rax, (%rcx)
-	jmp	_cond793
+	movq	$0, %rax
+	movq	%rdi, %rcx
+	movq	%rax, (%rcx)
+	jmp	_cond40
 	.text
-_body792:
-	movq	(%r8 ), %rdi
+_body39:
 	movq	(%rsi), %rdx
-	imulq	%rdi, %rdx
-	movq	%rdx, (%r8 )
-	movq	(%rsi), %rdx
-	subq	$1, %rdx
+	addq	$2, %rdx
 	movq	%rdx, (%rsi)
-	jmp	_cond793
+	movq	(%rdi), %rdx
+	addq	$1, %rdx
+	movq	%rdx, (%rdi)
+	jmp	_cond40
 	.text
-_cond793:
-	movq	(%rsi), %rdx
-	cmpq	$0, %rdx
-	setg	%dl
+_cond40:
+	movq	(%rdi), %rdx
+	cmpq	$3, %rdx
+	setl	%dl
 	andq	$1, %rdx
 	cmpq	$0, %rdx
-	jne	_body792
-	jmp	_post791
+	jne	_body39
+	jmp	_post38
 	.text
-_post791:
-	movq	(%r8 ), %rdx
+_post38:
+	movq	(%rsi), %rdx
 	movq	%rdx, %rax
-	movq	%rbp, %rsp
-	popq	%rbp
-	retq	
-	.text
-	.globl	program
-program:
-	pushq	%rbp
-	movq	%rsp, %rbp
-	movq	$5, %rdi
-	callq	fact
-	movq	%rax, %rdx
-	movq	%rdx, %rdi
-	callq	string_of_int
-	movq	%rax, %rdx
-	pushq	%rdx
-	movq	%rdx, %rdi
-	callq	print_string
-	popq	%rdx
-	movq	$0, %rax
 	movq	%rbp, %rsp
 	popq	%rbp
 	retq	

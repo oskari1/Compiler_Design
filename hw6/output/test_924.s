@@ -1,183 +1,104 @@
 	.text
-	.globl	binary_gcd
-binary_gcd:
+	.globl	f
+f:
 	pushq	%rbp
 	movq	%rsp, %rbp
-	cmpq	%rsi, %rdi
-	sete	%dl
-	andq	$1, %rdx
-	cmpq	$0, %rdx
-	jne	ret_u
-	jmp	term1
-	.text
-both_even:
+	subq	$96, %rsp
+	movq	%rcx, -8(%rbp)
+	pushq	16(%rbp)
+	popq	-16(%rbp)
+	pushq	24(%rbp)
+	popq	-24(%rbp)
+	subq	$8, %rsp
+	movq	%rsp, -32(%rbp)
+	subq	$8, %rsp
+	movq	%rsp, -40(%rbp)
+	subq	$8, %rsp
+	movq	%rsp, -48(%rbp)
+	subq	$8, %rsp
+	movq	%rsp, -56(%rbp)
+	subq	$8, %rsp
+	movq	%rsp, -64(%rbp)
+	subq	$8, %rsp
+	movq	%rsp, -72(%rbp)
+	subq	$8, %rsp
+	movq	%rsp, -80(%rbp)
+	subq	$8, %rsp
+	movq	%rsp, -88(%rbp)
 	movq	%rdi, %rax
-	movq	$1, %rcx
-	shrq	%cl, %rax
-	movq	%rax, %rdi
+	movq	-32(%rbp), %rcx
+	movq	%rax, (%rcx)
 	movq	%rsi, %rax
-	movq	$1, %rcx
-	shrq	%cl, %rax
-	movq	%rax, %rdx
-	pushq	%rdi
-	movq	%rdx, %rsi
-	callq	binary_gcd
-	popq	%rdi
-	movq	%rax, %rdx
+	movq	-40(%rbp), %rcx
+	movq	%rax, (%rcx)
 	movq	%rdx, %rax
-	movq	$1, %rcx
-	shlq	%cl, %rax
+	movq	-48(%rbp), %rcx
+	movq	%rax, (%rcx)
+	movq	-8(%rbp), %rax
+	movq	-56(%rbp), %rcx
+	movq	%rax, (%rcx)
+	movq	%r8 , %rax
+	movq	-64(%rbp), %rcx
+	movq	%rax, (%rcx)
+	movq	%r9 , %rax
+	movq	-72(%rbp), %rcx
+	movq	%rax, (%rcx)
+	movq	-16(%rbp), %rax
+	movq	-80(%rbp), %rcx
+	movq	%rax, (%rcx)
+	movq	-24(%rbp), %rax
+	movq	-88(%rbp), %rcx
+	movq	%rax, (%rcx)
+	movq	-32(%rbp), %rax
+	movq	(%rax), %rax
+	movq	%rax, -96(%rbp)
+	movq	-40(%rbp), %rax
+	movq	(%rax), %rax
 	movq	%rax, %rdx
-	movq	%rdx, %rax
-	movq	%rbp, %rsp
-	popq	%rbp
-	retq	
-	.text
-gcd:
-	movq	$-1, %rdx
-	xorq	%rdi, %rdx
-	andq	$1, %rdx
-	movq	$0, %rax
-	cmpq	%rdx, %rax
-	setne	%dl
-	andq	$1, %rdx
-	cmpq	$0, %rdx
-	jne	u_even
-	jmp	u_odd
-	.text
-ret_u:
-	movq	%rdi, %rax
-	movq	%rbp, %rsp
-	popq	%rbp
-	retq	
-	.text
-ret_v:
-	movq	%rsi, %rax
-	movq	%rbp, %rsp
-	popq	%rbp
-	retq	
-	.text
-term1:
-	movq	$0, %rax
-	cmpq	%rdi, %rax
-	sete	%dl
-	andq	$1, %rdx
-	cmpq	$0, %rdx
-	jne	ret_v
-	jmp	term2
-	.text
-term2:
-	movq	$0, %rax
-	cmpq	%rsi, %rax
-	sete	%dl
-	andq	$1, %rdx
-	cmpq	$0, %rdx
-	jne	ret_u
-	jmp	gcd
-	.text
-u_even:
-	movq	%rsi, %rdx
-	andq	$1, %rdx
-	movq	$0, %rax
-	cmpq	%rdx, %rax
-	setne	%dl
-	andq	$1, %rdx
-	cmpq	$0, %rdx
-	jne	ue_vo
-	jmp	both_even
-	.text
-u_gt:
-	movq	%rdi, %rdx
-	subq	%rsi, %rdx
-	movq	%rdx, %rax
-	movq	$1, %rcx
-	shrq	%cl, %rax
+	addq	-96(%rbp), %rdx
+	movq	-48(%rbp), %rax
+	movq	(%rax), %rax
+	movq	%rax, %rsi
+	addq	%rdx, %rsi
+	movq	-56(%rbp), %rax
+	movq	(%rax), %rax
 	movq	%rax, %rdx
-	pushq	%rsi
-	movq	%rdx, %rdi
-	callq	binary_gcd
-	popq	%rsi
+	addq	%rdx, %rsi
+	movq	-64(%rbp), %rax
+	movq	(%rax), %rax
 	movq	%rax, %rdx
+	addq	%rdx, %rsi
+	movq	-72(%rbp), %rax
+	movq	(%rax), %rax
+	movq	%rax, %rdx
+	addq	%rdx, %rsi
+	movq	-80(%rbp), %rax
+	movq	(%rax), %rax
+	movq	%rax, %rdx
+	addq	%rdx, %rsi
+	movq	-88(%rbp), %rax
+	movq	(%rax), %rax
+	movq	%rax, %rdx
+	addq	%rsi, %rdx
 	movq	%rdx, %rax
 	movq	%rbp, %rsp
 	popq	%rbp
 	retq	
 	.text
-u_odd:
-	movq	$-1, %rdx
-	xorq	%rsi, %rdx
-	andq	$1, %rdx
-	movq	$0, %rax
-	cmpq	%rdx, %rax
-	setne	%dl
-	andq	$1, %rdx
-	cmpq	$0, %rdx
-	jne	v_even
-	jmp	v_odd
-	.text
-ue_vo:
-	movq	%rdi, %rax
-	movq	$1, %rcx
-	shrq	%cl, %rax
-	movq	%rax, %rdx
-	pushq	%rsi
-	movq	%rdx, %rdi
-	callq	binary_gcd
-	popq	%rsi
-	movq	%rax, %rdx
-	movq	%rdx, %rax
-	movq	%rbp, %rsp
-	popq	%rbp
-	retq	
-	.text
-v_even:
-	movq	%rsi, %rax
-	movq	$1, %rcx
-	shrq	%cl, %rax
-	movq	%rax, %rdx
-	pushq	%rdi
-	movq	%rdx, %rsi
-	callq	binary_gcd
-	popq	%rdi
-	movq	%rax, %rdx
-	movq	%rdx, %rax
-	movq	%rbp, %rsp
-	popq	%rbp
-	retq	
-	.text
-v_gt:
-	movq	%rsi, %rdx
-	subq	%rdi, %rdx
-	movq	%rdx, %rax
-	movq	$1, %rcx
-	shrq	%cl, %rax
-	movq	%rax, %rdx
-	pushq	%rdi
-	movq	%rdi, %rsi
-	movq	%rdx, %rdi
-	callq	binary_gcd
-	popq	%rdi
-	movq	%rax, %rdx
-	movq	%rdx, %rax
-	movq	%rbp, %rsp
-	popq	%rbp
-	retq	
-	.text
-v_odd:
-	cmpq	%rsi, %rdi
-	setg	%dl
-	andq	$1, %rdx
-	cmpq	$0, %rdx
-	jne	u_gt
-	jmp	v_gt
-	.text
-	.globl	main
-main:
+	.globl	program
+program:
 	pushq	%rbp
 	movq	%rsp, %rbp
-	movq	$15, %rsi
-	movq	$21, %rdi
-	callq	binary_gcd
+	pushq	$-3
+	pushq	$-4
+	movq	$-5, %r9 
+	movq	$5, %r8 
+	movq	$4, %rcx
+	movq	$3, %rdx
+	movq	$2, %rsi
+	movq	$1, %rdi
+	callq	f
+	addq	$16, %rsp
 	movq	%rax, %rdx
 	movq	%rdx, %rax
 	movq	%rbp, %rsp

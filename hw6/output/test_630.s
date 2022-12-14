@@ -1,84 +1,75 @@
 	.text
-	.globl	create_pair
-create_pair:
-	pushq	%rbp
-	movq	%rsp, %rbp
-	subq	$8, %rsp
-	movq	%rsp, %r9 
-	subq	$8, %rsp
-	movq	%rsp, %r8 
-	movq	%rdi, (%r9 )
-	movq	%rsi, (%r8 )
-	pushq	%r9 
-	pushq	%r8 
-	movq	$16, %rdi
-	callq	oat_malloc
-	popq	%r8 
-	popq	%r9 
-	movq	%rax, %rdx
-	movq	%rdx, %rax
-	movq	%rax, %rdx
-	movq	(%r9 ), %rdi
-	movq	%rdx, %rax
-	addq	$0, %rax
-	addq	$0, %rax
-	movq	%rax, %rsi
-	movq	%rdi, (%rsi)
-	movq	(%r8 ), %rdi
-	movq	%rdx, %rax
-	addq	$0, %rax
-	addq	$8, %rax
-	movq	%rax, %rsi
-	movq	%rdi, (%rsi)
-	movq	%rdx, %rax
-	movq	%rbp, %rsp
-	popq	%rbp
-	retq	
-	.text
 	.globl	program
 program:
 	pushq	%rbp
 	movq	%rsp, %rbp
 	subq	$8, %rsp
 	movq	%rsp, %rdi
+	subq	$8, %rsp
+	movq	%rsp, %rsi
 	pushq	%rdi
-	movq	$0, %rsi
-	movq	$1, %rdi
-	callq	create_pair
+	pushq	%rsi
+	movq	$2, %rdi
+	callq	oat_alloc_array
+	popq	%rsi
 	popq	%rdi
 	movq	%rax, %rdx
-	movq	%rdx, (%rdi)
-	movq	(%rdi), %rdx
 	movq	%rdx, %rax
-	addq	$0, %rax
-	addq	$0, %rax
-	movq	%rax, %rdx
-	movq	(%rdx), %rsi
-	movq	(%rdi), %rdx
-	movq	%rdx, %rax
+	movq	%rax, %r8 
+	movq	%r8 , %rax
 	addq	$0, %rax
 	addq	$8, %rax
+	addq	$0, %rax
+	movq	%rax, %rdx
+	movq	$1, %rax
+	movq	%rdx, %rcx
+	movq	%rax, (%rcx)
+	movq	%r8 , %rax
+	addq	$0, %rax
+	addq	$8, %rax
+	addq	$8, %rax
+	movq	%rax, %rdx
+	movq	$0, %rax
+	movq	%rdx, %rcx
+	movq	%rax, (%rcx)
+	movq	%r8 , (%rdi)
+	movq	$0, %rax
+	movq	%rsi, %rcx
+	movq	%rax, (%rcx)
+	movq	(%rdi), %rdi
+	movq	%rdi, %rax
+	movq	%rax, %rdx
+	pushq	%rdi
+	pushq	%rsi
+	pushq	%rdx
+	movq	$0, %rsi
+	movq	%rdx, %rdi
+	callq	oat_assert_array_length
+	popq	%rdx
+	popq	%rsi
+	popq	%rdi
+	movq	%rdi, %rax
+	addq	$0, %rax
+	addq	$8, %rax
+	addq	$0, %rax
 	movq	%rax, %rdx
 	movq	(%rdx), %rdx
-	andq	%rsi, %rdx
 	cmpq	$0, %rdx
-	jne	_then6802
-	jmp	_else6801
+	jne	_then351
+	jmp	_else350
 	.text
-_else6801:
-	movq	$0, %rax
+_else350:
+	jmp	_merge349
+	.text
+_merge349:
+	movq	(%rsi), %rdx
+	movq	%rdx, %rax
 	movq	%rbp, %rsp
 	popq	%rbp
 	retq	
 	.text
-_merge6800:
-	movq	$0, %rax
-	movq	%rbp, %rsp
-	popq	%rbp
-	retq	
-	.text
-_then6802:
+_then351:
 	movq	$1, %rax
-	movq	%rbp, %rsp
-	popq	%rbp
-	retq	
+	movq	%rsi, %rcx
+	movq	%rax, (%rcx)
+	jmp	_merge349

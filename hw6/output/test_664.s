@@ -1,54 +1,58 @@
 	.text
-	.globl	program
-program:
+	.globl	f
+f:
 	pushq	%rbp
 	movq	%rsp, %rbp
 	subq	$8, %rsp
 	movq	%rsp, %r8 
 	subq	$8, %rsp
 	movq	%rsp, %rsi
-	movq	$12, %rax
-	movq	%r8 , %rcx
-	movq	%rax, (%rcx)
-	movq	$800, %rax
+	movq	%rdi, (%r8 )
+	movq	$0, %rax
 	movq	%rsi, %rcx
 	movq	%rax, (%rcx)
-	movq	(%r8 ), %rdi
-	movq	(%rsi), %rdx
-	movq	%rdi, %rax
-	subq	%rdx, %rax
-	movq	%rax, %rdx
+	movq	(%r8 ), %rdx
 	cmpq	$0, %rdx
-	setle	%dl
+	sete	%dl
 	andq	$1, %rdx
 	cmpq	$0, %rdx
-	jne	_then8224
-	jmp	_else8223
+	jne	_then2792
+	jmp	_else2791
 	.text
-_else8223:
+_else2791:
 	movq	(%r8 ), %rdi
-	movq	(%rsi), %rdx
-	movq	%rdi, %rax
-	subq	%rdx, %rax
+	movq	(%r8 ), %rdx
+	subq	$1, %rdx
+	pushq	%rdi
+	pushq	%rsi
+	movq	%rdx, %rdi
+	callq	f
+	popq	%rsi
+	popq	%rdi
 	movq	%rax, %rdx
+	imulq	%rdi, %rdx
+	movq	%rdx, (%rsi)
+	jmp	_merge2790
+	.text
+_merge2790:
+	movq	(%rsi), %rdx
 	movq	%rdx, %rax
 	movq	%rbp, %rsp
 	popq	%rbp
 	retq	
 	.text
-_merge8222:
-	movq	$0, %rax
-	movq	%rbp, %rsp
-	popq	%rbp
-	retq	
+_then2792:
+	movq	$1, %rax
+	movq	%rsi, %rcx
+	movq	%rax, (%rcx)
+	jmp	_merge2790
 	.text
-_then8224:
-	movq	(%r8 ), %rdx
-	movq	$0, %rdi
-	subq	%rdx, %rdi
-	movq	(%rsi), %rdx
-	movq	%rdi, %rax
-	subq	%rdx, %rax
+	.globl	program
+program:
+	pushq	%rbp
+	movq	%rsp, %rbp
+	movq	$5, %rdi
+	callq	f
 	movq	%rax, %rdx
 	movq	%rdx, %rax
 	movq	%rbp, %rsp

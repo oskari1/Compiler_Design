@@ -784,7 +784,6 @@ module Graph = struct
     | Some s -> UidS.cardinal s
   let mark_node n g = { g with colours = UidM.add n Marked g.colours }
   let rec extract_uncoloured_node_with_degree_lt_k g k = 
-    (*match UidS.choose_opt (UidS.filter (fun n -> UidS.cardinal (UidM.find n g.edges) < k) g.nodes) with*)
     match UidS.choose_opt (UidS.filter (fun n -> degree_of n g < k && not (is_coloured n g)) g.nodes) with
     | None ->
       let marked = UidS.choose g.nodes in
@@ -805,14 +804,6 @@ let better_layout (f:Ll.fdecl) (live:liveness) : layout =
      Corner case: argument 3, in Rcx occupies a register used for other
      purposes by the compiler.  We therefore always spill it.
   *)
-  (*let alloc_arg () =
-    let res =
-      match arg_loc !n_arg with
-      | Alloc.LReg Rcx -> spill ()
-      | x -> x
-    in
-    incr n_arg; res
-  in*)
   let alloc_arg () =
     let res =
       match arg_loc !n_arg with
@@ -830,15 +821,6 @@ let better_layout (f:Ll.fdecl) (live:liveness) : layout =
   in
 
   (* create node set for interference graph *)
-  (*let uid_set : UidS.t = 
-    fold_fdecl
-      (*(fun uids _ -> uids)*)
-      (fun uids (x, _) -> UidS.add x uids)
-      (fun uids _ -> uids)
-      (fun uids (x, i) -> if insn_assigns i then UidS.add x uids else uids)
-      (fun uids _ -> uids)
-      UidS.empty f
-  in*)
   let uid_set, arg_set = 
     fold_fdecl
       (*(fun uids _ -> uids)*)
@@ -848,6 +830,7 @@ let better_layout (f:Ll.fdecl) (live:liveness) : layout =
       (fun (uids, args) _ -> uids, args)
       (UidS.empty, UidS.empty) f
   in
+
   let move_related_nodes : UidS.t UidM.t =
     fold_fdecl
       (fun map _ -> map)
@@ -855,13 +838,11 @@ let better_layout (f:Ll.fdecl) (live:liveness) : layout =
       (fun map (x, i) -> 
         match i with 
         | Store (_, Id t1, Id t2) -> begin 
-          match UidM.find_opt t1 map with 
-          | Some nodes -> 
-            let map = UidM.add t1 (UidS.add t2 nodes) map in begin 
-            match UidM.find_opt t2 map with 
-            | Some nodes -> UidM.add t2 (UidS.add t1 nodes) map
-            | None -> UidM.add t2 (UidS.add t1 UidS.empty) map end 
-          | None -> let map = UidM.add t1 (UidS.add t2 UidS.empty) map in UidM.add t2 (UidS.add t1 UidS.empty) map end
+          match UidM.find_opt t1 map, UidM.find_opt t2 map with 
+          | Some s1, Some s2 -> let map = UidM.add t1 (UidS.add t2 s1) map in UidM.add t2 (UidS.add t1 s2) map
+          | Some s, None -> let map = UidM.add t1 (UidS.add t2 s) map in UidM.add t2 (UidS.add t1 UidS.empty) map
+          | None, Some s -> let map = UidM.add t1 (UidS.add t2 UidS.empty) map in UidM.add t2 (UidS.add t1 s) map
+          | _, _ -> let map = UidM.add t1 (UidS.add t2 UidS.empty) map in UidM.add t2 (UidS.add t1 UidS.empty) map end
         | _ -> map)
       (fun map _ -> map)
       UidM.empty f
@@ -890,73 +871,6 @@ let better_layout (f:Ll.fdecl) (live:liveness) : layout =
 
   let k = LocSet.cardinal pal in
 
-  (*let rec k_colour g = 
-    match Graph.node_amt g with  
-    | amt when amt < 1 -> g  
-    | amt when amt = 1 -> 
-      let node_colour = LocSet.choose pal in
-      let node = Graph.choose g in
-      Graph.colour_node node node_colour g 
-    | amt ->
-      let node, g' = Graph.extract_node_with_degree_lt_k g k in 
-      let neighbours = Graph.neighbours_of node g in
-      let sub_g' = Graph.remove_node node g' in
-      let coloured_sub_g' = k_colour sub_g' in 
-      let neighbour_colours = Graph.colours_of neighbours coloured_sub_g' in
-      let node_colour = LocSet.choose (LocSet.diff pal neighbour_colours)(*
-        let move_related_nodes = 
-          match UidM.find_opt node move_related_nodes with 
-          | None -> UidS.empty
-          | Some s -> s
-        in
-        if UidS.cardinal move_related_nodes = 0 then 
-          LocSet.choose (LocSet.diff pal neighbour_colours) 
-        else 
-          let move_related_non_adjacent_nodes = UidS.diff move_related_nodes neighbours in
-          if UidS.cardinal move_related_non_adjacent_nodes = 0 then
-            LocSet.choose (LocSet.diff pal neighbour_colours) 
-          else
-            let chosen_node = (UidS.choose move_related_non_adjacent_nodes) in
-            print_endline ("chosen node: " ^ chosen_node);
-            match Graph.colour_of chosen_node coloured_sub_g' with 
-            | Some (Colour colour) -> colour 
-            | Some c -> failwith "invariant violated 1"
-            | _ -> failwith "invariant violated 2" *)
-      in 
-      Graph.colour_node node node_colour (Graph.insert_node node neighbours coloured_sub_g') 
-  in *) 
-  (*let rec k_colour g = 
-    match Graph.uncoloured_node_amt g with  
-    | amt when amt < 1 -> g  
-    | amt ->
-      let node, g' = Graph.extract_uncoloured_node_with_degree_lt_k g k in 
-      let neighbours = Graph.neighbours_of node g in
-      let sub_g' = Graph.remove_node node g' in
-      let coloured_sub_g' = k_colour sub_g' in 
-      let neighbour_colours = Graph.colours_of neighbours coloured_sub_g' in
-      let node_colour = LocSet.choose (LocSet.diff pal neighbour_colours)(*
-        let move_related_nodes = 
-          match UidM.find_opt node move_related_nodes with 
-          | None -> UidS.empty
-          | Some s -> s
-        in
-        if UidS.cardinal move_related_nodes = 0 then 
-          LocSet.choose (LocSet.diff pal neighbour_colours) 
-        else 
-          let move_related_non_adjacent_nodes = UidS.diff move_related_nodes neighbours in
-          if UidS.cardinal move_related_non_adjacent_nodes = 0 then
-            LocSet.choose (LocSet.diff pal neighbour_colours) 
-          else
-            let chosen_node = (UidS.choose move_related_non_adjacent_nodes) in
-            print_endline ("chosen node: " ^ chosen_node);
-            match Graph.colour_of chosen_node coloured_sub_g' with 
-            | Some (Colour colour) -> colour 
-            | Some c -> failwith "invariant violated 1"
-            | _ -> failwith "invariant violated 2" *)
-      in 
-      Graph.colour_node node node_colour (Graph.insert_node node neighbours coloured_sub_g') 
-  in*)
-
   let rec k_colour g = 
     match Graph.uncoloured_node_amt g with  
     | amt when amt < 1 -> g  
@@ -964,12 +878,24 @@ let better_layout (f:Ll.fdecl) (live:liveness) : layout =
       let uncoloured_nodes_with_degree_lt_k = UidS.filter (fun n -> Graph.degree_of n g < k) (Graph.uncoloured_nodes g) in 
       match UidS.cardinal uncoloured_nodes_with_degree_lt_k with 
       | amt when amt > 0 -> 
-        let node = UidS.choose uncoloured_nodes_with_degree_lt_k in  
+        (*let is_move_related n = 
+          match UidM.find_opt n move_related_nodes with 
+          | Some s -> UidS.cardinal s > 0
+          | _ -> false
+        in
+        let move_related_uncoloured_nodes_with_degree_lt_k = UidS.filter is_move_related uncoloured_nodes_with_degree_lt_k in
+        let node = 
+          match UidS.choose_opt move_related_uncoloured_nodes_with_degree_lt_k with 
+          | Some n -> n 
+          | _ -> UidS.choose uncoloured_nodes_with_degree_lt_k 
+        in*)
+        let node = UidS.choose uncoloured_nodes_with_degree_lt_k in
         let neighbours = Graph.neighbours_of node g in
         let sub_g = Graph.remove_node node g in
         let coloured_sub_g = k_colour sub_g in 
         let neighbour_colours = Graph.colours_of neighbours coloured_sub_g in
-        let node_colour = (*LocSet.choose (LocSet.diff pal neighbour_colours) in*) 
+        let node_colour = LocSet.choose (LocSet.diff pal neighbour_colours) in
+          (*
           let move_related_nodes = 
             match UidM.find_opt node move_related_nodes with 
             | None -> UidS.empty
@@ -986,7 +912,7 @@ let better_layout (f:Ll.fdecl) (live:liveness) : layout =
               match Graph.colour_of chosen_node coloured_sub_g with 
               | Some (Colour colour) -> colour 
               | _ -> LocSet.choose (LocSet.diff pal neighbour_colours)
-        in
+        in*)
         Graph.colour_node node node_colour (Graph.insert_node node neighbours coloured_sub_g) 
       | amt ->  
         let node = UidS.choose (Graph.uncoloured_nodes g) in 
@@ -1005,17 +931,6 @@ let better_layout (f:Ll.fdecl) (live:liveness) : layout =
       | Marked -> spill ()
     in 
     (*print_endline ("allocated: " ^ (Alloc.str_loc loc) ^ " <- " ^ uid);*) loc
-    (*let loc =
-    try
-      let used_locs =
-        UidSet.fold (fun y -> LocSet.add (List.assoc y lo)) (live.live_in uid) LocSet.empty
-      in
-      let available_locs = LocSet.diff pal used_locs in
-      LocSet.choose available_locs
-    with
-    | Not_found -> spill ()
-    in
-    Platform.verb @@ Printf.sprintf "allocated: %s <- %s\n" (Alloc.str_loc loc) uid; loc*)
   in
 
   let lo =

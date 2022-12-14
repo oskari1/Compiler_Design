@@ -1,17 +1,140 @@
 	.text
-	.globl	add
-add:
+	.globl	f1
+f1:
 	pushq	%rbp
 	movq	%rsp, %rbp
 	subq	$8, %rsp
-	movq	%rsp, %r8 
+	movq	%rsp, %rdx
+	movq	%rdi, (%rdx)
+	movq	(%rdx), %rdx
+	movq	%rdx, %rdi
+	callq	f2
+	movq	%rax, %rdx
+	movq	%rdx, %rax
+	movq	%rbp, %rsp
+	popq	%rbp
+	retq	
+	.text
+	.globl	f2
+f2:
+	pushq	%rbp
+	movq	%rsp, %rbp
 	subq	$8, %rsp
 	movq	%rsp, %rdx
-	movq	%rdi, (%r8 )
-	movq	%rsi, (%rdx)
-	movq	(%r8 ), %rsi
+	movq	%rdi, (%rdx)
 	movq	(%rdx), %rdx
-	addq	%rsi, %rdx
+	movq	%rdx, %rdi
+	callq	f3
+	movq	%rax, %rdx
+	movq	%rdx, %rax
+	movq	%rbp, %rsp
+	popq	%rbp
+	retq	
+	.text
+	.globl	f3
+f3:
+	pushq	%rbp
+	movq	%rsp, %rbp
+	subq	$8, %rsp
+	movq	%rsp, %rdx
+	movq	%rdi, (%rdx)
+	movq	(%rdx), %rdx
+	movq	%rdx, %rdi
+	callq	f4
+	movq	%rax, %rdx
+	movq	%rdx, %rax
+	movq	%rbp, %rsp
+	popq	%rbp
+	retq	
+	.text
+	.globl	f4
+f4:
+	pushq	%rbp
+	movq	%rsp, %rbp
+	subq	$8, %rsp
+	movq	%rsp, %rdx
+	movq	%rdi, (%rdx)
+	movq	(%rdx), %rdx
+	movq	%rdx, %rdi
+	callq	f5
+	movq	%rax, %rdx
+	movq	%rdx, %rax
+	movq	%rbp, %rsp
+	popq	%rbp
+	retq	
+	.text
+	.globl	f5
+f5:
+	pushq	%rbp
+	movq	%rsp, %rbp
+	subq	$8, %rsp
+	movq	%rsp, %rdx
+	movq	%rdi, (%rdx)
+	movq	(%rdx), %rdx
+	movq	%rdx, %rdi
+	callq	f6
+	movq	%rax, %rdx
+	movq	%rdx, %rax
+	movq	%rbp, %rsp
+	popq	%rbp
+	retq	
+	.text
+	.globl	f6
+f6:
+	pushq	%rbp
+	movq	%rsp, %rbp
+	subq	$8, %rsp
+	movq	%rsp, %rdx
+	movq	%rdi, (%rdx)
+	movq	(%rdx), %rdx
+	movq	%rdx, %rdi
+	callq	f7
+	movq	%rax, %rdx
+	movq	%rdx, %rax
+	movq	%rbp, %rsp
+	popq	%rbp
+	retq	
+	.text
+	.globl	f7
+f7:
+	pushq	%rbp
+	movq	%rsp, %rbp
+	subq	$8, %rsp
+	movq	%rsp, %rdx
+	movq	%rdi, (%rdx)
+	movq	(%rdx), %rdx
+	movq	%rdx, %rdi
+	callq	f8
+	movq	%rax, %rdx
+	movq	%rdx, %rax
+	movq	%rbp, %rsp
+	popq	%rbp
+	retq	
+	.text
+	.globl	f8
+f8:
+	pushq	%rbp
+	movq	%rsp, %rbp
+	subq	$8, %rsp
+	movq	%rsp, %rdx
+	movq	%rdi, (%rdx)
+	movq	(%rdx), %rdx
+	movq	%rdx, %rdi
+	callq	f9
+	movq	%rax, %rdx
+	movq	%rdx, %rax
+	movq	%rbp, %rsp
+	popq	%rbp
+	retq	
+	.text
+	.globl	f9
+f9:
+	pushq	%rbp
+	movq	%rsp, %rbp
+	subq	$8, %rsp
+	movq	%rsp, %rdx
+	movq	%rdi, (%rdx)
+	movq	(%rdx), %rdx
 	movq	%rdx, %rax
 	movq	%rbp, %rsp
 	popq	%rbp
@@ -22,64 +145,11 @@ program:
 	pushq	%rbp
 	movq	%rsp, %rbp
 	subq	$8, %rsp
-	movq	%rsp, %rsi
-	pushq	%rsi
-	movq	$24, %rdi
-	callq	oat_malloc
-	popq	%rsi
-	movq	%rax, %rdx
-	movq	%rdx, %rax
-	movq	%rax, %rdx
-	movq	%rdx, %rax
-	addq	$0, %rax
-	addq	$0, %rax
-	movq	%rax, %rdi
-	movq	$3, %rax
-	movq	%rdi, %rcx
-	movq	%rax, (%rcx)
-	movq	%rdx, %rax
-	addq	$0, %rax
-	addq	$8, %rax
-	movq	%rax, %rdi
-	movq	$4, %rax
-	movq	%rdi, %rcx
-	movq	%rax, (%rcx)
-	movq	%rdx, %rax
-	addq	$0, %rax
-	addq	$16, %rax
-	movq	%rax, %rdi
-	leaq	add(%rip), %rax
-	movq	%rdi, %rcx
-	movq	%rax, (%rcx)
-	movq	%rdx, (%rsi)
-	movq	(%rsi), %rdx
-	movq	%rdx, %rax
-	addq	$0, %rax
-	addq	$16, %rax
-	movq	%rax, %rdx
-	movq	(%rdx), %r8 
-	movq	(%rsi), %rdx
-	movq	%rdx, %rax
-	addq	$0, %rax
-	addq	$8, %rax
-	movq	%rax, %rdx
-	movq	(%rdx), %rdi
-	movq	(%rsi), %rdx
-	movq	%rdx, %rax
-	addq	$0, %rax
-	addq	$0, %rax
-	movq	%rax, %rdx
+	movq	%rsp, %rdx
+	movq	%rdi, (%rdx)
 	movq	(%rdx), %rdx
-	pushq	%r15
-	movq	%r8 , %r15
-	pushq	%r8 
-	pushq	%rdi
-	movq	%rdi, %rsi
 	movq	%rdx, %rdi
-	callq	*%r15
-	popq	%rdi
-	popq	%r8 
-	popq	%r15
+	callq	f1
 	movq	%rax, %rdx
 	movq	%rdx, %rax
 	movq	%rbp, %rsp

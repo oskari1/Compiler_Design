@@ -1,156 +1,27 @@
+	.data
+	.globl	gbl
+gbl:
+	.quad	1
+	.quad	2
+	.quad	3
+	.quad	4
+	.quad	5
+	.quad	6
+	.quad	7
 	.text
-	.globl	f1
-f1:
+	.globl	main
+main:
 	pushq	%rbp
 	movq	%rsp, %rbp
-	subq	$8, %rsp
-	movq	%rsp, %rdx
-	movq	%rdi, (%rdx)
-	movq	(%rdx), %rdx
-	movq	%rdx, %rdi
-	callq	f2
+	pushq	%rdi
+	movq	%rsi, %rdi
+	popq	%rsi
+	leaq	gbl(%rip), %rax
+	addq	$0, %rax
+	addq	$8, %rax
+	addq	$24, %rax
 	movq	%rax, %rdx
-	movq	%rdx, %rax
-	movq	%rbp, %rsp
-	popq	%rbp
-	retq	
-	.text
-	.globl	f2
-f2:
-	pushq	%rbp
-	movq	%rsp, %rbp
-	subq	$8, %rsp
-	movq	%rsp, %rdx
-	movq	%rdi, (%rdx)
 	movq	(%rdx), %rdx
-	movq	%rdx, %rdi
-	callq	f3
-	movq	%rax, %rdx
-	movq	%rdx, %rax
-	movq	%rbp, %rsp
-	popq	%rbp
-	retq	
-	.text
-	.globl	f3
-f3:
-	pushq	%rbp
-	movq	%rsp, %rbp
-	subq	$8, %rsp
-	movq	%rsp, %rdx
-	movq	%rdi, (%rdx)
-	movq	(%rdx), %rdx
-	movq	%rdx, %rdi
-	callq	f4
-	movq	%rax, %rdx
-	movq	%rdx, %rax
-	movq	%rbp, %rsp
-	popq	%rbp
-	retq	
-	.text
-	.globl	f4
-f4:
-	pushq	%rbp
-	movq	%rsp, %rbp
-	subq	$8, %rsp
-	movq	%rsp, %rdx
-	movq	%rdi, (%rdx)
-	movq	(%rdx), %rdx
-	movq	%rdx, %rdi
-	callq	f5
-	movq	%rax, %rdx
-	movq	%rdx, %rax
-	movq	%rbp, %rsp
-	popq	%rbp
-	retq	
-	.text
-	.globl	f5
-f5:
-	pushq	%rbp
-	movq	%rsp, %rbp
-	subq	$8, %rsp
-	movq	%rsp, %rdx
-	movq	%rdi, (%rdx)
-	movq	(%rdx), %rdx
-	movq	%rdx, %rdi
-	callq	f6
-	movq	%rax, %rdx
-	movq	%rdx, %rax
-	movq	%rbp, %rsp
-	popq	%rbp
-	retq	
-	.text
-	.globl	f6
-f6:
-	pushq	%rbp
-	movq	%rsp, %rbp
-	subq	$8, %rsp
-	movq	%rsp, %rdx
-	movq	%rdi, (%rdx)
-	movq	(%rdx), %rdx
-	movq	%rdx, %rdi
-	callq	f7
-	movq	%rax, %rdx
-	movq	%rdx, %rax
-	movq	%rbp, %rsp
-	popq	%rbp
-	retq	
-	.text
-	.globl	f7
-f7:
-	pushq	%rbp
-	movq	%rsp, %rbp
-	subq	$8, %rsp
-	movq	%rsp, %rdx
-	movq	%rdi, (%rdx)
-	movq	(%rdx), %rdx
-	movq	%rdx, %rdi
-	callq	f8
-	movq	%rax, %rdx
-	movq	%rdx, %rax
-	movq	%rbp, %rsp
-	popq	%rbp
-	retq	
-	.text
-	.globl	f8
-f8:
-	pushq	%rbp
-	movq	%rsp, %rbp
-	subq	$8, %rsp
-	movq	%rsp, %rdx
-	movq	%rdi, (%rdx)
-	movq	(%rdx), %rdx
-	movq	%rdx, %rdi
-	callq	f9
-	movq	%rax, %rdx
-	movq	%rdx, %rax
-	movq	%rbp, %rsp
-	popq	%rbp
-	retq	
-	.text
-	.globl	f9
-f9:
-	pushq	%rbp
-	movq	%rsp, %rbp
-	subq	$8, %rsp
-	movq	%rsp, %rdx
-	movq	%rdi, (%rdx)
-	movq	(%rdx), %rdx
-	movq	%rdx, %rax
-	movq	%rbp, %rsp
-	popq	%rbp
-	retq	
-	.text
-	.globl	program
-program:
-	pushq	%rbp
-	movq	%rsp, %rbp
-	subq	$8, %rsp
-	movq	%rsp, %rdx
-	movq	%rdi, (%rdx)
-	movq	(%rdx), %rdx
-	movq	%rdx, %rdi
-	callq	f1
-	movq	%rax, %rdx
 	movq	%rdx, %rax
 	movq	%rbp, %rsp
 	popq	%rbp

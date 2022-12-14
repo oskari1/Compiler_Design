@@ -1,66 +1,49 @@
 	.text
-	.globl	foo
-foo:
+	.globl	f
+f:
 	pushq	%rbp
 	movq	%rsp, %rbp
-	movq	$42, %rax
-	movq	%rbp, %rsp
-	popq	%rbp
-	retq	
-	.text
-	.globl	bar
-bar:
-	pushq	%rbp
-	movq	%rsp, %rbp
-	movq	$0, %rax
-	movq	%rbp, %rsp
-	popq	%rbp
-	retq	
-	.text
-	.globl	main
-main:
-	pushq	%rbp
-	movq	%rsp, %rbp
-	pushq	%rdi
-	movq	%rsi, %rdi
-	popq	%rsi
+	subq	$24, %rsp
+	movq	%rcx, -8(%rbp)
+	pushq	16(%rbp)
+	popq	-16(%rbp)
+	pushq	24(%rbp)
+	popq	-24(%rbp)
 	subq	$8, %rsp
-	movq	%rsp, %rsi
+	movq	%rsp, %r10
 	subq	$8, %rsp
-	movq	%rsp, %rdx
-	movq	$0, %rax
-	movq	%rsi, %rcx
-	movq	%rax, (%rcx)
-	movq	$100, %rax
-	movq	%rdx, %rcx
-	movq	%rax, (%rcx)
-	movq	(%rdx), %rdx
-	cmpq	$0, %rdx
-	setne	%dl
-	andq	$1, %rdx
-	cmpq	$0, %rdx
-	jne	then
-	jmp	else
-	.text
-else:
-	pushq	%rsi
-	callq	bar
-	popq	%rsi
-	movq	%rax, %rdx
-	movq	%rdx, (%rsi)
-	jmp	end
-	.text
-end:
-	movq	(%rsi), %rdx
+	movq	%rsp, %r9 
+	subq	$8, %rsp
+	movq	%rsp, %r8 
+	movq	%rdi, (%r10)
+	movq	%rsi, (%r9 )
+	movq	%rdx, (%r8 )
+	movq	(%r10), %rsi
+	movq	(%r9 ), %rdx
+	addq	%rdx, %rsi
+	movq	(%r8 ), %rdx
+	addq	%rsi, %rdx
 	movq	%rdx, %rax
 	movq	%rbp, %rsp
 	popq	%rbp
 	retq	
 	.text
-then:
-	pushq	%rsi
-	callq	foo
-	popq	%rsi
+	.globl	program
+program:
+	pushq	%rbp
+	movq	%rsp, %rbp
+	pushq	$-3
+	pushq	$-4
+	movq	$-5, %r9 
+	movq	$5, %r8 
+	movq	$4, %rcx
+	movq	$3, %rdx
+	movq	$2, %rsi
+	movq	$1, %rdi
+	callq	f
+	addq	$16, %rsp
 	movq	%rax, %rdx
-	movq	%rdx, (%rsi)
-	jmp	end
+	movq	%rdx, %rax
+	movq	%rbp, %rsp
+	popq	%rbp
+	retq	

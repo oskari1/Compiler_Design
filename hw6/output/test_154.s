@@ -1,26 +1,30 @@
-	.text
-	.globl	f
-f:
-	pushq	%rbp
-	movq	%rsp, %rbp
-	subq	$8, %rsp
-	movq	%rsp, %rdx
-	movq	%rdi, (%rdx)
-	movq	(%rdx), %rdx
-	movq	%rdx, %rax
-	movq	%rbp, %rsp
-	popq	%rbp
-	retq	
+	.data
+	.globl	y
+y:
+	.quad	1
 	.text
 	.globl	program
 program:
 	pushq	%rbp
 	movq	%rsp, %rbp
-	movq	$2, %rsi
-	movq	$1, %rdi
-	callq	f
+	leaq	y(%rip), %rax
+	movq	(%rax), %rax
 	movq	%rax, %rdx
-	movq	%rdx, %rax
+	cmpq	$0, %rdx
+	jne	_then8155
+	jmp	_else8154
+	.text
+_else8154:
+	jmp	_merge8153
+	.text
+_merge8153:
+	movq	$15, %rax
+	movq	%rbp, %rsp
+	popq	%rbp
+	retq	
+	.text
+_then8155:
+	movq	$17, %rax
 	movq	%rbp, %rsp
 	popq	%rbp
 	retq	

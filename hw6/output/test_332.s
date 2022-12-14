@@ -1,10 +1,10 @@
 	.data
 	.globl	x
 x:
-	.quad	_global_arr8801
+	.quad	_global_arr7401
 	.data
-	.globl	_global_arr8801
-_global_arr8801:
+	.globl	_global_arr7401
+_global_arr7401:
 	.quad	3
 	.quad	1
 	.quad	2
@@ -12,10 +12,10 @@ _global_arr8801:
 	.data
 	.globl	y
 y:
-	.quad	_global_arr8800
+	.quad	_global_arr7400
 	.data
-	.globl	_global_arr8800
-_global_arr8800:
+	.globl	_global_arr7400
+_global_arr7400:
 	.quad	3
 	.quad	4
 	.quad	5
@@ -40,23 +40,23 @@ f:
 	movq	%rdi, (%r10)
 	movq	(%r10), %rdx
 	cmpq	$0, %rdx
-	jne	_then8816
-	jmp	_else8815
+	jne	_then7416
+	jmp	_else7415
 	.text
-_else8815:
+_else7415:
 	movq	(%r8 ), %rdx
 	movq	%rdx, %rax
 	movq	%rbp, %rsp
 	popq	%rbp
 	retq	
 	.text
-_merge8814:
+_merge7414:
 	movq	$0, %rax
 	movq	%rbp, %rsp
 	popq	%rbp
 	retq	
 	.text
-_then8816:
+_then7416:
 	movq	(%r9 ), %rdx
 	movq	%rdx, %rax
 	movq	%rbp, %rsp

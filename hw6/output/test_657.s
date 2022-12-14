@@ -1,30 +1,25 @@
 	.data
-	.globl	y
-y:
-	.quad	1
+	.globl	_str_arr2339
+_str_arr2339:
+	.asciz	"Hello world!"
 	.text
 	.globl	program
 program:
 	pushq	%rbp
 	movq	%rsp, %rbp
-	leaq	y(%rip), %rax
-	movq	(%rax), %rax
-	movq	%rax, %rdx
-	cmpq	$0, %rdx
-	jne	_then8155
-	jmp	_else8154
-	.text
-_else8154:
-	jmp	_merge8153
-	.text
-_merge8153:
-	movq	$15, %rax
-	movq	%rbp, %rsp
-	popq	%rbp
-	retq	
-	.text
-_then8155:
-	movq	$17, %rax
+	subq	$8, %rsp
+	movq	%rsp, %rdx
+	leaq	_str_arr2339(%rip), %rax
+	addq	$0, %rax
+	addq	$0, %rax
+	movq	%rax, %rsi
+	movq	%rsi, (%rdx)
+	movq	(%rdx), %rdx
+	pushq	%rdx
+	movq	%rdx, %rdi
+	callq	print_string
+	popq	%rdx
+	movq	$0, %rax
 	movq	%rbp, %rsp
 	popq	%rbp
 	retq	

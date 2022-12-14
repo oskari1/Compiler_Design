@@ -6,10 +6,7 @@ main:
 	pushq	%rdi
 	movq	%rsi, %rdi
 	popq	%rsi
-	jmp	end
-	.text
-end:
-	movq	$9, %rax
+	movq	$0, %rax
 	movq	%rbp, %rsp
 	popq	%rbp
 	retq	

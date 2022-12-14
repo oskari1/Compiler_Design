@@ -1,16 +1,25 @@
 	.data
-	.globl	i
-i:
-	.quad	3
+	.globl	_str_arr2339
+_str_arr2339:
+	.asciz	"Hello world!"
 	.text
 	.globl	program
 program:
 	pushq	%rbp
 	movq	%rsp, %rbp
-	leaq	i(%rip), %rax
-	movq	(%rax), %rax
-	movq	%rax, %rdx
-	movq	%rdx, %rax
+	subq	$8, %rsp
+	movq	%rsp, %rdx
+	leaq	_str_arr2339(%rip), %rax
+	addq	$0, %rax
+	addq	$0, %rax
+	movq	%rax, %rsi
+	movq	%rsi, (%rdx)
+	movq	(%rdx), %rdx
+	pushq	%rdx
+	movq	%rdx, %rdi
+	callq	print_string
+	popq	%rdx
+	movq	$0, %rax
 	movq	%rbp, %rsp
 	popq	%rbp
 	retq	

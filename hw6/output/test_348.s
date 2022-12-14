@@ -4,36 +4,51 @@ program:
 	pushq	%rbp
 	movq	%rsp, %rbp
 	subq	$8, %rsp
-	movq	%rsp, %r9 
+	movq	%rsp, %r8 
 	subq	$8, %rsp
-	movq	%rsp, %rdx
-	movq	$9, %rax
-	movq	%r9 , %rcx
+	movq	%rsp, %rsi
+	movq	$12, %rax
+	movq	%r8 , %rcx
 	movq	%rax, (%rcx)
-	movq	(%r9 ), %rdi
-	movq	(%r9 ), %rsi
-	addq	%rdi, %rsi
-	movq	%rsi, (%rdx)
-	movq	(%r9 ), %r8 
-	movq	(%r9 ), %rdi
-	movq	(%r9 ), %rsi
-	imulq	%rdi, %rsi
-	addq	%r8 , %rsi
-	movq	(%rdx), %rdx
-	movq	%rsi, %rax
+	movq	$800, %rax
+	movq	%rsi, %rcx
+	movq	%rax, (%rcx)
+	movq	(%r8 ), %rdi
+	movq	(%rsi), %rdx
+	movq	%rdi, %rax
+	subq	%rdx, %rax
+	movq	%rax, %rdx
+	cmpq	$0, %rdx
+	setle	%dl
+	andq	$1, %rdx
+	cmpq	$0, %rdx
+	jne	_then8224
+	jmp	_else8223
+	.text
+_else8223:
+	movq	(%r8 ), %rdi
+	movq	(%rsi), %rdx
+	movq	%rdi, %rax
 	subq	%rdx, %rax
 	movq	%rax, %rdx
 	movq	%rdx, %rax
-	movq	$2, %rcx
-	shrq	%cl, %rax
-	movq	%rax, %rdx
-	movq	%rdx, %rax
-	movq	$2, %rcx
-	shlq	%cl, %rax
-	movq	%rax, %rdx
-	movq	%rdx, %rax
-	movq	$2, %rcx
-	sarq	%cl, %rax
+	movq	%rbp, %rsp
+	popq	%rbp
+	retq	
+	.text
+_merge8222:
+	movq	$0, %rax
+	movq	%rbp, %rsp
+	popq	%rbp
+	retq	
+	.text
+_then8224:
+	movq	(%r8 ), %rdx
+	movq	$0, %rdi
+	subq	%rdx, %rdi
+	movq	(%rsi), %rdx
+	movq	%rdi, %rax
+	subq	%rdx, %rax
 	movq	%rax, %rdx
 	movq	%rdx, %rax
 	movq	%rbp, %rsp

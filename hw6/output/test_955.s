@@ -1,60 +1,3 @@
-	.data
-	.globl	i
-i:
-	.quad	0
-	.text
-	.globl	f
-f:
-	pushq	%rbp
-	movq	%rsp, %rbp
-	subq	$8, %rsp
-	movq	%rsp, %r9 
-	subq	$8, %rsp
-	movq	%rsp, %rdx
-	subq	$8, %rsp
-	movq	%rsp, %r8 
-	movq	%rdi, (%r9 )
-	movq	%rsi, (%rdx)
-	movq	$0, %rax
-	movq	%r8 , %rcx
-	movq	%rax, (%rcx)
-	movq	(%r9 ), %rsi
-	cmpq	$1, %rsi
-	setge	%sil
-	andq	$1, %rsi
-	cmpq	$0, %rsi
-	jne	_then930
-	jmp	_else929
-	.text
-_else929:
-	movq	(%r9 ), %rsi
-	movq	(%rdx), %rdx
-	addq	%rsi, %rdx
-	movq	%rdx, (%r8 )
-	jmp	_merge928
-	.text
-_merge928:
-	movq	(%r8 ), %rdx
-	movq	%rdx, %rax
-	movq	%rbp, %rsp
-	popq	%rbp
-	retq	
-	.text
-_then930:
-	movq	(%rdx), %rdx
-	movq	(%r9 ), %rsi
-	subq	$1, %rsi
-	pushq	%r8 
-	pushq	%rsi
-	movq	%rsi, %rdi
-	movq	%rdx, %rsi
-	callq	f
-	popq	%rsi
-	popq	%r8 
-	movq	%rax, %rdx
-	addq	$1, %rdx
-	movq	%rdx, (%r8 )
-	jmp	_merge928
 	.text
 	.globl	program
 program:
@@ -62,26 +5,60 @@ program:
 	movq	%rsp, %rbp
 	subq	$8, %rsp
 	movq	%rsp, %rsi
-	subq	$8, %rsp
-	movq	%rsp, %rdx
-	movq	$3, %rax
-	movq	%rsi, %rcx
-	movq	%rax, (%rcx)
+	pushq	%rsi
+	movq	$5, %rdi
+	callq	oat_alloc_array
+	popq	%rsi
+	movq	%rax, %rdx
+	movq	%rdx, %rax
+	movq	%rax, %rdi
+	movq	%rdi, %rax
+	addq	$0, %rax
+	addq	$8, %rax
+	addq	$0, %rax
+	movq	%rax, %rdx
 	movq	$3, %rax
 	movq	%rdx, %rcx
 	movq	%rax, (%rcx)
-	movq	(%rdx), %rdx
-	movq	(%rsi), %rsi
-	pushq	%rsi
-	movq	%rsi, %rdi
-	movq	%rdx, %rsi
-	callq	f
-	popq	%rsi
+	movq	%rdi, %rax
+	addq	$0, %rax
+	addq	$8, %rax
+	addq	$8, %rax
 	movq	%rax, %rdx
-	leaq	i(%rip), %rax
-	movq	(%rax), %rax
-	movq	%rax, %rsi
-	addq	%rsi, %rdx
+	movq	$4, %rax
+	movq	%rdx, %rcx
+	movq	%rax, (%rcx)
+	movq	%rdi, %rax
+	addq	$0, %rax
+	addq	$8, %rax
+	addq	$16, %rax
+	movq	%rax, %rdx
+	movq	$5, %rax
+	movq	%rdx, %rcx
+	movq	%rax, (%rcx)
+	movq	%rdi, %rax
+	addq	$0, %rax
+	addq	$8, %rax
+	addq	$24, %rax
+	movq	%rax, %rdx
+	movq	$6, %rax
+	movq	%rdx, %rcx
+	movq	%rax, (%rcx)
+	movq	%rdi, %rax
+	addq	$0, %rax
+	addq	$8, %rax
+	addq	$32, %rax
+	movq	%rax, %rdx
+	movq	$7, %rax
+	movq	%rdx, %rcx
+	movq	%rax, (%rcx)
+	movq	%rdi, (%rsi)
+	movq	(%rsi), %rdx
+	movq	%rdx, %rax
+	addq	$0, %rax
+	addq	$0, %rax
+	movq	%rax, %rdx
+	movq	(%rdx), %rdx
 	movq	%rdx, %rax
 	movq	%rbp, %rsp
 	popq	%rbp

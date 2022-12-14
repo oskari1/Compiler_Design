@@ -1,112 +1,87 @@
+	.data
+	.globl	test1
+test1:
+	.quad	0
+	.quad	0
+	.quad	100
+	.data
+	.globl	test2
+test2:
+	.quad	test1
+	.quad	0
+	.quad	10
+	.data
+	.globl	test3
+test3:
+	.quad	0
+	.quad	0
+	.quad	1
+	.data
+	.globl	test
+test:
+	.quad	test2
+	.quad	test3
+	.quad	5
 	.text
-	.globl	inc_first
-inc_first:
+	.globl	sum_tree
+sum_tree:
 	pushq	%rbp
 	movq	%rsp, %rbp
-	subq	$8, %rsp
-	movq	%rsp, %rsi
-	movq	%rdi, (%rsi)
-	movq	(%rsi), %rdx
-	movq	%rdx, %rax
-	movq	%rax, %rdi
-	pushq	%rdi
-	pushq	%rsi
-	pushq	%rdx
-	movq	$0, %rsi
-	callq	oat_assert_array_length
-	popq	%rdx
-	popq	%rsi
-	popq	%rdi
-	movq	%rdx, %rax
+	cmpq	$0, %rdi
+	sete	%dl
+	andq	$1, %rdx
+	cmpq	$0, %rdx
+	jne	then
+	jmp	else
+	.text
+else:
+	movq	%rdi, %rax
+	addq	$0, %rax
+	addq	$16, %rax
+	movq	%rax, %rdx
+	movq	(%rdx), %rsi
+	movq	%rdi, %rax
 	addq	$0, %rax
 	addq	$8, %rax
-	addq	$0, %rax
-	movq	%rax, %rdi
-	movq	(%rsi), %rdx
-	movq	%rdx, %rax
-	movq	%rax, %rsi
+	movq	%rax, %rdx
+	movq	(%rdx), %rdx
 	pushq	%rdi
 	pushq	%rsi
-	pushq	%rdx
-	movq	%rsi, %rdi
-	movq	$0, %rsi
-	callq	oat_assert_array_length
-	popq	%rdx
+	movq	%rdx, %rdi
+	callq	sum_tree
 	popq	%rsi
 	popq	%rdi
-	movq	%rdx, %rax
+	movq	%rax, %rdx
+	addq	%rdx, %rsi
+	movq	%rdi, %rax
 	addq	$0, %rax
-	addq	$8, %rax
 	addq	$0, %rax
 	movq	%rax, %rdx
 	movq	(%rdx), %rdx
-	addq	$1, %rdx
-	movq	%rdx, (%rdi)
+	pushq	%rsi
+	movq	%rdx, %rdi
+	callq	sum_tree
+	popq	%rsi
+	movq	%rax, %rdx
+	addq	%rsi, %rdx
+	movq	%rdx, %rax
 	movq	%rbp, %rsp
 	popq	%rbp
 	retq	
 	.text
-	.globl	program
-program:
+then:
+	movq	$0, %rax
+	movq	%rbp, %rsp
+	popq	%rbp
+	retq	
+	.text
+	.globl	main
+main:
 	pushq	%rbp
 	movq	%rsp, %rbp
-	subq	$8, %rsp
-	movq	%rsp, %rsi
-	pushq	%rsi
-	movq	$3, %rdi
-	callq	oat_alloc_array
-	popq	%rsi
+	leaq	test(%rip), %rdi
+	callq	sum_tree
 	movq	%rax, %rdx
-	movq	%rdx, %rax
-	movq	%rax, %rdi
-	movq	%rdi, %rax
-	addq	$0, %rax
-	addq	$8, %rax
-	addq	$0, %rax
-	movq	%rax, %rdx
-	movq	$3, %rax
-	movq	%rdx, %rcx
-	movq	%rax, (%rcx)
-	movq	%rdi, %rax
-	addq	$0, %rax
-	addq	$8, %rax
-	addq	$8, %rax
-	movq	%rax, %rdx
-	movq	$4, %rax
-	movq	%rdx, %rcx
-	movq	%rax, (%rcx)
-	movq	%rdi, %rax
-	addq	$0, %rax
-	addq	$8, %rax
-	addq	$16, %rax
-	movq	%rax, %rdx
-	movq	$5, %rax
-	movq	%rdx, %rcx
-	movq	%rax, (%rcx)
-	movq	%rdi, (%rsi)
-	movq	(%rsi), %rdx
-	pushq	%rsi
-	pushq	%rdx
-	movq	%rdx, %rdi
-	callq	inc_first
-	popq	%rdx
-	popq	%rsi
-	movq	(%rsi), %rdx
-	movq	%rdx, %rax
-	movq	%rax, %rsi
-	pushq	%rsi
-	pushq	%rdx
-	movq	%rsi, %rdi
-	movq	$0, %rsi
-	callq	oat_assert_array_length
-	popq	%rdx
-	popq	%rsi
-	movq	%rdx, %rax
-	addq	$0, %rax
-	addq	$8, %rax
-	addq	$0, %rax
-	movq	%rax, %rdx
-	movq	(%rdx), %rdx
 	movq	%rdx, %rax
 	movq	%rbp, %rsp
 	popq	%rbp

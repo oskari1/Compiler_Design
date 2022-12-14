@@ -1,38 +1,55 @@
-	.data
-	.globl	arr
-arr:
-	.quad	_global_arr118
-	.data
-	.globl	_global_arr118
-_global_arr118:
-	.quad	4
-	.quad	1
-	.quad	2
-	.quad	3
-	.quad	4
 	.text
 	.globl	program
 program:
 	pushq	%rbp
 	movq	%rsp, %rbp
-	leaq	arr(%rip), %rax
-	movq	(%rax), %rax
-	movq	%rax, %rsi
-	movq	%rsi, %rax
+	subq	$8, %rsp
+	movq	%rsp, %r8 
+	subq	$8, %rsp
+	movq	%rsp, %rsi
+	movq	$12, %rax
+	movq	%r8 , %rcx
+	movq	%rax, (%rcx)
+	movq	$800, %rax
+	movq	%rsi, %rcx
+	movq	%rax, (%rcx)
+	movq	(%r8 ), %rdi
+	movq	(%rsi), %rdx
+	movq	%rdi, %rax
+	subq	%rdx, %rax
 	movq	%rax, %rdx
-	pushq	%rsi
-	pushq	%rdx
-	movq	$2, %rsi
-	movq	%rdx, %rdi
-	callq	oat_assert_array_length
-	popq	%rdx
-	popq	%rsi
-	movq	%rsi, %rax
-	addq	$0, %rax
-	addq	$8, %rax
-	addq	$16, %rax
+	cmpq	$0, %rdx
+	setle	%dl
+	andq	$1, %rdx
+	cmpq	$0, %rdx
+	jne	_then8224
+	jmp	_else8223
+	.text
+_else8223:
+	movq	(%r8 ), %rdi
+	movq	(%rsi), %rdx
+	movq	%rdi, %rax
+	subq	%rdx, %rax
 	movq	%rax, %rdx
-	movq	(%rdx), %rdx
+	movq	%rdx, %rax
+	movq	%rbp, %rsp
+	popq	%rbp
+	retq	
+	.text
+_merge8222:
+	movq	$0, %rax
+	movq	%rbp, %rsp
+	popq	%rbp
+	retq	
+	.text
+_then8224:
+	movq	(%r8 ), %rdx
+	movq	$0, %rdi
+	subq	%rdx, %rdi
+	movq	(%rsi), %rdx
+	movq	%rdi, %rax
+	subq	%rdx, %rax
+	movq	%rax, %rdx
 	movq	%rdx, %rax
 	movq	%rbp, %rsp
 	popq	%rbp
