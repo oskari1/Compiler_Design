@@ -4,9 +4,9 @@ fibR:
 	pushq	%rbp
 	movq	%rsp, %rbp
 	subq	$8, %rsp
-	movq	%rsp, %rsi
-	movq	%rdi, (%rsi)
-	movq	(%rsi), %rdi
+	movq	%rsp, %rdx
+	movq	%rdi, (%rdx)
+	movq	(%rdx), %rdi
 	cmpq	$0, %rdi
 	sete	%dil
 	andq	$1, %rdi
@@ -21,7 +21,7 @@ _else4729:
 	jmp	_merge4728
 	.text
 _merge4723:
-	movq	(%rsi), %rdi
+	movq	(%rdx), %rdi
 	cmpq	$1, %rdi
 	sete	%dil
 	andq	$1, %rdi
@@ -30,20 +30,19 @@ _merge4723:
 	jmp	_else4729
 	.text
 _merge4728:
-	movq	(%rsi), %rdi
+	movq	(%rdx), %rdi
 	subq	$1, %rdi
-	pushq	%rdi
-	pushq	%rsi
-	callq	fibR
-	popq	%rsi
-	popq	%rdi
-	movq	%rax, %rdx
-	movq	(%rsi), %rdi
-	subq	$2, %rdi
 	pushq	%rdx
 	callq	fibR
 	popq	%rdx
 	movq	%rax, %rdi
+	movq	(%rdx), %rdx
+	subq	$2, %rdx
+	pushq	%rdi
+	movq	%rdx, %rdi
+	callq	fibR
+	popq	%rdi
+	movq	%rax, %rdx
 	addq	%rdx, %rdi
 	movq	%rdi, %rax
 	movq	%rbp, %rsp
@@ -132,8 +131,8 @@ _merge4694:
 	jmp	_cond4702
 	.text
 _post4700:
-	movq	(%r9 ), %rdx
-	movq	(%r8 ), %rdi
+	movq	(%r9 ), %rdi
+	movq	(%r8 ), %rdx
 	addq	%rdx, %rdi
 	movq	%rdi, %rax
 	movq	%rbp, %rsp

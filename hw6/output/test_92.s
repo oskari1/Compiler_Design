@@ -12,38 +12,37 @@ program:
 	pushq	%rbp
 	movq	%rsp, %rbp
 	subq	$8, %rsp
-	movq	%rsp, %r9 
+	movq	%rsp, %r8 
+	subq	$8, %rsp
+	movq	%rsp, %rsi
 	subq	$8, %rsp
 	movq	%rsp, %rdx
-	subq	$8, %rsp
-	movq	%rsp, %r8 
 	leaq	str(%rip), %rax
 	movq	(%rax), %rax
-	movq	%rax, %rsi
-	pushq	%r9 
+	movq	%rax, %rdi
 	pushq	%r8 
+	pushq	%rsi
 	pushq	%rdx
-	movq	%rsi, %rdi
 	callq	array_of_string
 	popq	%rdx
+	popq	%rsi
 	popq	%r8 
-	popq	%r9 
-	movq	%rax, %rsi
-	movq	%rsi, (%r9 )
+	movq	%rax, %rdi
+	movq	%rdi, (%r8 )
 	movq	$0, %rax
-	movq	%rdx, %rcx
+	movq	%rsi, %rcx
 	movq	%rax, (%rcx)
 	movq	$0, %rax
-	movq	%r8 , %rcx
+	movq	%rdx, %rcx
 	movq	%rax, (%rcx)
 	jmp	_cond2178
 	.text
 _body2177:
-	movq	(%rdx), %rdi
-	movq	(%r9 ), %r11
-	movq	(%r8 ), %r10
+	movq	(%rsi), %r9 
+	movq	(%r8 ), %r11
+	movq	(%rdx), %r10
 	movq	%r11, %rax
-	movq	%rax, %rsi
+	movq	%rax, %rdi
 	pushq	%r11
 	pushq	%r10
 	pushq	%r9 
@@ -51,7 +50,6 @@ _body2177:
 	pushq	%rdi
 	pushq	%rsi
 	pushq	%rdx
-	movq	%rsi, %rdi
 	movq	%r10, %rsi
 	callq	oat_assert_array_length
 	popq	%rdx
@@ -68,33 +66,32 @@ _body2177:
 	movq	%r10, %rax
 	imulq	$8, %rax
 	addq	%rcx, %rax
-	movq	%rax, %rsi
-	movq	(%rsi), %rsi
-	addq	%rdi, %rsi
-	movq	%rsi, (%rdx)
-	movq	(%r8 ), %rsi
-	addq	$1, %rsi
-	movq	%rsi, (%r8 )
+	movq	%rax, %rdi
+	movq	(%rdi), %rdi
+	addq	%r9 , %rdi
+	movq	%rdi, (%rsi)
+	movq	(%rdx), %rdi
+	addq	$1, %rdi
+	movq	%rdi, (%rdx)
 	jmp	_cond2178
 	.text
 _cond2178:
-	movq	(%r8 ), %rsi
-	cmpq	$5, %rsi
-	setl	%sil
-	andq	$1, %rsi
-	cmpq	$0, %rsi
+	movq	(%rdx), %rdi
+	cmpq	$5, %rdi
+	setl	%dil
+	andq	$1, %rdi
+	cmpq	$0, %rdi
 	jne	_body2177
 	jmp	_post2176
 	.text
 _post2176:
-	movq	(%rdx), %rsi
+	movq	(%rsi), %rdi
+	pushq	%rdi
 	pushq	%rsi
-	pushq	%rdx
-	movq	%rsi, %rdi
 	callq	print_int
-	popq	%rdx
 	popq	%rsi
-	movq	(%rdx), %rsi
+	popq	%rdi
+	movq	(%rsi), %rsi
 	movq	%rsi, %rax
 	movq	%rbp, %rsp
 	popq	%rbp

@@ -4,19 +4,19 @@ program:
 	pushq	%rbp
 	movq	%rsp, %rbp
 	subq	$8, %rsp
-	movq	%rsp, %r9 
+	movq	%rsp, %rdx
 	subq	$8, %rsp
 	movq	%rsp, %rsi
 	movq	$9, %rax
-	movq	%r9 , %rcx
+	movq	%rdx, %rcx
 	movq	%rax, (%rcx)
-	movq	(%r9 ), %rdx
-	movq	(%r9 ), %rdi
-	addq	%rdx, %rdi
+	movq	(%rdx), %r8 
+	movq	(%rdx), %rdi
+	addq	%r8 , %rdi
 	movq	%rdi, (%rsi)
-	movq	(%r9 ), %r8 
-	movq	(%r9 ), %rdx
-	movq	(%r9 ), %rdi
+	movq	(%rdx), %r8 
+	movq	(%rdx), %rdi
+	movq	(%rdx), %rdx
 	imulq	%rdx, %rdi
 	addq	%r8 , %rdi
 	movq	(%rsi), %rsi

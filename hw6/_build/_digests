@@ -50,19 +50,11 @@
 "Rule: ocaml dependencies ml (%=constprop )": "\236[\141n\004\216\163\152\232-:\221v&q\146"
 "Rule: ocaml dependencies ml (%=frontend )": "\017\155\254\215FH\017\219\030\135\020\186\219\192\249\250"
 "Rule: ocaml dependencies ml (%=x86/x86 )": "\194\234\230\137{\207<\238\218\128K\142\246\196\027T"
-<<<<<<< HEAD
-"Rule: ocaml: ml & cmi -> cmx & o (%=main )": "\216j/4\212\183.\165\219/\192v\169\025\139\000"
+"Rule: ocaml: ml & cmi -> cmx & o (%=main )": "5\164'\250L\133\133<z\n\182uG2\017I"
 "Rule: ocaml: ml & cmi -> cmx & o (%=datastructures )": "\136\189o\171\006u\199\242\179(\207\147\1484\030\222"
 "Resource: /home/ojyrkinen/Projects/eth-cd/hw6/ll/ll.ml": "~\249\2524Cm\211\0032\249?\188\132u*~"
-"Rule: ocaml: ml -> cmo & cmi (%=main )": "\020\209\137\1576\148\236\176\158\180\bajC\128V"
-"Rule: ocaml: ml & cmi -> cmx & o (%=gradedtests )": "ci\252\026\225\146\129y2\150.\023\020\185\204\244"
-=======
-"Rule: ocaml: ml & cmi -> cmx & o (%=main )": "W\248\023X\160\213}\245\017RZ8\135\229\030\208"
-"Rule: ocaml: ml & cmi -> cmx & o (%=datastructures )": "\136\189o\171\006u\199\242\179(\207\147\1484\030\222"
-"Resource: /home/ojyrkinen/Projects/eth-cd/hw6/ll/ll.ml": "~\249\2524Cm\211\0032\249?\188\132u*~"
-"Rule: ocaml: ml -> cmo & cmi (%=main )": "\252L\029\244\1942{\209\209\136x\161)naj"
-"Rule: ocaml: ml & cmi -> cmx & o (%=gradedtests )": "\143\201\236\000\255\246}\193\158-\199\217\025\205\n\240"
->>>>>>> move_related
+"Rule: ocaml: ml -> cmo & cmi (%=main )": "\"\209\236Q\145\194IH-FmR\015\247\1295"
+"Rule: ocaml: ml & cmi -> cmx & o (%=gradedtests )": "l\137\015;\222\252X\146\003y\177\172\204\019/\\"
 "Rule: ocaml: ml & cmi -> cmx & o (%=ll/llutil )": "\2461J+\162X\209\014:;\215\255T\176\222}"
 "Resource: /home/ojyrkinen/Projects/eth-cd/hw6/util/range.mli": "U=p\163\161\t%\b\173\186%\232&\171\228\241"
 "Rule: ocaml dependencies ml (%=analysistests )": "}\230C\222\1368\218\189\174%-3\027\226V\163"
@@ -70,11 +62,7 @@
 "Resource: /home/ojyrkinen/Projects/eth-cd/hw6/constprop.ml": "\186-E\183\2233m\031\1787\002\191;\022\157\030"
 "Resource: /home/ojyrkinen/Projects/eth-cd/hw6/opt.ml": "Oh50\202\028\188Fx\254\168r*\173R\144"
 "Rule: ocaml: ml -> cmo & cmi (%=tctxt )": "\177\152Chvn\024j\027tc\170ws\181\243"
-<<<<<<< HEAD
-"Resource: /home/ojyrkinen/Projects/eth-cd/hw6/backend.ml": "c6\138>\001\155^a\221\2255\180\196P\030\132"
-=======
-"Resource: /home/ojyrkinen/Projects/eth-cd/hw6/backend.ml": "\215\209\004\255,\004\226\209\205I\145U\177\135\160v"
->>>>>>> move_related
+"Resource: /home/ojyrkinen/Projects/eth-cd/hw6/backend.ml": "\247I\003\nxI\201\150\137(;\207~\167\2090"
 "Rule: ocaml dependencies mli (%=parser )": "j7e0*\0126\149SK\b\236\031\1717\217"
 "Resource: /home/ojyrkinen/Projects/eth-cd/hw6/ast.ml": "\022\204\205o\250U\240\233\208\019SB\226\203v\200"
 "Resource: /home/ojyrkinen/Projects/eth-cd/hw6/util/assert.ml": "d\226\012\160\165\153\229\2141R\019\225A1\030\158"
@@ -90,22 +78,13 @@
 "Rule: ocaml: ml & cmi -> cmx & o (%=solver )": "\129]F\1628\189\142\238\r)\198R7\209*B"
 "Rule: ocaml dependencies mli (%=ll/llparser )": "\168,\217\029\212\159\155\234\212\198\254H4\247t'"
 "Rule: ocaml: ml & cmi -> cmx & o (%=ll/lllexer )": "d\244yq\207\227J\171\235\139\233\2318I%\221"
-<<<<<<< HEAD
-"Rule: ocaml: ml -> cmo & cmi (%=backend )": "\244$\228Jzho\026\162v0\031\209\006b\213"
-=======
-"Rule: ocaml: ml -> cmo & cmi (%=backend )": "\159\229\140\241'\127t\226TE.U\138\197Q?"
->>>>>>> move_related
+"Rule: ocaml: ml -> cmo & cmi (%=backend )": "\200.|:\228\029\0171j\138\241\213\017\222ix"
 "Rule: ocaml: ml & cmi -> cmx & o (%=opt )": "\224\165@\019\140v\235\232\229+\189u\014`UJ"
 "Rule: ocaml dependencies ml (%=ast )": "\239\179\223\140=\244\155I1\245\252\132\138{)\n"
 "Rule: ocaml: ml & cmi -> cmx & o (%=ll/llparser )": "Y\128\191\027\171F\236P\n\252\029-:\174\160\130"
 "Rule: ocaml: ml & cmi -> cmx & o (%=ll/ll )": "s\017y\\~\204\160\231)}\t\248\159\130Z;"
-<<<<<<< HEAD
-"Rule: ocaml: ml & cmi -> cmx & o (%=backend )": "\240\207\138G\134\220(\127U#\255z\148,\022>"
-"Rule: ocaml: ml -> cmo & cmi (%=gradedtests )": "\213\195X\164\176\164>[\177\168\244\130\"\026v\015"
-=======
-"Rule: ocaml: ml & cmi -> cmx & o (%=backend )": ";az\231X\004\237\246W;\214\157\019\144J2"
-"Rule: ocaml: ml -> cmo & cmi (%=gradedtests )": "\006\240q@\194\002\191\249pv\131)\012\236\191F"
->>>>>>> move_related
+"Rule: ocaml: ml & cmi -> cmx & o (%=backend )": "\165'\214\233\173\011\021\141\011v\001M}+\134\248"
+"Rule: ocaml: ml -> cmo & cmi (%=gradedtests )": "\235}\232\200+u\211\219\193\242\143y\238\235\231J"
 "Rule: ocaml: ml -> cmo & cmi (%=cfg )": "<\245^\165\198A\196\195\250\182\220\156\231\143+!"
 "Resource: /home/ojyrkinen/Projects/eth-cd/hw6/datastructures.ml": "\161\224\191\139lG\230\203\227x\191h8\r\207\176"
 "Rule: ocaml dependencies ml (%=ll/llutil )": "\255M\2395_\018\155\236F}F\154\220|D\203"
@@ -137,27 +116,14 @@
 "Rule: ocaml: ml & cmi -> cmx & o (%=cfg )": "\137\158t<yPF\241\171\254\131\154}\132\239\250"
 "Resource: /home/ojyrkinen/Projects/eth-cd/hw6/gradedtests.ml": "\001\163\237f+\244\006\187j?\168\239\199\000\011'"
 "Resource: /home/ojyrkinen/Projects/eth-cd/hw6/alias.ml": "f\153x\202\240T\189x\196\152\188=\194\b\242\012"
-<<<<<<< HEAD
-"Rule: ocaml: ml -> cmo & cmi (%=driver )": "\167B3\244e%=\004\160\176\029\017\015\247\185o"
+"Rule: ocaml: ml -> cmo & cmi (%=driver )": "\003jF\212\183\2513F\201K\188{\195j\193g"
 "Resource: /home/ojyrkinen/Projects/eth-cd/hw6/driver.ml": "\2081{\254\171\012\221\247\248\178M\161\176x\030^"
-"Rule: ocaml: cmx* & o* -> native (%=main )": "1\233ch-\169\247t:\002~\235|)\171\144"
-=======
-"Rule: ocaml: ml -> cmo & cmi (%=driver )": "\016\165\179\224C(\1844w*\b\157Kfv_"
-"Resource: /home/ojyrkinen/Projects/eth-cd/hw6/driver.ml": "\2081{\254\171\012\221\247\248\178M\161\176x\030^"
-"Rule: ocaml: cmx* & o* -> native (%=main )": "\027\182}\238\205\136]qfK\219\161|*S("
->>>>>>> move_related
+"Rule: ocaml: cmx* & o* -> native (%=main )": "\021\005\003#\170\211\012\016\240@\143\151\029.\204\t"
 "Rule: ocaml: mli -> cmi (%=util/range )": "\226%b\0239v\200\196\202\226~{\225\246\229\022"
 "Rule: ocaml: ml & cmi -> cmx & o (%=frontend )": "\159\214\180.\188\151\241\244\148\193\022\171\196\031#\199"
 "Rule: ocamllex (%=ll/lllexer )": "8\197\169\217\002\2320\142?\180\156\178\146\254\219\232"
 "Resource: /home/ojyrkinen/Projects/eth-cd/hw6/x86/x86.ml": "n\190\002G\254\242\012\162C\181\252t\167\021\022A"
-<<<<<<< HEAD
-"Rule: ocaml: ml & cmi -> cmx & o (%=driver )": "Js\203\178\182\217=\239,\169\160%\254\228q\247"
+"Rule: ocaml: ml & cmi -> cmx & o (%=driver )": "n_\202\255\142\252\161\025F\001~nk\252\171v"
 "Rule: ocaml: ml & cmi -> cmx & o (%=registers )": "\196\163\250\169\216\210\017'\218\240\246\143\222\020\231*"
 "Rule: ocaml dependencies ml (%=ll/llparser )": "<L\146\253\130Eur\214\154T0m@(\152"
-"Rule: ocaml dependencies ml (%=backend )": "\182N+\187NX\201\171\208\243\213\181eB\246\189"
-=======
-"Rule: ocaml: ml & cmi -> cmx & o (%=driver )": ";\170\245\206\021~\019I@\185\030K\024\180Z\167"
-"Rule: ocaml: ml & cmi -> cmx & o (%=registers )": "\196\163\250\169\216\210\017'\218\240\246\143\222\020\231*"
-"Rule: ocaml dependencies ml (%=ll/llparser )": "<L\146\253\130Eur\214\154T0m@(\152"
-"Rule: ocaml dependencies ml (%=backend )": "\160y\029\141&r\128c\205\172R9\194\199O\238"
->>>>>>> move_related
+"Rule: ocaml dependencies ml (%=backend )": ")\144\188\149d\232\000\235IP\155zW6\189#"

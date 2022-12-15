@@ -5,7 +5,7 @@ program:
 	movq	%rsp, %rbp
 	subq	$112, %rsp
 	subq	$8, %rsp
-	movq	%rsp, %rdi
+	movq	%rsp, %rsi
 	subq	$8, %rsp
 	movq	%rsp, -8(%rbp)
 	subq	$8, %rsp
@@ -35,15 +35,15 @@ program:
 	subq	$8, %rsp
 	movq	%rsp, -112(%rbp)
 	subq	$8, %rsp
-	movq	%rsp, %r11
-	subq	$8, %rsp
-	movq	%rsp, %r10
-	subq	$8, %rsp
 	movq	%rsp, %r9 
 	subq	$8, %rsp
 	movq	%rsp, %r8 
+	subq	$8, %rsp
+	movq	%rsp, %rdx
+	subq	$8, %rsp
+	movq	%rsp, %rdi
 	movq	$0, %rax
-	movq	%rdi, %rcx
+	movq	%rsi, %rcx
 	movq	%rax, (%rcx)
 	movq	$0, %rax
 	movq	-8(%rbp), %rcx
@@ -56,159 +56,159 @@ _body2528:
 	movq	%rax, (%rcx)
 	movq	-16(%rbp), %rax
 	movq	(%rax), %rax
-	movq	%rax, %rdx
+	movq	%rax, %r11
 	movq	-8(%rbp), %rax
 	movq	(%rax), %rax
-	movq	%rax, %rsi
-	addq	%rdx, %rsi
-	movq	%rsi, %rax
+	movq	%rax, %r10
+	addq	%r11, %r10
+	movq	%r10, %rax
 	movq	-24(%rbp), %rcx
 	movq	%rax, (%rcx)
 	movq	-24(%rbp), %rax
 	movq	(%rax), %rax
-	movq	%rax, %rdx
+	movq	%rax, %r11
 	movq	-8(%rbp), %rax
 	movq	(%rax), %rax
-	movq	%rax, %rsi
-	addq	%rdx, %rsi
-	movq	%rsi, %rax
+	movq	%rax, %r10
+	addq	%r11, %r10
+	movq	%r10, %rax
 	movq	-32(%rbp), %rcx
 	movq	%rax, (%rcx)
 	movq	-32(%rbp), %rax
 	movq	(%rax), %rax
-	movq	%rax, %rdx
+	movq	%rax, %r11
 	movq	-8(%rbp), %rax
 	movq	(%rax), %rax
-	movq	%rax, %rsi
-	addq	%rdx, %rsi
-	movq	%rsi, %rax
+	movq	%rax, %r10
+	addq	%r11, %r10
+	movq	%r10, %rax
 	movq	-40(%rbp), %rcx
 	movq	%rax, (%rcx)
 	movq	-40(%rbp), %rax
 	movq	(%rax), %rax
-	movq	%rax, %rdx
+	movq	%rax, %r11
 	movq	-8(%rbp), %rax
 	movq	(%rax), %rax
-	movq	%rax, %rsi
-	addq	%rdx, %rsi
-	movq	%rsi, %rax
+	movq	%rax, %r10
+	addq	%r11, %r10
+	movq	%r10, %rax
 	movq	-48(%rbp), %rcx
 	movq	%rax, (%rcx)
 	movq	-48(%rbp), %rax
 	movq	(%rax), %rax
-	movq	%rax, %rdx
+	movq	%rax, %r11
 	movq	-8(%rbp), %rax
 	movq	(%rax), %rax
-	movq	%rax, %rsi
-	addq	%rdx, %rsi
-	movq	%rsi, %rax
+	movq	%rax, %r10
+	addq	%r11, %r10
+	movq	%r10, %rax
 	movq	-56(%rbp), %rcx
 	movq	%rax, (%rcx)
 	movq	-56(%rbp), %rax
 	movq	(%rax), %rax
-	movq	%rax, %rdx
+	movq	%rax, %r11
 	movq	-8(%rbp), %rax
 	movq	(%rax), %rax
-	movq	%rax, %rsi
-	addq	%rdx, %rsi
-	movq	%rsi, %rax
+	movq	%rax, %r10
+	addq	%r11, %r10
+	movq	%r10, %rax
 	movq	-64(%rbp), %rcx
 	movq	%rax, (%rcx)
 	movq	-64(%rbp), %rax
 	movq	(%rax), %rax
-	movq	%rax, %rdx
+	movq	%rax, %r11
 	movq	-8(%rbp), %rax
 	movq	(%rax), %rax
-	movq	%rax, %rsi
-	addq	%rdx, %rsi
-	movq	%rsi, %rax
+	movq	%rax, %r10
+	addq	%r11, %r10
+	movq	%r10, %rax
 	movq	-72(%rbp), %rcx
 	movq	%rax, (%rcx)
 	movq	-72(%rbp), %rax
 	movq	(%rax), %rax
-	movq	%rax, %rdx
+	movq	%rax, %r11
 	movq	-8(%rbp), %rax
 	movq	(%rax), %rax
-	movq	%rax, %rsi
-	addq	%rdx, %rsi
-	movq	%rsi, %rax
+	movq	%rax, %r10
+	addq	%r11, %r10
+	movq	%r10, %rax
 	movq	-80(%rbp), %rcx
 	movq	%rax, (%rcx)
 	movq	-80(%rbp), %rax
 	movq	(%rax), %rax
-	movq	%rax, %rsi
+	movq	%rax, %r10
 	movq	-8(%rbp), %rax
 	movq	(%rax), %rax
-	movq	%rax, %rdx
-	addq	%rdx, %rsi
-	movq	%rsi, %rax
+	movq	%rax, %r11
+	addq	%r11, %r10
+	movq	%r10, %rax
 	movq	-88(%rbp), %rcx
 	movq	%rax, (%rcx)
 	movq	-88(%rbp), %rax
 	movq	(%rax), %rax
-	movq	%rax, %rsi
+	movq	%rax, %r10
 	movq	-8(%rbp), %rax
 	movq	(%rax), %rax
-	movq	%rax, %rdx
-	addq	%rdx, %rsi
-	movq	%rsi, %rax
+	movq	%rax, %r11
+	addq	%r11, %r10
+	movq	%r10, %rax
 	movq	-96(%rbp), %rcx
 	movq	%rax, (%rcx)
 	movq	-96(%rbp), %rax
 	movq	(%rax), %rax
-	movq	%rax, %rsi
+	movq	%rax, %r10
 	movq	-8(%rbp), %rax
 	movq	(%rax), %rax
-	movq	%rax, %rdx
-	addq	%rdx, %rsi
-	movq	%rsi, %rax
+	movq	%rax, %r11
+	addq	%r11, %r10
+	movq	%r10, %rax
 	movq	-104(%rbp), %rcx
 	movq	%rax, (%rcx)
 	movq	-104(%rbp), %rax
 	movq	(%rax), %rax
-	movq	%rax, %rsi
+	movq	%rax, %r10
 	movq	-8(%rbp), %rax
 	movq	(%rax), %rax
-	movq	%rax, %rdx
-	addq	%rdx, %rsi
-	movq	%rsi, %rax
+	movq	%rax, %r11
+	addq	%r11, %r10
+	movq	%r10, %rax
 	movq	-112(%rbp), %rcx
 	movq	%rax, (%rcx)
 	movq	-112(%rbp), %rax
 	movq	(%rax), %rax
-	movq	%rax, %rsi
+	movq	%rax, %r10
 	movq	-8(%rbp), %rax
 	movq	(%rax), %rax
-	movq	%rax, %rdx
-	addq	%rdx, %rsi
-	movq	%rsi, (%r11)
-	movq	(%r11), %rsi
+	movq	%rax, %r11
+	addq	%r11, %r10
+	movq	%r10, (%r9 )
+	movq	(%r9 ), %r10
 	movq	-8(%rbp), %rax
 	movq	(%rax), %rax
-	movq	%rax, %rdx
-	addq	%rdx, %rsi
-	movq	%rsi, (%r10)
-	movq	(%r10), %rsi
+	movq	%rax, %r11
+	addq	%r11, %r10
+	movq	%r10, (%r8 )
+	movq	(%r8 ), %r10
 	movq	-8(%rbp), %rax
 	movq	(%rax), %rax
-	movq	%rax, %rdx
-	addq	%rdx, %rsi
-	movq	%rsi, (%r9 )
-	movq	(%r9 ), %rsi
+	movq	%rax, %r11
+	addq	%r11, %r10
+	movq	%r10, (%rdx)
+	movq	(%rdx), %r10
 	movq	-8(%rbp), %rax
 	movq	(%rax), %rax
-	movq	%rax, %rdx
-	addq	%rdx, %rsi
-	movq	%rsi, (%r8 )
-	movq	(%rdi), %rsi
-	movq	(%r8 ), %rdx
-	addq	%rdx, %rsi
-	movq	%rsi, (%rdi)
+	movq	%rax, %r11
+	addq	%r11, %r10
+	movq	%r10, (%rdi)
+	movq	(%rsi), %r10
+	movq	(%rdi), %r11
+	addq	%r11, %r10
+	movq	%r10, (%rsi)
 	movq	-8(%rbp), %rax
 	movq	(%rax), %rax
-	movq	%rax, %rsi
-	addq	$1, %rsi
-	movq	%rsi, %rax
+	movq	%rax, %r10
+	addq	$1, %r10
+	movq	%r10, %rax
 	movq	-8(%rbp), %rcx
 	movq	%rax, (%rcx)
 	jmp	_cond2529
@@ -216,16 +216,16 @@ _body2528:
 _cond2529:
 	movq	-8(%rbp), %rax
 	movq	(%rax), %rax
-	movq	%rax, %rsi
-	cmpq	$10000000, %rsi
-	setl	%sil
-	andq	$1, %rsi
-	cmpq	$0, %rsi
+	movq	%rax, %r10
+	cmpq	$10000000, %r10
+	setl	%r10b
+	andq	$1, %r10
+	cmpq	$0, %r10
 	jne	_body2528
 	jmp	_post2527
 	.text
 _post2527:
-	movq	(%rdi), %rsi
+	movq	(%rsi), %rsi
 	movq	%rsi, %rax
 	movq	%rbp, %rsp
 	popq	%rbp

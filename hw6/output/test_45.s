@@ -228,12 +228,11 @@ main:
 	addq	-16(%rbp), %r10
 	addq	-24(%rbp), %r9 
 	addq	%r8 , %rdx
-	addq	%rsi, %rdi
-	movq	%r11, %r8 
-	addq	%r10, %r8 
-	movq	%r9 , %rsi
-	addq	%rdx, %rsi
-	addq	%r8 , %rsi
+	addq	%rdi, %rsi
+	movq	%r11, %rdi
+	addq	%r10, %rdi
+	addq	%r9 , %rdx
+	addq	%rdx, %rdi
 	addq	%rdi, %rsi
 	movq	%rsi, %rax
 	movq	%rbp, %rsp

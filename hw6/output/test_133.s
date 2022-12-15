@@ -13,8 +13,8 @@ add:
 	movq	%rsp, %rdx
 	movq	%rdi, (%r8 )
 	movq	%rsi, (%rdx)
-	movq	(%r8 ), %rdi
-	movq	(%rdx), %rsi
+	movq	(%r8 ), %rsi
+	movq	(%rdx), %rdi
 	addq	%rdi, %rsi
 	movq	%rsi, %rax
 	movq	%rbp, %rsp

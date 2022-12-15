@@ -4,32 +4,32 @@ program:
 	pushq	%rbp
 	movq	%rsp, %rbp
 	subq	$8, %rsp
-	movq	%rsp, %rdi
-	pushq	%rdi
+	movq	%rsp, %rsi
+	pushq	%rsi
 	movq	$2, %rdi
 	callq	oat_alloc_array
-	popq	%rdi
-	movq	%rax, %rsi
-	movq	%rsi, %rax
+	popq	%rsi
+	movq	%rax, %rdi
+	movq	%rdi, %rax
+	movq	%rax, %rdi
+	movq	%rdi, %rax
+	addq	$0, %rax
+	addq	$8, %rax
+	addq	$0, %rax
 	movq	%rax, %rdx
-	movq	%rdx, %rax
-	addq	$0, %rax
-	addq	$8, %rax
-	addq	$0, %rax
-	movq	%rax, %rsi
 	movq	$99, %rax
-	movq	%rsi, %rcx
+	movq	%rdx, %rcx
 	movq	%rax, (%rcx)
-	movq	%rdx, %rax
+	movq	%rdi, %rax
 	addq	$0, %rax
 	addq	$8, %rax
 	addq	$8, %rax
-	movq	%rax, %rsi
+	movq	%rax, %rdx
 	movq	$0, %rax
-	movq	%rsi, %rcx
+	movq	%rdx, %rcx
 	movq	%rax, (%rcx)
-	movq	%rdx, (%rdi)
-	movq	(%rdi), %rdi
+	movq	%rdi, (%rsi)
+	movq	(%rsi), %rdi
 	movq	%rdi, %rax
 	movq	%rax, %rsi
 	pushq	%rdi

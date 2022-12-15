@@ -883,9 +883,7 @@ let better_layout (f:Ll.fdecl) (live:liveness) : layout =
       let uncoloured_nodes_with_degree_lt_k = UidS.filter (fun n -> Graph.degree_of n g < k) (Graph.uncoloured_nodes g) in 
       match UidS.cardinal uncoloured_nodes_with_degree_lt_k with 
       | amt when amt > 0 -> 
-<<<<<<< HEAD
-        let node = UidS.choose uncoloured_nodes_with_degree_lt_k in
-=======
+
       (* avoid removing move-related nodes, if possible *)
         let not_move_related n = 
           match UidM.find_opt n move_related_nodes with 
@@ -899,21 +897,11 @@ let better_layout (f:Ll.fdecl) (live:liveness) : layout =
           | amt when amt > 0 -> Graph.choose_min_degree_of not_move_related_uncoloured_nodes_with_degree_lt_k g 
           | _ -> Graph.choose_min_degree_of uncoloured_nodes_with_degree_lt_k g 
         in 
->>>>>>> move_related
         let neighbours = Graph.neighbours_of node g in
         let sub_g = Graph.remove_node node g in
         let coloured_sub_g = k_colour sub_g in 
         let neighbour_colours = Graph.colours_of neighbours coloured_sub_g in
         let node_colour = 
-<<<<<<< HEAD
-          let pre_colours = Graph.colours_of arg_set coloured_sub_g in  
-          match LocSet.choose_opt (LocSet.diff pre_colours neighbour_colours) with 
-          | Some c -> c
-          | None -> LocSet.choose (LocSet.diff pal neighbour_colours)
-        in
-        Graph.colour_node node node_colour (Graph.insert_node node neighbours coloured_sub_g) 
-      | amt ->  
-=======
           (* if possible, reuse a colour of an argument to minimize total number of registers used *)
           let possibly_used_colour = 
             let pre_colours = Graph.colours_of arg_set coloured_sub_g in  
@@ -939,17 +927,13 @@ let better_layout (f:Ll.fdecl) (live:liveness) : layout =
         Graph.colour_node node node_colour (Graph.insert_node node neighbours coloured_sub_g)
       | amt ->  
         (* Heuristic: choose the node with largest degree to be spilled *)
->>>>>>> move_related
         let node = Graph.choose_max_degree_of (Graph.uncoloured_nodes g) g in 
         let neighbours = Graph.neighbours_of node g in
         let g = Graph.mark_node node g in
         let sub_g = Graph.remove_node node g in (* note that this does not remove node from the colour-mapping! *)
         let coloured_sub_g = k_colour sub_g in 
         let neighbour_colours = Graph.colours_of neighbours coloured_sub_g in
-<<<<<<< HEAD
-=======
         (* try to pick a colour that has already been used for a pre-coloured node *)
->>>>>>> move_related
         let pre_colours = Graph.colours_of arg_set coloured_sub_g in  
         match LocSet.choose_opt (LocSet.diff pre_colours neighbour_colours) with 
         | Some c -> Graph.colour_node node c coloured_sub_g

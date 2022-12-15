@@ -33,33 +33,33 @@ bar:
 	popq	-24(%rbp)
 	movq	%rdi, %r10
 	addq	%rsi, %r10
-	movq	%r10, %rsi
-	addq	%rdx, %rsi
-	movq	%rsi, %rdi
+	addq	%r10, %rdx
+	movq	%rdx, %rdi
 	addq	-8(%rbp), %rdi
-	movq	%rdi, %rdx
-	addq	%r8 , %rdx
+	movq	%rdi, %rsi
+	addq	%r8 , %rsi
 	pushq	%r10
 	pushq	%r9 
 	pushq	%r8 
 	pushq	%rdi
-	pushq	%rdx
+	pushq	%rsi
 	pushq	-24(%rbp)
 	pushq	-16(%rbp)
-	movq	%rdx, %rcx
+	movq	%rsi, %rcx
+	movq	%rdx, %rsi
 	movq	%rdi, %rdx
 	movq	%r10, %rdi
 	callq	baz
 	addq	$16, %rsp
-	popq	%rdx
+	popq	%rsi
 	popq	%rdi
 	popq	%r8 
 	popq	%r9 
 	popq	%r10
-	movq	%rax, %rsi
-	addq	%r9 , %rdx
-	addq	-16(%rbp), %rdx
-	addq	-24(%rbp), %rdx
+	movq	%rax, %rdx
+	addq	%r9 , %rsi
+	addq	-16(%rbp), %rsi
+	addq	-24(%rbp), %rsi
 	addq	%rsi, %rdx
 	movq	%rdx, %rax
 	movq	%rbp, %rsp

@@ -11,88 +11,88 @@ program:
 	popq	%rdi
 	movq	%rax, %rsi
 	movq	%rsi, %rax
+	movq	%rax, %rsi
+	movq	%rsi, %rax
+	addq	$0, %rax
+	addq	$8, %rax
+	addq	$0, %rax
 	movq	%rax, %rdx
-	movq	%rdx, %rax
-	addq	$0, %rax
-	addq	$8, %rax
-	addq	$0, %rax
-	movq	%rax, %rsi
 	movq	$126, %rax
-	movq	%rsi, %rcx
+	movq	%rdx, %rcx
 	movq	%rax, (%rcx)
-	movq	%rdx, %rax
+	movq	%rsi, %rax
 	addq	$0, %rax
 	addq	$8, %rax
 	addq	$8, %rax
-	movq	%rax, %rsi
+	movq	%rax, %rdx
 	movq	$125, %rax
-	movq	%rsi, %rcx
+	movq	%rdx, %rcx
 	movq	%rax, (%rcx)
-	movq	%rdx, %rax
+	movq	%rsi, %rax
 	addq	$0, %rax
 	addq	$8, %rax
 	addq	$16, %rax
-	movq	%rax, %rsi
+	movq	%rax, %rdx
 	movq	$124, %rax
-	movq	%rsi, %rcx
+	movq	%rdx, %rcx
 	movq	%rax, (%rcx)
-	movq	%rdx, %rax
+	movq	%rsi, %rax
 	addq	$0, %rax
 	addq	$8, %rax
 	addq	$24, %rax
-	movq	%rax, %rsi
+	movq	%rax, %rdx
 	movq	$123, %rax
-	movq	%rsi, %rcx
+	movq	%rdx, %rcx
 	movq	%rax, (%rcx)
-	movq	%rdx, %rax
+	movq	%rsi, %rax
 	addq	$0, %rax
 	addq	$8, %rax
 	addq	$32, %rax
-	movq	%rax, %rsi
+	movq	%rax, %rdx
 	movq	$122, %rax
-	movq	%rsi, %rcx
+	movq	%rdx, %rcx
 	movq	%rax, (%rcx)
-	movq	%rdx, %rax
+	movq	%rsi, %rax
 	addq	$0, %rax
 	addq	$8, %rax
 	addq	$40, %rax
-	movq	%rax, %rsi
+	movq	%rax, %rdx
 	movq	$121, %rax
-	movq	%rsi, %rcx
+	movq	%rdx, %rcx
 	movq	%rax, (%rcx)
-	movq	%rdx, %rax
+	movq	%rsi, %rax
 	addq	$0, %rax
 	addq	$8, %rax
 	addq	$48, %rax
-	movq	%rax, %rsi
+	movq	%rax, %rdx
 	movq	$120, %rax
-	movq	%rsi, %rcx
+	movq	%rdx, %rcx
 	movq	%rax, (%rcx)
-	movq	%rdx, %rax
+	movq	%rsi, %rax
 	addq	$0, %rax
 	addq	$8, %rax
 	addq	$56, %rax
-	movq	%rax, %rsi
+	movq	%rax, %rdx
 	movq	$119, %rax
-	movq	%rsi, %rcx
+	movq	%rdx, %rcx
 	movq	%rax, (%rcx)
-	movq	%rdx, %rax
+	movq	%rsi, %rax
 	addq	$0, %rax
 	addq	$8, %rax
 	addq	$64, %rax
-	movq	%rax, %rsi
+	movq	%rax, %rdx
 	movq	$118, %rax
-	movq	%rsi, %rcx
+	movq	%rdx, %rcx
 	movq	%rax, (%rcx)
-	movq	%rdx, %rax
+	movq	%rsi, %rax
 	addq	$0, %rax
 	addq	$8, %rax
 	addq	$72, %rax
-	movq	%rax, %rsi
+	movq	%rax, %rdx
 	movq	$117, %rax
-	movq	%rsi, %rcx
+	movq	%rdx, %rcx
 	movq	%rax, (%rcx)
-	movq	%rdx, (%rdi)
+	movq	%rsi, (%rdi)
 	movq	(%rdi), %rsi
 	movq	%rsi, %rdi
 	callq	string_of_array

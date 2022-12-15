@@ -4,7 +4,7 @@
 # Target: util/assert.mli.depends, tags: { extension:mli, file:util/assert.mli, ocaml, ocamldep, quiet }
 /home/ojyrkinen/.opam/4.06.0/bin/ocamldep.opt -modules util/assert.mli > util/assert.mli.depends
 # Target: backend.ml.depends, tags: { extension:ml, file:backend.ml, ocaml, ocamldep, quiet }
-/home/ojyrkinen/.opam/4.06.0/bin/ocamldep.opt -modules backend.ml > backend.ml.depends # cached
+/home/ojyrkinen/.opam/4.06.0/bin/ocamldep.opt -modules backend.ml > backend.ml.depends
 # Target: datastructures.ml.depends, tags: { extension:ml, file:datastructures.ml, ocaml, ocamldep, quiet }
 /home/ojyrkinen/.opam/4.06.0/bin/ocamldep.opt -modules datastructures.ml > datastructures.ml.depends
 # Target: ll/ll.ml.depends, tags: { extension:ml, file:ll/ll.ml, ocaml, ocamldep, quiet }
@@ -36,13 +36,7 @@
 # Target: util/platform.cmo, tags: { byte, compile, extension:cmo, extension:ml, file:util/platform.cmo, file:util/platform.ml, implem, ocaml, quiet }
 /home/ojyrkinen/.opam/4.06.0/bin/ocamlc.opt -c -I util -I x86 -I ll -o util/platform.cmo util/platform.ml
 # Target: x86/x86.cmo, tags: { byte, compile, extension:cmo, extension:ml, file:x86/x86.cmo, file:x86/x86.ml, implem, ocaml, quiet }
-<<<<<<< HEAD
 /home/ojyrkinen/.opam/4.06.0/bin/ocamlc.opt -c -I x86 -I util -I ll -o x86/x86.cmo x86/x86.ml
-=======
-/home/ojyrkinen/.opam/4.06.0/bin/ocamlc.opt -c -I x86 -I util -I ll -o x86/x86.cmo x86/x86.ml # cached
-# Target: backend.cmo, tags: { byte, compile, extension:cmo, extension:ml, file:backend.cmo, file:backend.ml, implem, ocaml, quiet }
-/home/ojyrkinen/.opam/4.06.0/bin/ocamlc.opt -c -I x86 -I util -I ll -o backend.cmo backend.ml # cached
->>>>>>> move_related
 # Target: driver.ml.depends, tags: { extension:ml, file:driver.ml, ocaml, ocamldep, quiet }
 /home/ojyrkinen/.opam/4.06.0/bin/ocamldep.opt -modules driver.ml > driver.ml.depends
 # Target: astlib.ml.depends, tags: { extension:ml, file:astlib.ml, ocaml, ocamldep, quiet }
@@ -54,18 +48,9 @@
 # Target: util/range.cmi, tags: { byte, compile, extension:mli, file:util/range.mli, interf, ocaml, quiet }
 /home/ojyrkinen/.opam/4.06.0/bin/ocamlc.opt -c -I util -I x86 -I ll -o util/range.cmi util/range.mli
 # Target: ast.cmo, tags: { byte, compile, extension:cmo, extension:ml, file:ast.cmo, file:ast.ml, implem, ocaml, quiet }
-<<<<<<< HEAD
 /home/ojyrkinen/.opam/4.06.0/bin/ocamlc.opt -c -I x86 -I util -I ll -o ast.cmo ast.ml
 # Target: backend.cmo, tags: { byte, compile, extension:cmo, extension:ml, file:backend.cmo, file:backend.ml, implem, ocaml, quiet }
 /home/ojyrkinen/.opam/4.06.0/bin/ocamlc.opt -c -I x86 -I util -I ll -o backend.cmo backend.ml
-+ /home/ojyrkinen/.opam/4.06.0/bin/ocamlc.opt -c -I x86 -I util -I ll -o backend.cmo backend.ml
-File "backend.ml", line 837, characters 6-24:
-Warning 26: unused variable move_related_nodes.
-=======
-/home/ojyrkinen/.opam/4.06.0/bin/ocamlc.opt -c -I x86 -I util -I ll -o ast.cmo ast.ml # cached
-# Target: astlib.cmo, tags: { byte, compile, extension:cmo, extension:ml, file:astlib.cmo, file:astlib.ml, implem, ocaml, quiet }
-/home/ojyrkinen/.opam/4.06.0/bin/ocamlc.opt -c -I x86 -I util -I ll -o astlib.cmo astlib.ml # cached
->>>>>>> move_related
 # Target: frontend.ml.depends, tags: { extension:ml, file:frontend.ml, ocaml, ocamldep, quiet }
 /home/ojyrkinen/.opam/4.06.0/bin/ocamldep.opt -modules frontend.ml > frontend.ml.depends
 # Target: astlib.cmo, tags: { byte, compile, extension:cmo, extension:ml, file:astlib.cmo, file:astlib.ml, implem, ocaml, quiet }
@@ -127,17 +112,10 @@ menhir --ocamlc '/home/ojyrkinen/.opam/4.06.0/bin/ocamlc.opt -I ll -I x86 -I uti
 # Target: opt.cmo, tags: { byte, compile, extension:cmo, extension:ml, file:opt.cmo, file:opt.ml, implem, ocaml, quiet }
 /home/ojyrkinen/.opam/4.06.0/bin/ocamlc.opt -c -I x86 -I util -I ll -o opt.cmo opt.ml
 # Target: registers.cmo, tags: { byte, compile, extension:cmo, extension:ml, file:registers.cmo, file:registers.ml, implem, ocaml, quiet }
-<<<<<<< HEAD
 /home/ojyrkinen/.opam/4.06.0/bin/ocamlc.opt -c -I x86 -I util -I ll -o registers.cmo registers.ml
-=======
-/home/ojyrkinen/.opam/4.06.0/bin/ocamlc.opt -c -I x86 -I util -I ll -o registers.cmo registers.ml # cached
-# Target: driver.cmo, tags: { byte, compile, extension:cmo, extension:ml, file:driver.cmo, file:driver.ml, implem, ocaml, quiet }
-/home/ojyrkinen/.opam/4.06.0/bin/ocamlc.opt -c -I x86 -I util -I ll -o driver.cmo driver.ml # cached
->>>>>>> move_related
 # Target: gradedtests.ml.depends, tags: { extension:ml, file:gradedtests.ml, ocaml, ocamldep, quiet }
 /home/ojyrkinen/.opam/4.06.0/bin/ocamldep.opt -modules gradedtests.ml > gradedtests.ml.depends
 # Target: analysistests.ml.depends, tags: { extension:ml, file:analysistests.ml, ocaml, ocamldep, quiet }
-<<<<<<< HEAD
 /home/ojyrkinen/.opam/4.06.0/bin/ocamldep.opt -modules analysistests.ml > analysistests.ml.depends
 # Target: util/assert.cmi, tags: { byte, compile, extension:mli, file:util/assert.mli, interf, ocaml, quiet }
 /home/ojyrkinen/.opam/4.06.0/bin/ocamlc.opt -c -I util -I x86 -I ll -o util/assert.cmi util/assert.mli
@@ -145,15 +123,10 @@ menhir --ocamlc '/home/ojyrkinen/.opam/4.06.0/bin/ocamlc.opt -I ll -I x86 -I uti
 /home/ojyrkinen/.opam/4.06.0/bin/ocamlc.opt -c -I x86 -I util -I ll -o driver.cmo driver.ml
 # Target: analysistests.cmo, tags: { byte, compile, extension:cmo, extension:ml, file:analysistests.cmo, file:analysistests.ml, implem, ocaml, quiet }
 /home/ojyrkinen/.opam/4.06.0/bin/ocamlc.opt -c -I x86 -I util -I ll -o analysistests.cmo analysistests.ml
-=======
-/home/ojyrkinen/.opam/4.06.0/bin/ocamldep.opt -modules analysistests.ml > analysistests.ml.depends # cached
-# Target: analysistests.cmo, tags: { byte, compile, extension:cmo, extension:ml, file:analysistests.cmo, file:analysistests.ml, implem, ocaml, quiet }
-/home/ojyrkinen/.opam/4.06.0/bin/ocamlc.opt -c -I x86 -I util -I ll -o analysistests.cmo analysistests.ml # cached
->>>>>>> move_related
 # Target: gradedtests.cmo, tags: { byte, compile, extension:cmo, extension:ml, file:gradedtests.cmo, file:gradedtests.ml, implem, ocaml, quiet }
-/home/ojyrkinen/.opam/4.06.0/bin/ocamlc.opt -c -I x86 -I util -I ll -o gradedtests.cmo gradedtests.ml # cached
+/home/ojyrkinen/.opam/4.06.0/bin/ocamlc.opt -c -I x86 -I util -I ll -o gradedtests.cmo gradedtests.ml
 # Target: main.cmo, tags: { byte, compile, extension:cmo, extension:ml, file:main.cmo, file:main.ml, implem, ocaml, quiet }
-/home/ojyrkinen/.opam/4.06.0/bin/ocamlc.opt -c -I x86 -I util -I ll -o main.cmo main.ml # cached
+/home/ojyrkinen/.opam/4.06.0/bin/ocamlc.opt -c -I x86 -I util -I ll -o main.cmo main.ml
 # Target: util/assert.ml.depends, tags: { extension:ml, file:util/assert.ml, ocaml, ocamldep, quiet }
 /home/ojyrkinen/.opam/4.06.0/bin/ocamldep.opt -modules util/assert.ml > util/assert.ml.depends
 # Target: ll/ll.cmx, tags: { compile, extension:cmx, extension:ml, file:ll/ll.cmx, file:ll/ll.ml, implem, native, ocaml, quiet }
@@ -171,32 +144,17 @@ menhir --ocamlc '/home/ojyrkinen/.opam/4.06.0/bin/ocamlc.opt -I ll -I x86 -I uti
 # Target: util/platform.cmx, tags: { compile, extension:cmx, extension:ml, file:util/platform.cmx, file:util/platform.ml, implem, native, ocaml, quiet }
 /home/ojyrkinen/.opam/4.06.0/bin/ocamlopt.opt -c -I util -I x86 -I ll -o util/platform.cmx util/platform.ml
 # Target: x86/x86.cmx, tags: { compile, extension:cmx, extension:ml, file:x86/x86.cmx, file:x86/x86.ml, implem, native, ocaml, quiet }
-<<<<<<< HEAD
 /home/ojyrkinen/.opam/4.06.0/bin/ocamlopt.opt -c -I x86 -I util -I ll -o x86/x86.cmx x86/x86.ml
-=======
-/home/ojyrkinen/.opam/4.06.0/bin/ocamlopt.opt -c -I x86 -I util -I ll -o x86/x86.cmx x86/x86.ml # cached
-# Target: backend.cmx, tags: { compile, extension:cmx, extension:ml, file:backend.cmx, file:backend.ml, implem, native, ocaml, quiet }
-/home/ojyrkinen/.opam/4.06.0/bin/ocamlopt.opt -c -I x86 -I util -I ll -o backend.cmx backend.ml # cached
->>>>>>> move_related
 # Target: util/range.ml.depends, tags: { extension:ml, file:util/range.ml, ocaml, ocamldep, quiet }
 /home/ojyrkinen/.opam/4.06.0/bin/ocamldep.opt -modules util/range.ml > util/range.ml.depends
 # Target: util/range.cmx, tags: { compile, extension:cmx, extension:ml, file:util/range.cmx, file:util/range.ml, implem, native, ocaml, quiet }
 /home/ojyrkinen/.opam/4.06.0/bin/ocamlopt.opt -c -I util -I x86 -I ll -o util/range.cmx util/range.ml
 # Target: ast.cmx, tags: { compile, extension:cmx, extension:ml, file:ast.cmx, file:ast.ml, implem, native, ocaml, quiet }
-<<<<<<< HEAD
 /home/ojyrkinen/.opam/4.06.0/bin/ocamlopt.opt -c -I x86 -I util -I ll -o ast.cmx ast.ml
 # Target: backend.cmx, tags: { compile, extension:cmx, extension:ml, file:backend.cmx, file:backend.ml, implem, native, ocaml, quiet }
 /home/ojyrkinen/.opam/4.06.0/bin/ocamlopt.opt -c -I x86 -I util -I ll -o backend.cmx backend.ml
-+ /home/ojyrkinen/.opam/4.06.0/bin/ocamlopt.opt -c -I x86 -I util -I ll -o backend.cmx backend.ml
-File "backend.ml", line 837, characters 6-24:
-Warning 26: unused variable move_related_nodes.
 # Target: astlib.cmx, tags: { compile, extension:cmx, extension:ml, file:astlib.cmx, file:astlib.ml, implem, native, ocaml, quiet }
 /home/ojyrkinen/.opam/4.06.0/bin/ocamlopt.opt -c -I x86 -I util -I ll -o astlib.cmx astlib.ml
-=======
-/home/ojyrkinen/.opam/4.06.0/bin/ocamlopt.opt -c -I x86 -I util -I ll -o ast.cmx ast.ml # cached
-# Target: astlib.cmx, tags: { compile, extension:cmx, extension:ml, file:astlib.cmx, file:astlib.ml, implem, native, ocaml, quiet }
-/home/ojyrkinen/.opam/4.06.0/bin/ocamlopt.opt -c -I x86 -I util -I ll -o astlib.cmx astlib.ml # cached
->>>>>>> move_related
 # Target: tctxt.cmx, tags: { compile, extension:cmx, extension:ml, file:tctxt.cmx, file:tctxt.ml, implem, native, ocaml, quiet }
 /home/ojyrkinen/.opam/4.06.0/bin/ocamlopt.opt -c -I x86 -I util -I ll -o tctxt.cmx tctxt.ml
 # Target: typechecker.cmx, tags: { compile, extension:cmx, extension:ml, file:typechecker.cmx, file:typechecker.ml, implem, native, ocaml, quiet }
@@ -224,7 +182,6 @@ Warning 26: unused variable move_related_nodes.
 # Target: opt.cmx, tags: { compile, extension:cmx, extension:ml, file:opt.cmx, file:opt.ml, implem, native, ocaml, quiet }
 /home/ojyrkinen/.opam/4.06.0/bin/ocamlopt.opt -c -I x86 -I util -I ll -o opt.cmx opt.ml
 # Target: registers.cmx, tags: { compile, extension:cmx, extension:ml, file:registers.cmx, file:registers.ml, implem, native, ocaml, quiet }
-<<<<<<< HEAD
 /home/ojyrkinen/.opam/4.06.0/bin/ocamlopt.opt -c -I x86 -I util -I ll -o registers.cmx registers.ml
 # Target: util/assert.cmx, tags: { compile, extension:cmx, extension:ml, file:util/assert.cmx, file:util/assert.ml, implem, native, ocaml, quiet }
 /home/ojyrkinen/.opam/4.06.0/bin/ocamlopt.opt -c -I util -I x86 -I ll -o util/assert.cmx util/assert.ml
@@ -232,17 +189,10 @@ Warning 26: unused variable move_related_nodes.
 /home/ojyrkinen/.opam/4.06.0/bin/ocamlopt.opt -c -I x86 -I util -I ll -o driver.cmx driver.ml
 # Target: analysistests.cmx, tags: { compile, extension:cmx, extension:ml, file:analysistests.cmx, file:analysistests.ml, implem, native, ocaml, quiet }
 /home/ojyrkinen/.opam/4.06.0/bin/ocamlopt.opt -c -I x86 -I util -I ll -o analysistests.cmx analysistests.ml
-=======
-/home/ojyrkinen/.opam/4.06.0/bin/ocamlopt.opt -c -I x86 -I util -I ll -o registers.cmx registers.ml # cached
-# Target: driver.cmx, tags: { compile, extension:cmx, extension:ml, file:driver.cmx, file:driver.ml, implem, native, ocaml, quiet }
-/home/ojyrkinen/.opam/4.06.0/bin/ocamlopt.opt -c -I x86 -I util -I ll -o driver.cmx driver.ml # cached
-# Target: analysistests.cmx, tags: { compile, extension:cmx, extension:ml, file:analysistests.cmx, file:analysistests.ml, implem, native, ocaml, quiet }
-/home/ojyrkinen/.opam/4.06.0/bin/ocamlopt.opt -c -I x86 -I util -I ll -o analysistests.cmx analysistests.ml # cached
->>>>>>> move_related
 # Target: gradedtests.cmx, tags: { compile, extension:cmx, extension:ml, file:gradedtests.cmx, file:gradedtests.ml, implem, native, ocaml, quiet }
-/home/ojyrkinen/.opam/4.06.0/bin/ocamlopt.opt -c -I x86 -I util -I ll -o gradedtests.cmx gradedtests.ml # cached
+/home/ojyrkinen/.opam/4.06.0/bin/ocamlopt.opt -c -I x86 -I util -I ll -o gradedtests.cmx gradedtests.ml
 # Target: main.cmx, tags: { compile, extension:cmx, extension:ml, file:main.cmx, file:main.ml, implem, native, ocaml, quiet }
-/home/ojyrkinen/.opam/4.06.0/bin/ocamlopt.opt -c -I x86 -I util -I ll -o main.cmx main.ml # cached
+/home/ojyrkinen/.opam/4.06.0/bin/ocamlopt.opt -c -I x86 -I util -I ll -o main.cmx main.ml
 # Target: main.native, tags: { dont_link_with, extension:native, file:main.native, link, native, ocaml, program, quiet }
-/home/ojyrkinen/.opam/4.06.0/bin/ocamlopt.opt unix.cmxa str.cmxa nums.cmxa -I ll -I util -I x86 ll/ll.cmx datastructures.cmx ll/llutil.cmx solver.cmx cfg.cmx alias.cmx constprop.cmx analysistests.cmx util/range.cmx ast.cmx astlib.cmx liveness.cmx util/platform.cmx x86/x86.cmx backend.cmx dce.cmx tctxt.cmx typechecker.cmx frontend.cmx parser.cmx lexer.cmx ll/llparser.cmx ll/lllexer.cmx opt.cmx registers.cmx driver.cmx util/assert.cmx gradedtests.cmx main.cmx -o main.native # cached
+/home/ojyrkinen/.opam/4.06.0/bin/ocamlopt.opt unix.cmxa str.cmxa nums.cmxa -I ll -I util -I x86 ll/ll.cmx datastructures.cmx ll/llutil.cmx solver.cmx cfg.cmx alias.cmx constprop.cmx analysistests.cmx util/range.cmx ast.cmx astlib.cmx liveness.cmx util/platform.cmx x86/x86.cmx backend.cmx dce.cmx tctxt.cmx typechecker.cmx frontend.cmx parser.cmx lexer.cmx ll/llparser.cmx ll/lllexer.cmx opt.cmx registers.cmx driver.cmx util/assert.cmx gradedtests.cmx main.cmx -o main.native
 # Compilation successful.

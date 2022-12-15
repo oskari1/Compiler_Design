@@ -4,51 +4,51 @@ program:
 	pushq	%rbp
 	movq	%rsp, %rbp
 	subq	$8, %rsp
-	movq	%rsp, %rdx
+	movq	%rsp, %rsi
 	subq	$8, %rsp
-	movq	%rsp, %rdi
-	pushq	%rdi
-	pushq	%rdx
+	movq	%rsp, %r8 
+	pushq	%r8 
+	pushq	%rsi
 	movq	$2, %rdi
 	callq	oat_alloc_array
-	popq	%rdx
-	popq	%rdi
-	movq	%rax, %rsi
-	movq	%rsi, %rax
-	movq	%rax, %r8 
-	movq	%r8 , %rax
+	popq	%rsi
+	popq	%r8 
+	movq	%rax, %rdi
+	movq	%rdi, %rax
+	movq	%rax, %rdi
+	movq	%rdi, %rax
 	addq	$0, %rax
 	addq	$8, %rax
 	addq	$0, %rax
-	movq	%rax, %rsi
+	movq	%rax, %rdx
 	movq	$1, %rax
-	movq	%rsi, %rcx
+	movq	%rdx, %rcx
 	movq	%rax, (%rcx)
-	movq	%r8 , %rax
+	movq	%rdi, %rax
 	addq	$0, %rax
 	addq	$8, %rax
 	addq	$8, %rax
-	movq	%rax, %rsi
+	movq	%rax, %rdx
 	movq	$0, %rax
-	movq	%rsi, %rcx
+	movq	%rdx, %rcx
 	movq	%rax, (%rcx)
-	movq	%r8 , (%rdx)
+	movq	%rdi, (%rsi)
 	movq	$0, %rax
-	movq	%rdi, %rcx
+	movq	%r8 , %rcx
 	movq	%rax, (%rcx)
-	movq	(%rdx), %rdx
-	movq	%rdx, %rax
+	movq	(%rsi), %rdi
+	movq	%rdi, %rax
 	movq	%rax, %rsi
+	pushq	%r8 
 	pushq	%rdi
 	pushq	%rsi
-	pushq	%rdx
 	movq	%rsi, %rdi
 	movq	$0, %rsi
 	callq	oat_assert_array_length
-	popq	%rdx
 	popq	%rsi
 	popq	%rdi
-	movq	%rdx, %rax
+	popq	%r8 
+	movq	%rdi, %rax
 	addq	$0, %rax
 	addq	$8, %rax
 	addq	$0, %rax
@@ -62,7 +62,7 @@ _else350:
 	jmp	_merge349
 	.text
 _merge349:
-	movq	(%rdi), %rsi
+	movq	(%r8 ), %rsi
 	movq	%rsi, %rax
 	movq	%rbp, %rsp
 	popq	%rbp
@@ -70,6 +70,6 @@ _merge349:
 	.text
 _then351:
 	movq	$1, %rax
-	movq	%rdi, %rcx
+	movq	%r8 , %rcx
 	movq	%rax, (%rcx)
 	jmp	_merge349

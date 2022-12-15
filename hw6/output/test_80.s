@@ -4,24 +4,24 @@ program:
 	pushq	%rbp
 	movq	%rsp, %rbp
 	subq	$8, %rsp
-	movq	%rsp, %rdi
-	pushq	%rdi
+	movq	%rsp, %r8 
+	pushq	%r8 
 	movq	$2, %rdi
 	callq	oat_alloc_array
-	popq	%rdi
+	popq	%r8 
 	movq	%rax, %rsi
 	movq	%rsi, %rax
 	movq	%rax, %rdx
-	pushq	%rdi
+	pushq	%r8 
 	pushq	%rdx
 	movq	$2, %rdi
 	callq	oat_alloc_array
 	popq	%rdx
-	popq	%rdi
+	popq	%r8 
 	movq	%rax, %rsi
 	movq	%rsi, %rax
-	movq	%rax, %r8 
-	movq	%r8 , %rax
+	movq	%rax, %rdi
+	movq	%rdi, %rax
 	addq	$0, %rax
 	addq	$8, %rax
 	addq	$0, %rax
@@ -29,7 +29,7 @@ program:
 	movq	$1, %rax
 	movq	%rsi, %rcx
 	movq	%rax, (%rcx)
-	movq	%r8 , %rax
+	movq	%rdi, %rax
 	addq	$0, %rax
 	addq	$8, %rax
 	addq	$8, %rax
@@ -42,17 +42,17 @@ program:
 	addq	$8, %rax
 	addq	$0, %rax
 	movq	%rax, %rsi
-	movq	%r8 , (%rsi)
-	pushq	%rdi
+	movq	%rdi, (%rsi)
+	pushq	%r8 
 	pushq	%rdx
 	movq	$2, %rdi
 	callq	oat_alloc_array
 	popq	%rdx
-	popq	%rdi
+	popq	%r8 
 	movq	%rax, %rsi
 	movq	%rsi, %rax
-	movq	%rax, %r8 
-	movq	%r8 , %rax
+	movq	%rax, %rdi
+	movq	%rdi, %rax
 	addq	$0, %rax
 	addq	$8, %rax
 	addq	$0, %rax
@@ -60,7 +60,7 @@ program:
 	movq	$3, %rax
 	movq	%rsi, %rcx
 	movq	%rax, (%rcx)
-	movq	%r8 , %rax
+	movq	%rdi, %rax
 	addq	$0, %rax
 	addq	$8, %rax
 	addq	$8, %rax
@@ -73,9 +73,9 @@ program:
 	addq	$8, %rax
 	addq	$8, %rax
 	movq	%rax, %rsi
-	movq	%r8 , (%rsi)
-	movq	%rdx, (%rdi)
-	movq	(%rdi), %rdi
+	movq	%rdi, (%rsi)
+	movq	%rdx, (%r8 )
+	movq	(%r8 ), %rdi
 	movq	%rdi, %rax
 	movq	%rax, %rsi
 	pushq	%rdi

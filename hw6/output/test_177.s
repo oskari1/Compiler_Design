@@ -11,48 +11,48 @@ program:
 	popq	%rsi
 	movq	%rax, %rdi
 	movq	%rdi, %rax
+	movq	%rax, %rdi
+	movq	%rdi, %rax
+	addq	$0, %rax
+	addq	$8, %rax
+	addq	$0, %rax
 	movq	%rax, %rdx
-	movq	%rdx, %rax
-	addq	$0, %rax
-	addq	$8, %rax
-	addq	$0, %rax
-	movq	%rax, %rdi
 	movq	$3, %rax
-	movq	%rdi, %rcx
+	movq	%rdx, %rcx
 	movq	%rax, (%rcx)
-	movq	%rdx, %rax
+	movq	%rdi, %rax
 	addq	$0, %rax
 	addq	$8, %rax
 	addq	$8, %rax
-	movq	%rax, %rdi
+	movq	%rax, %rdx
 	movq	$4, %rax
-	movq	%rdi, %rcx
+	movq	%rdx, %rcx
 	movq	%rax, (%rcx)
-	movq	%rdx, %rax
+	movq	%rdi, %rax
 	addq	$0, %rax
 	addq	$8, %rax
 	addq	$16, %rax
-	movq	%rax, %rdi
+	movq	%rax, %rdx
 	movq	$5, %rax
-	movq	%rdi, %rcx
+	movq	%rdx, %rcx
 	movq	%rax, (%rcx)
-	movq	%rdx, %rax
+	movq	%rdi, %rax
 	addq	$0, %rax
 	addq	$8, %rax
 	addq	$24, %rax
-	movq	%rax, %rdi
+	movq	%rax, %rdx
 	movq	$6, %rax
-	movq	%rdi, %rcx
+	movq	%rdx, %rcx
 	movq	%rax, (%rcx)
-	movq	%rdx, %rax
+	movq	%rdi, %rax
 	addq	$0, %rax
 	addq	$8, %rax
 	addq	$32, %rax
-	movq	%rax, %rdi
+	movq	%rax, %rdx
 	movq	$7, %rax
-	movq	%rdi, %rcx
+	movq	%rdx, %rcx
 	movq	%rax, (%rcx)
-	movq	%rdx, (%rsi)
+	movq	%rdi, (%rsi)
 	movq	(%rsi), %rsi
 	movq	%rsi, %rax
 	addq	$0, %rax

@@ -59,22 +59,22 @@ f:
 	movq	-48(%rbp), %rax
 	movq	(%rax), %rax
 	movq	%rax, %rsi
-	addq	%rdx, %rsi
+	addq	%rsi, %rdx
 	movq	-56(%rbp), %rax
 	movq	(%rax), %rax
-	movq	%rax, %rdx
-	addq	%rdx, %rsi
+	movq	%rax, %rsi
+	addq	%rsi, %rdx
 	movq	-64(%rbp), %rax
 	movq	(%rax), %rax
-	movq	%rax, %rdx
-	addq	%rdx, %rsi
+	movq	%rax, %rsi
+	addq	%rsi, %rdx
 	movq	-72(%rbp), %rax
 	movq	(%rax), %rax
-	movq	%rax, %rdx
-	addq	%rdx, %rsi
-	movq	(%r11), %rdx
-	addq	%rdx, %rsi
-	movq	(%r10), %rdx
+	movq	%rax, %rsi
+	addq	%rsi, %rdx
+	movq	(%r11), %rsi
+	addq	%rsi, %rdx
+	movq	(%r10), %rsi
 	addq	%rsi, %rdx
 	movq	%rdx, %rax
 	movq	%rbp, %rsp

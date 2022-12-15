@@ -23,14 +23,14 @@ foo:
 	movq	%rdx, %rax
 	movq	-8(%rbp), %rcx
 	movq	%rax, (%rcx)
-	movq	(%r9 ), %rsi
-	movq	(%r8 ), %rdx
+	movq	(%r9 ), %rdx
+	movq	(%r8 ), %rsi
 	addq	%rsi, %rdx
 	movq	%rdx, (%r11)
 	movq	-8(%rbp), %rax
 	movq	(%rax), %rax
-	movq	%rax, %rsi
-	movq	(%r11), %rdx
+	movq	%rax, %rdx
+	movq	(%r11), %rsi
 	addq	%rsi, %rdx
 	movq	%rdx, %rax
 	movq	%rbp, %rsp

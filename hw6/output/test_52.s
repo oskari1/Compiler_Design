@@ -4,12 +4,12 @@ gcd_rec:
 	pushq	%rbp
 	movq	%rsp, %rbp
 	subq	$8, %rsp
-	movq	%rsp, %r8 
-	movq	%rdi, (%r8 )
+	movq	%rsp, %rdx
+	movq	%rdi, (%rdx)
 	cmpq	$0, %rsi
-	setne	%dl
-	andq	$1, %rdx
-	cmpq	$0, %rdx
+	setne	%r8b
+	andq	$1, %r8 
+	cmpq	$0, %r8 
 	jne	neq0
 	jmp	eq0
 	.text
@@ -20,23 +20,23 @@ eq0:
 	retq	
 	.text
 neq0:
-	movq	(%r8 ), %rdi
-	movq	%rdi, %rdx
-	subq	%rsi, %rdx
-	movq	%rdx, (%r8 )
-	cmpq	%rsi, %rdx
-	setg	%dil
-	andq	$1, %rdi
-	cmpq	$0, %rdi
+	movq	(%rdx), %rdi
+	subq	%rsi, %rdi
+	movq	%rdi, (%rdx)
+	cmpq	%rsi, %rdi
+	setg	%r8b
+	andq	$1, %r8 
+	cmpq	$0, %r8 
 	jne	neq0
 	jmp	recurse
 	.text
 recurse:
-	pushq	%rdx
+	pushq	%rdi
+	pushq	%rdi
 	movq	%rsi, %rdi
-	movq	%rdx, %rsi
+	popq	%rsi
 	callq	gcd_rec
-	popq	%rdx
+	popq	%rdi
 	movq	%rax, %rsi
 	movq	%rsi, %rax
 	movq	%rbp, %rsp

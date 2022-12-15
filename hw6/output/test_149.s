@@ -23,12 +23,12 @@ f:
 	movq	-8(%rbp), %rax
 	movq	%r8 , %rcx
 	movq	%rax, (%rcx)
-	movq	(%r11), %rsi
-	movq	(%r10), %rdx
-	addq	%rdx, %rsi
-	movq	(%r9 ), %rdx
-	addq	%rdx, %rsi
-	movq	(%r8 ), %rdx
+	movq	(%r11), %rdx
+	movq	(%r10), %rsi
+	addq	%rsi, %rdx
+	movq	(%r9 ), %rsi
+	addq	%rsi, %rdx
+	movq	(%r8 ), %rsi
 	addq	%rsi, %rdx
 	movq	%rdx, %rax
 	movq	%rbp, %rsp

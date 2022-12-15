@@ -40,33 +40,33 @@ sub:
 	popq	%rdx
 	movq	%rax, %rsi
 	movq	%rsi, %rax
-	movq	%rax, %r9 
+	movq	%rax, %r8 
 	subq	$8, %rsp
-	movq	%rsp, %r8 
-	movq	%rdx, (%r8 )
+	movq	%rsp, %rdi
+	movq	%rdx, (%rdi)
 	subq	$8, %rsp
-	movq	%rsp, %rsi
-	movq	%r9 , (%rsi)
+	movq	%rsp, %rdx
+	movq	%r8 , (%rdx)
 	movq	$0, %rax
 	movq	-24(%rbp), %rcx
 	movq	%rax, (%rcx)
 	jmp	_cond2491
 	.text
 _body2490:
-	movq	(%rsi), %r10
+	movq	(%rdx), %r10
 	movq	-24(%rbp), %rax
 	movq	(%rax), %rax
-	movq	%rax, %rdi
+	movq	%rax, %r9 
 	movq	%r10, %rax
-	movq	%rax, %rdx
+	movq	%rax, %rsi
 	pushq	%r10
 	pushq	%r9 
 	pushq	%r8 
 	pushq	%rdi
 	pushq	%rsi
 	pushq	%rdx
-	movq	%rdi, %rsi
-	movq	%rdx, %rdi
+	movq	%rsi, %rdi
+	movq	%r9 , %rsi
 	callq	oat_assert_array_length
 	popq	%rdx
 	popq	%rsi
@@ -78,22 +78,22 @@ _body2490:
 	addq	$0, %rax
 	addq	$8, %rax
 	movq	%rax, %rcx
-	movq	%rdi, %rax
+	movq	%r9 , %rax
 	imulq	$8, %rax
 	addq	%rcx, %rax
-	movq	%rax, %rdi
+	movq	%rax, %rsi
 	movq	-16(%rbp), %rax
 	movq	(%rax), %rax
-	movq	%rax, %r10
+	movq	%rax, %r11
 	movq	-24(%rbp), %rax
 	movq	(%rax), %rax
-	movq	%rax, %r11
+	movq	%rax, %r10
 	movq	-8(%rbp), %rax
 	movq	(%rax), %rax
-	movq	%rax, %rdx
-	addq	%rdx, %r11
-	movq	%r10, %rax
-	movq	%rax, %rdx
+	movq	%rax, %r9 
+	addq	%r9 , %r10
+	movq	%r11, %rax
+	movq	%rax, %r9 
 	pushq	%r11
 	pushq	%r10
 	pushq	%r9 
@@ -101,8 +101,8 @@ _body2490:
 	pushq	%rdi
 	pushq	%rsi
 	pushq	%rdx
-	movq	%r11, %rsi
-	movq	%rdx, %rdi
+	movq	%r10, %rsi
+	movq	%r9 , %rdi
 	callq	oat_assert_array_length
 	popq	%rdx
 	popq	%rsi
@@ -111,21 +111,21 @@ _body2490:
 	popq	%r9 
 	popq	%r10
 	popq	%r11
-	movq	%r10, %rax
+	movq	%r11, %rax
 	addq	$0, %rax
 	addq	$8, %rax
 	movq	%rax, %rcx
-	movq	%r11, %rax
+	movq	%r10, %rax
 	imulq	$8, %rax
 	addq	%rcx, %rax
-	movq	%rax, %rdx
-	movq	(%rdx), %rdx
-	movq	%rdx, (%rdi)
+	movq	%rax, %r9 
+	movq	(%r9 ), %r9 
+	movq	%r9 , (%rsi)
 	movq	-24(%rbp), %rax
 	movq	(%rax), %rax
-	movq	%rax, %rdx
-	addq	$1, %rdx
-	movq	%rdx, %rax
+	movq	%rax, %rsi
+	addq	$1, %rsi
+	movq	%rsi, %rax
 	movq	-24(%rbp), %rcx
 	movq	%rax, (%rcx)
 	jmp	_cond2491
@@ -133,17 +133,17 @@ _body2490:
 _cond2491:
 	movq	-24(%rbp), %rax
 	movq	(%rax), %rax
-	movq	%rax, %rdx
-	movq	(%r8 ), %rdi
-	cmpq	%rdi, %rdx
-	setl	%dl
-	andq	$1, %rdx
-	cmpq	$0, %rdx
+	movq	%rax, %rsi
+	movq	(%rdi), %r9 
+	cmpq	%r9 , %rsi
+	setl	%sil
+	andq	$1, %rsi
+	cmpq	$0, %rsi
 	jne	_body2490
 	jmp	_post2489
 	.text
 _post2489:
-	movq	%r9 , %rax
+	movq	%r8 , %rax
 	movq	-32(%rbp), %rcx
 	movq	%rax, (%rcx)
 	movq	-32(%rbp), %rax

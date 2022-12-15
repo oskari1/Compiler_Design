@@ -6,18 +6,17 @@ one_iteration:
 	movq	%rdi, %rax
 	movq	$1, %rcx
 	shlq	%cl, %rax
-	movq	%rax, %rsi
-	movq	%rdi, %rdx
-	xorq	%rsi, %rdx
-	movq	%rsi, %rax
+	movq	%rax, %rdx
+	xorq	%rdx, %rdi
+	movq	%rdx, %rax
 	movq	$2, %rcx
 	shlq	%cl, %rax
-	movq	%rax, %rdi
-	xorq	%rdi, %rdx
-	movq	%rdi, %rax
+	movq	%rax, %rdx
+	xorq	%rdx, %rdi
+	movq	%rdx, %rax
 	movq	$1, %rcx
 	shlq	%cl, %rax
-	movq	%rax, %rdi
+	movq	%rax, %rdx
 	xorq	%rdi, %rdx
 	movq	%rdx, %rax
 	movq	$63, %rcx

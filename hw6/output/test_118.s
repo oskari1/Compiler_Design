@@ -33,23 +33,23 @@ arrcheck:
 	subq	$8, %rsp
 	movq	%rsp, -16(%rbp)
 	subq	$8, %rsp
-	movq	%rsp, %r9 
-	subq	$8, %rsp
 	movq	%rsp, %r8 
 	subq	$8, %rsp
 	movq	%rsp, %r10
+	subq	$8, %rsp
+	movq	%rsp, %r9 
 	movq	%rdi, %rax
 	movq	-8(%rbp), %rcx
 	movq	%rax, (%rcx)
 	movq	%rsi, %rax
 	movq	-16(%rbp), %rcx
 	movq	%rax, (%rcx)
-	movq	%rdx, (%r9 )
-	movq	$0, %rax
-	movq	%r8 , %rcx
-	movq	%rax, (%rcx)
+	movq	%rdx, (%r8 )
 	movq	$0, %rax
 	movq	%r10, %rcx
+	movq	%rax, (%rcx)
+	movq	$0, %rax
+	movq	%r9 , %rcx
 	movq	%rax, (%rcx)
 	jmp	_cond5334
 	.text
@@ -57,7 +57,7 @@ _body5333:
 	movq	-8(%rbp), %rax
 	movq	(%rax), %rax
 	movq	%rax, %rdi
-	movq	(%r10), %rsi
+	movq	(%r9 ), %rsi
 	movq	%rdi, %rax
 	movq	%rax, %rdx
 	pushq	%r10
@@ -86,7 +86,7 @@ _body5333:
 	movq	-16(%rbp), %rax
 	movq	(%rax), %rax
 	movq	%rax, %r11
-	movq	(%r10), %rdi
+	movq	(%r9 ), %rdi
 	movq	%r11, %rax
 	movq	%rax, %rdx
 	pushq	%r11
@@ -123,8 +123,8 @@ _body5333:
 	jmp	_else5350
 	.text
 _cond5334:
-	movq	(%r10), %rsi
-	movq	(%r9 ), %rdx
+	movq	(%r9 ), %rsi
+	movq	(%r8 ), %rdx
 	cmpq	%rdx, %rsi
 	setl	%dl
 	andq	$1, %rdx
@@ -136,13 +136,13 @@ _else5350:
 	jmp	_merge5349
 	.text
 _merge5349:
-	movq	(%r10), %rdx
+	movq	(%r9 ), %rdx
 	addq	$1, %rdx
-	movq	%rdx, (%r10)
+	movq	%rdx, (%r9 )
 	jmp	_cond5334
 	.text
 _post5332:
-	movq	(%r8 ), %rdx
+	movq	(%r10), %rdx
 	movq	%rdx, %rax
 	movq	%rbp, %rsp
 	popq	%rbp
@@ -150,7 +150,7 @@ _post5332:
 	.text
 _then5351:
 	movq	$1, %rax
-	movq	%r8 , %rcx
+	movq	%r10, %rcx
 	movq	%rax, (%rcx)
 	jmp	_merge5349
 	.text

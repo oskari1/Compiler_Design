@@ -195,30 +195,30 @@ mateq:
 	movq	%rsp, %rbp
 	subq	$16, %rsp
 	subq	$8, %rsp
-	movq	%rsp, %r8 
+	movq	%rsp, %rdx
 	movq	$0, %rax
-	movq	%r8 , %rcx
+	movq	%rdx, %rcx
 	movq	%rax, (%rcx)
 	subq	$8, %rsp
 	movq	%rsp, -8(%rbp)
 	subq	$8, %rsp
-	movq	%rsp, %r10
+	movq	%rsp, %r8 
 	movq	$0, %rax
 	movq	-8(%rbp), %rcx
 	movq	%rax, (%rcx)
 	jmp	starti1
 	.text
 endi1:
-	movq	(%r8 ), %rsi
+	movq	(%rdx), %rsi
 	movq	%rsi, %rax
 	movq	%rbp, %rsp
 	popq	%rbp
 	retq	
 	.text
 endj1:
-	movq	-16(%rbp), %rdx
-	addq	$1, %rdx
-	movq	%rdx, %rax
+	movq	-16(%rbp), %r9 
+	addq	$1, %r9 
+	movq	%r9 , %rax
 	movq	-8(%rbp), %rcx
 	movq	%rax, (%rcx)
 	jmp	starti1
@@ -229,24 +229,24 @@ starti1:
 	movq	%rax, -16(%rbp)
 	movq	-16(%rbp), %rax
 	cmpq	$2, %rax
-	setl	%dl
-	andq	$1, %rdx
-	cmpq	$0, %rdx
+	setl	%r9b
+	andq	$1, %r9 
+	cmpq	$0, %r9 
 	jne	theni1
 	jmp	endi1
 	.text
 startj1:
-	movq	(%r10), %r9 
-	cmpq	$2, %r9 
-	setl	%dl
-	andq	$1, %rdx
-	cmpq	$0, %rdx
+	movq	(%r8 ), %r10
+	cmpq	$2, %r10
+	setl	%r9b
+	andq	$1, %r9 
+	cmpq	$0, %r9 
 	jne	thenj1
 	jmp	endj1
 	.text
 theni1:
 	movq	$0, %rax
-	movq	%r10, %rcx
+	movq	%r8 , %rcx
 	movq	%rax, (%rcx)
 	jmp	startj1
 	.text
@@ -258,7 +258,7 @@ thenj1:
 	imulq	$16, %rax
 	addq	%rcx, %rax
 	movq	%rax, %rcx
-	movq	%r9 , %rax
+	movq	%r10, %rax
 	imulq	$8, %rax
 	addq	%rcx, %rax
 	movq	%rax, %r11
@@ -269,17 +269,17 @@ thenj1:
 	imulq	$16, %rax
 	addq	%rcx, %rax
 	movq	%rax, %rcx
-	movq	%r9 , %rax
+	movq	%r10, %rax
 	imulq	$8, %rax
 	addq	%rcx, %rax
-	movq	%rax, %rdx
+	movq	%rax, %r9 
 	movq	(%r11), %r11
-	movq	(%rdx), %rdx
-	xorq	%rdx, %r11
-	movq	(%r8 ), %rdx
-	orq	%r11, %rdx
-	movq	%rdx, (%r8 )
-	movq	%r9 , %rdx
-	addq	$1, %rdx
-	movq	%rdx, (%r10)
+	movq	(%r9 ), %r9 
+	xorq	%r9 , %r11
+	movq	(%rdx), %r9 
+	orq	%r11, %r9 
+	movq	%r9 , (%rdx)
+	movq	%r10, %r9 
+	addq	$1, %r9 
+	movq	%r9 , (%r8 )
 	jmp	startj1

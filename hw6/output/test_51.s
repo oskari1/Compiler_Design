@@ -60,8 +60,7 @@ final_true:
 	.text
 inc:
 	movq	(%rsi), %r8 
-	movq	$1, %rdx
-	addq	%r9 , %rdx
+	addq	$1, %rdx
 	movq	%rdx, (%rsi)
 	pushq	%r8 
 	pushq	%rdi
@@ -81,13 +80,13 @@ inc:
 	jmp	loop
 	.text
 loop:
-	movq	(%rsi), %r9 
-	movq	%r9 , %rdx
-	imulq	%r9 , %rdx
-	cmpq	%rdi, %rdx
-	setg	%dl
-	andq	$1, %rdx
-	cmpq	$0, %rdx
+	movq	(%rsi), %rdx
+	movq	%rdx, %r8 
+	imulq	%rdx, %r8 
+	cmpq	%rdi, %r8 
+	setg	%r8b
+	andq	$1, %r8 
+	cmpq	$0, %r8 
 	jne	final_true
 	jmp	inc
 	.text

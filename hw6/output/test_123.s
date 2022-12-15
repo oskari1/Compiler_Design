@@ -4,71 +4,71 @@ program:
 	pushq	%rbp
 	movq	%rsp, %rbp
 	subq	$8, %rsp
-	movq	%rsp, %rdx
-	pushq	%rdx
+	movq	%rsp, %rsi
+	pushq	%rsi
 	movq	$16, %rdi
 	callq	oat_malloc
-	popq	%rdx
-	movq	%rax, %rsi
-	movq	%rsi, %rax
-	movq	%rax, %rsi
-	movq	%rsi, %rax
-	addq	$0, %rax
-	addq	$0, %rax
+	popq	%rsi
 	movq	%rax, %rdi
+	movq	%rdi, %rax
+	movq	%rax, %rdi
+	movq	%rdi, %rax
+	addq	$0, %rax
+	addq	$0, %rax
+	movq	%rax, %rdx
 	movq	$3, %rax
-	movq	%rdi, %rcx
+	movq	%rdx, %rcx
 	movq	%rax, (%rcx)
-	movq	%rsi, %rax
+	movq	%rdi, %rax
 	addq	$0, %rax
 	addq	$8, %rax
-	movq	%rax, %rdi
+	movq	%rax, %rdx
 	movq	$4, %rax
-	movq	%rdi, %rcx
+	movq	%rdx, %rcx
 	movq	%rax, (%rcx)
-	movq	%rsi, (%rdx)
-	movq	(%rdx), %rsi
-	movq	%rsi, %rax
-	addq	$0, %rax
-	addq	$0, %rax
-	movq	%rax, %rsi
-	movq	$5, %rax
-	movq	%rsi, %rcx
-	movq	%rax, (%rcx)
-	movq	(%rdx), %rsi
-	movq	%rsi, %rax
-	addq	$0, %rax
-	addq	$8, %rax
-	movq	%rax, %r8 
-	movq	(%rdx), %rsi
-	movq	%rsi, %rax
-	addq	$0, %rax
-	addq	$0, %rax
-	movq	%rax, %rsi
+	movq	%rdi, (%rsi)
 	movq	(%rsi), %rdi
-	movq	(%rdx), %rsi
-	movq	%rsi, %rax
-	addq	$0, %rax
-	addq	$8, %rax
-	movq	%rax, %rsi
-	movq	(%rsi), %rsi
-	addq	%rdi, %rsi
-	addq	$3, %rsi
-	movq	%rsi, (%r8 )
-	movq	(%rdx), %rsi
-	movq	%rsi, %rax
+	movq	%rdi, %rax
 	addq	$0, %rax
 	addq	$0, %rax
 	movq	%rax, %rdi
-	movq	(%rdx), %rsi
-	movq	%rsi, %rax
+	movq	$5, %rax
+	movq	%rdi, %rcx
+	movq	%rax, (%rcx)
+	movq	(%rsi), %rdi
+	movq	%rdi, %rax
 	addq	$0, %rax
 	addq	$8, %rax
-	movq	%rax, %rsi
+	movq	%rax, %rdi
+	movq	(%rsi), %rdx
+	movq	%rdx, %rax
+	addq	$0, %rax
+	addq	$0, %rax
+	movq	%rax, %rdx
+	movq	(%rdx), %r8 
+	movq	(%rsi), %rdx
+	movq	%rdx, %rax
+	addq	$0, %rax
+	addq	$8, %rax
+	movq	%rax, %rdx
+	movq	(%rdx), %rdx
+	addq	%r8 , %rdx
+	addq	$3, %rdx
+	movq	%rdx, (%rdi)
+	movq	(%rsi), %rdi
+	movq	%rdi, %rax
+	addq	$0, %rax
+	addq	$0, %rax
+	movq	%rax, %rdi
+	movq	(%rsi), %rdx
+	movq	%rdx, %rax
+	addq	$0, %rax
+	addq	$8, %rax
+	movq	%rax, %rdx
+	movq	(%rdx), %rdx
+	addq	$4, %rdx
+	movq	%rdx, (%rdi)
 	movq	(%rsi), %rsi
-	addq	$4, %rsi
-	movq	%rsi, (%rdi)
-	movq	(%rdx), %rsi
 	movq	%rsi, %rax
 	addq	$0, %rax
 	addq	$0, %rax

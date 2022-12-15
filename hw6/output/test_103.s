@@ -4,14 +4,14 @@ f:
 	pushq	%rbp
 	movq	%rsp, %rbp
 	subq	$8, %rsp
-	movq	%rsp, %r8 
+	movq	%rsp, %rsi
 	subq	$8, %rsp
 	movq	%rsp, %rdx
-	movq	%rdi, (%r8 )
+	movq	%rdi, (%rsi)
 	movq	$0, %rax
 	movq	%rdx, %rcx
 	movq	%rax, (%rcx)
-	movq	(%r8 ), %rdi
+	movq	(%rsi), %rdi
 	cmpq	$0, %rdi
 	sete	%dil
 	andq	$1, %rdi
@@ -20,15 +20,16 @@ f:
 	jmp	_else2791
 	.text
 _else2791:
-	movq	(%r8 ), %rsi
-	movq	(%r8 ), %rdi
-	subq	$1, %rdi
-	pushq	%rsi
+	movq	(%rsi), %rdi
+	movq	(%rsi), %rsi
+	subq	$1, %rsi
+	pushq	%rdi
 	pushq	%rdx
+	movq	%rsi, %rdi
 	callq	f
 	popq	%rdx
-	popq	%rsi
-	movq	%rax, %rdi
+	popq	%rdi
+	movq	%rax, %rsi
 	imulq	%rsi, %rdi
 	movq	%rdi, (%rdx)
 	jmp	_merge2790

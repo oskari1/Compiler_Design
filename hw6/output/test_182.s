@@ -32,16 +32,16 @@ f:
 	movq	%r8 , (%r9 )
 	movq	-32(%rbp), %rax
 	movq	(%rax), %rax
-	movq	%rax, %rsi
+	movq	%rax, %rdx
 	movq	-40(%rbp), %rax
 	movq	(%rax), %rax
-	movq	%rax, %rdx
-	addq	%rdx, %rsi
-	movq	(%r11), %rdx
-	addq	%rdx, %rsi
-	movq	(%r10), %rdx
-	addq	%rdx, %rsi
-	movq	(%r9 ), %rdx
+	movq	%rax, %rsi
+	addq	%rsi, %rdx
+	movq	(%r11), %rsi
+	addq	%rsi, %rdx
+	movq	(%r10), %rsi
+	addq	%rsi, %rdx
+	movq	(%r9 ), %rsi
 	addq	%rsi, %rdx
 	movq	%rdx, %rax
 	movq	%rbp, %rsp

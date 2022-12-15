@@ -9,8 +9,8 @@ add:
 	movq	%rsp, %rdx
 	movq	%rdi, (%r8 )
 	movq	%rsi, (%rdx)
-	movq	(%r8 ), %rdi
-	movq	(%rdx), %rsi
+	movq	(%r8 ), %rsi
+	movq	(%rdx), %rdi
 	addq	%rdi, %rsi
 	movq	%rsi, %rax
 	movq	%rbp, %rsp
@@ -27,11 +27,9 @@ sub:
 	movq	%rsp, %rdx
 	movq	%rdi, (%r8 )
 	movq	%rsi, (%rdx)
-	movq	(%r8 ), %rdi
-	movq	(%rdx), %rsi
-	movq	%rdi, %rax
-	subq	%rsi, %rax
-	movq	%rax, %rsi
+	movq	(%r8 ), %rsi
+	movq	(%rdx), %rdi
+	subq	%rdi, %rsi
 	movq	%rsi, %rax
 	movq	%rbp, %rsp
 	popq	%rbp
@@ -42,32 +40,32 @@ program:
 	pushq	%rbp
 	movq	%rsp, %rbp
 	subq	$8, %rsp
-	movq	%rsp, %rdi
-	pushq	%rdi
+	movq	%rsp, %rsi
+	pushq	%rsi
 	movq	$2, %rdi
 	callq	oat_alloc_array
-	popq	%rdi
-	movq	%rax, %rsi
-	movq	%rsi, %rax
+	popq	%rsi
+	movq	%rax, %rdi
+	movq	%rdi, %rax
+	movq	%rax, %rdi
+	movq	%rdi, %rax
+	addq	$0, %rax
+	addq	$8, %rax
+	addq	$0, %rax
 	movq	%rax, %rdx
-	movq	%rdx, %rax
-	addq	$0, %rax
-	addq	$8, %rax
-	addq	$0, %rax
-	movq	%rax, %rsi
 	leaq	add(%rip), %rax
-	movq	%rsi, %rcx
+	movq	%rdx, %rcx
 	movq	%rax, (%rcx)
-	movq	%rdx, %rax
+	movq	%rdi, %rax
 	addq	$0, %rax
 	addq	$8, %rax
 	addq	$8, %rax
-	movq	%rax, %rsi
+	movq	%rax, %rdx
 	leaq	sub(%rip), %rax
-	movq	%rsi, %rcx
+	movq	%rdx, %rcx
 	movq	%rax, (%rcx)
-	movq	%rdx, (%rdi)
-	movq	(%rdi), %rdi
+	movq	%rdi, (%rsi)
+	movq	(%rsi), %rdi
 	movq	%rdi, %rax
 	movq	%rax, %rsi
 	pushq	%rdi

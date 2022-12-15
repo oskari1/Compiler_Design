@@ -257,13 +257,13 @@ _merge8733:
 	movq	%rax, (%rcx)
 	movq	-40(%rbp), %rax
 	movq	(%rax), %rax
-	movq	%rax, %rsi
+	movq	%rax, %rdx
 	movq	-32(%rbp), %rax
 	movq	(%rax), %rax
-	movq	%rax, %rdi
+	movq	%rax, %rsi
 	movq	-24(%rbp), %rax
 	movq	(%rax), %rax
-	movq	%rax, %rdx
+	movq	%rax, %rdi
 	movq	-16(%rbp), %rax
 	movq	(%rax), %rax
 	movq	%rax, %r10
@@ -273,9 +273,9 @@ _merge8733:
 	pushq	%r8 
 	pushq	%rdi
 	pushq	%rsi
-	movq	%rsi, %rcx
-	movq	%rdx, %rsi
-	movq	%rdi, %rdx
+	movq	%rdx, %rcx
+	movq	%rsi, %rdx
+	movq	%rdi, %rsi
 	movq	%r10, %rdi
 	callq	lcs
 	popq	%rsi
@@ -309,9 +309,9 @@ _merge8733:
 	movq	%rdx, (%r8 )
 	movq	-88(%rbp), %rax
 	movq	(%rax), %rax
-	movq	%rax, %rsi
-	movq	(%r8 ), %rdx
-	cmpq	%rdx, %rsi
+	movq	%rax, %rdx
+	movq	(%r8 ), %rsi
+	cmpq	%rsi, %rdx
 	setl	%dl
 	andq	$1, %rdx
 	cmpq	$0, %rdx
@@ -337,29 +337,27 @@ _then8678:
 _then8735:
 	movq	-40(%rbp), %rax
 	movq	(%rax), %rax
-	movq	%rax, %rsi
+	movq	%rax, %rdx
 	movq	-32(%rbp), %rax
 	movq	(%rax), %rax
-	movq	%rax, %rdi
+	movq	%rax, %rsi
 	movq	-24(%rbp), %rax
 	movq	(%rax), %rax
-	movq	%rax, %rdx
-	movq	%rdx, %r8 
+	movq	%rax, %rdi
+	movq	%rdi, %r8 
 	subq	$1, %r8 
 	movq	-16(%rbp), %rax
 	movq	(%rax), %rax
-	movq	%rax, %rdx
-	subq	$1, %rdx
+	movq	%rax, %rdi
+	subq	$1, %rdi
 	pushq	%r11
 	pushq	%r10
 	pushq	%r8 
 	pushq	%rdi
 	pushq	%rsi
-	movq	%rsi, %rcx
+	movq	%rdx, %rcx
+	movq	%rsi, %rdx
 	movq	%r8 , %rsi
-	pushq	%rdi
-	movq	%rdx, %rdi
-	popq	%rdx
 	callq	lcs
 	popq	%rsi
 	popq	%rdi
@@ -388,23 +386,22 @@ _then8735:
 	addq	$0, %rax
 	addq	$8, %rax
 	addq	$0, %rax
-	movq	%rax, %rsi
+	movq	%rax, %rdx
 	movq	-48(%rbp), %rax
 	movq	(%rax), %rax
-	movq	%rax, %r8 
+	movq	%rax, %rsi
 	movq	-16(%rbp), %rax
 	movq	(%rax), %rax
+	movq	%rax, %r8 
+	movq	%rsi, %rax
 	movq	%rax, %rdi
-	movq	%r8 , %rax
-	movq	%rax, %rdx
 	pushq	%r11
 	pushq	%r10
 	pushq	%r8 
 	pushq	%rdi
 	pushq	%rsi
 	pushq	%rdx
-	movq	%rdi, %rsi
-	movq	%rdx, %rdi
+	movq	%r8 , %rsi
 	callq	oat_assert_array_length
 	popq	%rdx
 	popq	%rsi
@@ -412,16 +409,16 @@ _then8735:
 	popq	%r8 
 	popq	%r10
 	popq	%r11
-	movq	%r8 , %rax
+	movq	%rsi, %rax
 	addq	$0, %rax
 	addq	$8, %rax
 	movq	%rax, %rcx
-	movq	%rdi, %rax
+	movq	%r8 , %rax
 	imulq	$8, %rax
 	addq	%rcx, %rax
-	movq	%rax, %rdx
-	movq	(%rdx), %rdx
-	movq	%rdx, (%rsi)
+	movq	%rax, %rsi
+	movq	(%rsi), %rsi
+	movq	%rsi, (%rdx)
 	leaq	buf(%rip), %rax
 	movq	(%rax), %rax
 	movq	%rax, %rdx
@@ -433,10 +430,11 @@ _then8735:
 	popq	%r11
 	movq	%rax, %rdx
 	movq	%rdx, (%r11)
-	movq	(%r11), %rsi
-	movq	(%r10), %rdx
+	movq	(%r11), %rdx
+	movq	(%r10), %rsi
 	pushq	%rsi
-	movq	%rdx, %rdi
+	movq	%rsi, %rdi
+	movq	%rdx, %rsi
 	callq	string_cat
 	popq	%rsi
 	movq	%rax, %rdx
