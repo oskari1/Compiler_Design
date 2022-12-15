@@ -13,11 +13,11 @@ program:
 	movq	%rsp, %rbp
 	leaq	s(%rip), %rax
 	movq	(%rax), %rax
-	movq	%rax, %rdx
-	pushq	%rdx
-	movq	%rdx, %rdi
+	movq	%rax, %rsi
+	pushq	%rsi
+	movq	%rsi, %rdi
 	callq	print_string
-	popq	%rdx
+	popq	%rsi
 	movq	$0, %rax
 	movq	%rbp, %rsp
 	popq	%rbp

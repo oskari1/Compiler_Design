@@ -38,17 +38,17 @@ program:
 	pushq	%rbp
 	movq	%rsp, %rbp
 	callq	f
-	movq	%rax, %rsi
-	pushq	%rsi
+	movq	%rax, %rdi
+	pushq	%rdi
 	callq	g
-	popq	%rsi
-	movq	%rax, %rdx
-	addq	%rdx, %rsi
+	popq	%rdi
+	movq	%rax, %rsi
+	addq	%rsi, %rdi
 	leaq	i(%rip), %rax
 	movq	(%rax), %rax
-	movq	%rax, %rdx
-	addq	%rsi, %rdx
-	movq	%rdx, %rax
+	movq	%rax, %rsi
+	addq	%rdi, %rsi
+	movq	%rsi, %rax
 	movq	%rbp, %rsp
 	popq	%rbp
 	retq	

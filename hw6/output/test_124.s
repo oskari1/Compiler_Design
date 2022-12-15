@@ -4,50 +4,50 @@ program:
 	pushq	%rbp
 	movq	%rsp, %rbp
 	subq	$8, %rsp
-	movq	%rsp, %rdi
-	pushq	%rdi
+	movq	%rsp, %rdx
+	pushq	%rdx
 	movq	$24, %rdi
 	callq	oat_malloc
-	popq	%rdi
-	movq	%rax, %rdx
-	movq	%rdx, %rax
-	movq	%rax, %rdx
-	movq	%rdx, %rax
-	addq	$0, %rax
-	addq	$0, %rax
+	popq	%rdx
 	movq	%rax, %rsi
+	movq	%rsi, %rax
+	movq	%rax, %rsi
+	movq	%rsi, %rax
+	addq	$0, %rax
+	addq	$0, %rax
+	movq	%rax, %rdi
 	movq	$3, %rax
-	movq	%rsi, %rcx
+	movq	%rdi, %rcx
 	movq	%rax, (%rcx)
-	movq	%rdx, %rax
+	movq	%rsi, %rax
 	addq	$0, %rax
 	addq	$8, %rax
-	movq	%rax, %rsi
+	movq	%rax, %rdi
 	movq	$4, %rax
-	movq	%rsi, %rcx
+	movq	%rdi, %rcx
 	movq	%rax, (%rcx)
-	movq	%rdx, %rax
+	movq	%rsi, %rax
 	addq	$0, %rax
 	addq	$16, %rax
-	movq	%rax, %rsi
+	movq	%rax, %rdi
 	movq	$5, %rax
-	movq	%rsi, %rcx
+	movq	%rdi, %rcx
 	movq	%rax, (%rcx)
-	movq	%rdx, (%rdi)
-	movq	(%rdi), %rdx
-	movq	%rdx, %rax
-	addq	$0, %rax
-	addq	$0, %rax
-	movq	%rax, %rdx
+	movq	%rsi, (%rdx)
 	movq	(%rdx), %rsi
-	movq	(%rdi), %rdx
-	movq	%rdx, %rax
+	movq	%rsi, %rax
+	addq	$0, %rax
+	addq	$0, %rax
+	movq	%rax, %rsi
+	movq	(%rsi), %rdi
+	movq	(%rdx), %rsi
+	movq	%rsi, %rax
 	addq	$0, %rax
 	addq	$8, %rax
-	movq	%rax, %rdx
-	movq	(%rdx), %rdx
-	addq	%rsi, %rdx
-	movq	%rdx, %rax
+	movq	%rax, %rsi
+	movq	(%rsi), %rsi
+	addq	%rdi, %rsi
+	movq	%rsi, %rax
 	movq	%rbp, %rsp
 	popq	%rbp
 	retq	

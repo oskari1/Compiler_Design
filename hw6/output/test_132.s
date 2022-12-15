@@ -12,17 +12,16 @@ call:
 	movq	%rsp, %r8 
 	movq	%rsi, (%rdx)
 	movq	%rdi, (%r8 )
-	movq	(%rdx), %rdx
-	movq	(%r8 ), %rsi
+	movq	(%rdx), %rsi
+	movq	(%r8 ), %rdi
 	pushq	%r15
-	movq	%rdx, %r15
-	pushq	%rsi
-	movq	%rsi, %rdi
+	movq	%rsi, %r15
+	pushq	%rdi
 	callq	*%r15
-	popq	%rsi
+	popq	%rdi
 	popq	%r15
-	movq	%rax, %rdx
-	movq	%rdx, %rax
+	movq	%rax, %rsi
+	movq	%rsi, %rax
 	movq	%rbp, %rsp
 	popq	%rbp
 	retq	
@@ -34,9 +33,9 @@ inc:
 	subq	$8, %rsp
 	movq	%rsp, %rdx
 	movq	%rdi, (%rdx)
-	movq	(%rdx), %rdx
-	addq	$1, %rdx
-	movq	%rdx, %rax
+	movq	(%rdx), %rdi
+	addq	$1, %rdi
+	movq	%rdi, %rax
 	movq	%rbp, %rsp
 	popq	%rbp
 	retq	
@@ -48,8 +47,8 @@ program:
 	movq	$3, %rsi
 	leaq	inc(%rip), %rdi
 	callq	call
-	movq	%rax, %rdx
-	movq	%rdx, %rax
+	movq	%rax, %rsi
+	movq	%rsi, %rax
 	movq	%rbp, %rsp
 	popq	%rbp
 	retq	

@@ -61,8 +61,8 @@ main:
 	movq	$1, %rdi
 	callq	foo
 	addq	$16, %rsp
-	movq	%rax, %rdi
-	pushq	%rdi
+	movq	%rax, %rdx
+	pushq	%rdx
 	pushq	$8
 	pushq	$7
 	movq	$6, %r9 
@@ -73,9 +73,9 @@ main:
 	movq	$1, %rdi
 	callq	bar
 	addq	$16, %rsp
-	popq	%rdi
-	movq	%rax, %rdx
-	pushq	%rdi
+	popq	%rdx
+	movq	%rax, %rsi
+	pushq	%rsi
 	pushq	%rdx
 	pushq	$8
 	pushq	$7
@@ -88,11 +88,11 @@ main:
 	callq	baz
 	addq	$16, %rsp
 	popq	%rdx
-	popq	%rdi
-	movq	%rax, %rsi
-	addq	%rdi, %rdx
-	addq	%rsi, %rdx
-	movq	%rdx, %rax
+	popq	%rsi
+	movq	%rax, %rdi
+	addq	%rdx, %rsi
+	addq	%rdi, %rsi
+	movq	%rsi, %rax
 	movq	%rbp, %rsp
 	popq	%rbp
 	retq	

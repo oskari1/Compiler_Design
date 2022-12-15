@@ -15,66 +15,66 @@ rot:
 	pushq	%rbp
 	movq	%rsp, %rbp
 	subq	$8, %rsp
-	movq	%rsp, %r9 
-	subq	$8, %rsp
 	movq	%rsp, %r8 
-	movq	%rdi, (%r9 )
-	pushq	%r9 
+	subq	$8, %rsp
+	movq	%rsp, %rsi
+	movq	%rdi, (%r8 )
 	pushq	%r8 
+	pushq	%rsi
 	movq	$32, %rdi
 	callq	oat_malloc
+	popq	%rsi
 	popq	%r8 
-	popq	%r9 
-	movq	%rax, %rdx
-	movq	%rdx, %rax
-	movq	%rax, %rdx
-	movq	(%r9 ), %rsi
-	movq	%rsi, %rax
-	addq	$0, %rax
-	addq	$8, %rax
-	movq	%rax, %rsi
-	movq	(%rsi), %rsi
-	movq	%rdx, %rax
-	addq	$0, %rax
-	addq	$0, %rax
 	movq	%rax, %rdi
-	movq	%rsi, (%rdi)
-	movq	(%r9 ), %rsi
-	movq	%rsi, %rax
-	addq	$0, %rax
-	addq	$16, %rax
-	movq	%rax, %rsi
-	movq	(%rsi), %rsi
-	movq	%rdx, %rax
-	addq	$0, %rax
-	addq	$8, %rax
+	movq	%rdi, %rax
 	movq	%rax, %rdi
-	movq	%rsi, (%rdi)
-	movq	(%r9 ), %rsi
-	movq	%rsi, %rax
-	addq	$0, %rax
-	addq	$0, %rax
-	movq	%rax, %rsi
-	movq	(%rsi), %rsi
-	movq	%rdx, %rax
-	addq	$0, %rax
-	addq	$16, %rax
-	movq	%rax, %rdi
-	movq	%rsi, (%rdi)
-	movq	(%r9 ), %rsi
-	movq	%rsi, %rax
-	addq	$0, %rax
-	addq	$24, %rax
-	movq	%rax, %rsi
-	movq	(%rsi), %rsi
-	movq	%rdx, %rax
-	addq	$0, %rax
-	addq	$24, %rax
-	movq	%rax, %rdi
-	movq	%rsi, (%rdi)
-	movq	%rdx, (%r8 )
 	movq	(%r8 ), %rdx
 	movq	%rdx, %rax
+	addq	$0, %rax
+	addq	$8, %rax
+	movq	%rax, %rdx
+	movq	(%rdx), %rdx
+	movq	%rdi, %rax
+	addq	$0, %rax
+	addq	$0, %rax
+	movq	%rax, %r9 
+	movq	%rdx, (%r9 )
+	movq	(%r8 ), %rdx
+	movq	%rdx, %rax
+	addq	$0, %rax
+	addq	$16, %rax
+	movq	%rax, %rdx
+	movq	(%rdx), %rdx
+	movq	%rdi, %rax
+	addq	$0, %rax
+	addq	$8, %rax
+	movq	%rax, %r9 
+	movq	%rdx, (%r9 )
+	movq	(%r8 ), %rdx
+	movq	%rdx, %rax
+	addq	$0, %rax
+	addq	$0, %rax
+	movq	%rax, %rdx
+	movq	(%rdx), %rdx
+	movq	%rdi, %rax
+	addq	$0, %rax
+	addq	$16, %rax
+	movq	%rax, %r9 
+	movq	%rdx, (%r9 )
+	movq	(%r8 ), %rdx
+	movq	%rdx, %rax
+	addq	$0, %rax
+	addq	$24, %rax
+	movq	%rax, %rdx
+	movq	(%rdx), %rdx
+	movq	%rdi, %rax
+	addq	$0, %rax
+	addq	$24, %rax
+	movq	%rax, %r8 
+	movq	%rdx, (%r8 )
+	movq	%rdi, (%rsi)
+	movq	(%rsi), %rdi
+	movq	%rdi, %rax
 	movq	%rbp, %rsp
 	popq	%rbp
 	retq	
@@ -85,29 +85,28 @@ program:
 	movq	%rsp, %rbp
 	leaq	c(%rip), %rax
 	movq	(%rax), %rax
-	movq	%rax, %rdx
-	movq	%rdx, %rax
+	movq	%rax, %rsi
+	movq	%rsi, %rax
 	addq	$0, %rax
 	addq	$24, %rax
-	movq	%rax, %rdx
-	movq	(%rdx), %rdx
+	movq	%rax, %rsi
+	movq	(%rsi), %rsi
 	leaq	c(%rip), %rax
 	movq	(%rax), %rax
-	movq	%rax, %rsi
+	movq	%rax, %rdi
 	pushq	%r15
-	movq	%rdx, %r15
-	pushq	%rsi
-	movq	%rsi, %rdi
+	movq	%rsi, %r15
+	pushq	%rdi
 	callq	*%r15
-	popq	%rsi
+	popq	%rdi
 	popq	%r15
-	movq	%rax, %rdx
-	movq	%rdx, %rax
+	movq	%rax, %rsi
+	movq	%rsi, %rax
 	addq	$0, %rax
 	addq	$0, %rax
-	movq	%rax, %rdx
-	movq	(%rdx), %rdx
-	movq	%rdx, %rax
+	movq	%rax, %rsi
+	movq	(%rsi), %rsi
+	movq	%rsi, %rax
 	movq	%rbp, %rsp
 	popq	%rbp
 	retq	

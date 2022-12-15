@@ -4,39 +4,39 @@ factorial:
 	pushq	%rbp
 	movq	%rsp, %rbp
 	subq	$8, %rsp
-	movq	%rsp, %r8 
+	movq	%rsp, %rsi
 	subq	$8, %rsp
 	movq	%rsp, %rdx
-	movq	%rdi, (%r8 )
+	movq	%rdi, (%rsi)
 	movq	$1, %rax
 	movq	%rdx, %rcx
 	movq	%rax, (%rcx)
 	jmp	start
 	.text
 end:
-	movq	(%rdx), %rdx
-	movq	%rdx, %rax
+	movq	(%rdx), %rdi
+	movq	%rdi, %rax
 	movq	%rbp, %rsp
 	popq	%rbp
 	retq	
 	.text
 start:
-	movq	(%r8 ), %rsi
-	cmpq	$0, %rsi
-	setg	%sil
-	andq	$1, %rsi
-	cmpq	$0, %rsi
+	movq	(%rsi), %rdi
+	cmpq	$0, %rdi
+	setg	%dil
+	andq	$1, %rdi
+	cmpq	$0, %rdi
 	jne	then
 	jmp	end
 	.text
 then:
-	movq	(%rdx), %rdi
-	movq	(%r8 ), %rsi
-	imulq	%rdi, %rsi
-	movq	%rsi, (%rdx)
-	movq	(%r8 ), %rsi
-	subq	$1, %rsi
-	movq	%rsi, (%r8 )
+	movq	(%rdx), %r8 
+	movq	(%rsi), %rdi
+	imulq	%r8 , %rdi
+	movq	%rdi, (%rdx)
+	movq	(%rsi), %rdi
+	subq	$1, %rdi
+	movq	%rdi, (%rsi)
 	jmp	start
 	.text
 	.globl	main
@@ -48,8 +48,8 @@ main:
 	popq	%rsi
 	movq	$5, %rdi
 	callq	factorial
-	movq	%rax, %rdx
-	movq	%rdx, %rax
+	movq	%rax, %rsi
+	movq	%rsi, %rax
 	movq	%rbp, %rsp
 	popq	%rbp
 	retq	

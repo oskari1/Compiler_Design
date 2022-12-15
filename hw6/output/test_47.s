@@ -18,17 +18,16 @@ both_even:
 	movq	%rsi, %rax
 	movq	$1, %rcx
 	shrq	%cl, %rax
-	movq	%rax, %rdx
+	movq	%rax, %rsi
 	pushq	%rdi
-	movq	%rdx, %rsi
 	callq	binary_gcd
 	popq	%rdi
-	movq	%rax, %rdx
-	movq	%rdx, %rax
+	movq	%rax, %rsi
+	movq	%rsi, %rax
 	movq	$1, %rcx
 	shlq	%cl, %rax
-	movq	%rax, %rdx
-	movq	%rdx, %rax
+	movq	%rax, %rsi
+	movq	%rsi, %rax
 	movq	%rbp, %rsp
 	popq	%rbp
 	retq	
@@ -87,18 +86,16 @@ u_even:
 	jmp	both_even
 	.text
 u_gt:
-	movq	%rdi, %rdx
-	subq	%rsi, %rdx
-	movq	%rdx, %rax
+	subq	%rsi, %rdi
+	movq	%rdi, %rax
 	movq	$1, %rcx
 	shrq	%cl, %rax
-	movq	%rax, %rdx
-	pushq	%rsi
-	movq	%rdx, %rdi
+	movq	%rax, %rdi
+	pushq	%rdi
 	callq	binary_gcd
-	popq	%rsi
-	movq	%rax, %rdx
-	movq	%rdx, %rax
+	popq	%rdi
+	movq	%rax, %rsi
+	movq	%rsi, %rax
 	movq	%rbp, %rsp
 	popq	%rbp
 	retq	
@@ -119,13 +116,12 @@ ue_vo:
 	movq	%rdi, %rax
 	movq	$1, %rcx
 	shrq	%cl, %rax
-	movq	%rax, %rdx
-	pushq	%rsi
-	movq	%rdx, %rdi
+	movq	%rax, %rdi
+	pushq	%rdi
 	callq	binary_gcd
-	popq	%rsi
-	movq	%rax, %rdx
-	movq	%rdx, %rax
+	popq	%rdi
+	movq	%rax, %rsi
+	movq	%rsi, %rax
 	movq	%rbp, %rsp
 	popq	%rbp
 	retq	
@@ -134,31 +130,30 @@ v_even:
 	movq	%rsi, %rax
 	movq	$1, %rcx
 	shrq	%cl, %rax
-	movq	%rax, %rdx
+	movq	%rax, %rsi
 	pushq	%rdi
-	movq	%rdx, %rsi
 	callq	binary_gcd
 	popq	%rdi
-	movq	%rax, %rdx
-	movq	%rdx, %rax
+	movq	%rax, %rsi
+	movq	%rsi, %rax
 	movq	%rbp, %rsp
 	popq	%rbp
 	retq	
 	.text
 v_gt:
-	movq	%rsi, %rdx
-	subq	%rdi, %rdx
-	movq	%rdx, %rax
+	subq	%rdi, %rsi
+	movq	%rsi, %rax
 	movq	$1, %rcx
 	shrq	%cl, %rax
-	movq	%rax, %rdx
+	movq	%rax, %rsi
 	pushq	%rdi
-	movq	%rdi, %rsi
-	movq	%rdx, %rdi
+	pushq	%rdi
+	movq	%rsi, %rdi
+	popq	%rsi
 	callq	binary_gcd
 	popq	%rdi
-	movq	%rax, %rdx
-	movq	%rdx, %rax
+	movq	%rax, %rsi
+	movq	%rsi, %rax
 	movq	%rbp, %rsp
 	popq	%rbp
 	retq	
@@ -178,8 +173,8 @@ main:
 	movq	$15, %rsi
 	movq	$21, %rdi
 	callq	binary_gcd
-	movq	%rax, %rdx
-	movq	%rdx, %rax
+	movq	%rax, %rsi
+	movq	%rsi, %rax
 	movq	%rbp, %rsp
 	popq	%rbp
 	retq	

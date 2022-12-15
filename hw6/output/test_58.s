@@ -4,41 +4,41 @@ program:
 	pushq	%rbp
 	movq	%rsp, %rbp
 	subq	$8, %rsp
-	movq	%rsp, %rdx
+	movq	%rsp, %rsi
 	subq	$8, %rsp
-	movq	%rsp, %rdi
+	movq	%rsp, %rdx
 	movq	$0, %rax
-	movq	%rdx, %rcx
+	movq	%rsi, %rcx
 	movq	%rax, (%rcx)
 	movq	$0, %rax
-	movq	%rdi, %rcx
+	movq	%rdx, %rcx
 	movq	%rax, (%rcx)
 	jmp	_cond15
 	.text
 _body14:
-	movq	(%rdx), %rsi
-	movq	(%rdi), %r8 
-	addq	%rsi, %r8 
-	movq	(%rdi), %rsi
-	imulq	%r8 , %rsi
-	movq	%rsi, (%rdx)
-	movq	(%rdi), %rsi
-	addq	$1, %rsi
-	movq	%rsi, (%rdi)
+	movq	(%rsi), %rdi
+	movq	(%rdx), %r8 
+	addq	%rdi, %r8 
+	movq	(%rdx), %rdi
+	imulq	%r8 , %rdi
+	movq	%rdi, (%rsi)
+	movq	(%rdx), %rdi
+	addq	$1, %rdi
+	movq	%rdi, (%rdx)
 	jmp	_cond15
 	.text
 _cond15:
-	movq	(%rdi), %rsi
-	cmpq	$10, %rsi
-	setl	%sil
-	andq	$1, %rsi
-	cmpq	$0, %rsi
+	movq	(%rdx), %rdi
+	cmpq	$10, %rdi
+	setl	%dil
+	andq	$1, %rdi
+	cmpq	$0, %rdi
 	jne	_body14
 	jmp	_post13
 	.text
 _post13:
-	movq	(%rdx), %rdx
-	movq	%rdx, %rax
+	movq	(%rsi), %rsi
+	movq	%rsi, %rax
 	movq	%rbp, %rsp
 	popq	%rbp
 	retq	

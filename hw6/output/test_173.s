@@ -40,8 +40,8 @@ program:
 	pushq	%rbp
 	movq	%rsp, %rbp
 	callq	f
-	movq	%rax, %rdx
-	movq	%rdx, %rax
+	movq	%rax, %rsi
+	movq	%rsi, %rax
 	movq	%rbp, %rsp
 	popq	%rbp
 	retq	

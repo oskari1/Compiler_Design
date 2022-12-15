@@ -15,11 +15,11 @@ naive_mod:
 	.text
 final:
 	movq	(%rdx), %rdx
-	subq	%rdi, %rdx
-	movq	%rsi, %rax
-	subq	%rdx, %rax
-	movq	%rax, %rdx
 	movq	%rdx, %rax
+	subq	%rdi, %rax
+	movq	%rax, %rdi
+	subq	%rdi, %rsi
+	movq	%rsi, %rax
 	movq	%rbp, %rsp
 	popq	%rbp
 	retq	
@@ -100,8 +100,8 @@ main:
 	popq	%rsi
 	movq	$100, %rdi
 	callq	naive_prime
-	movq	%rax, %rdx
-	movq	%rdx, %rax
+	movq	%rax, %rsi
+	movq	%rsi, %rax
 	movq	%rbp, %rsp
 	popq	%rbp
 	retq	

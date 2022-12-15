@@ -51,10 +51,10 @@ f:
 	movq	%rax, (%rcx)
 	movq	-32(%rbp), %rax
 	movq	(%rax), %rax
-	movq	%rax, %rsi
+	movq	%rax, %rdx
 	movq	-40(%rbp), %rax
 	movq	(%rax), %rax
-	movq	%rax, %rdx
+	movq	%rax, %rsi
 	addq	%rsi, %rdx
 	movq	-48(%rbp), %rax
 	movq	(%rax), %rax
@@ -86,8 +86,8 @@ program:
 	pushq	%rbp
 	movq	%rsp, %rbp
 	subq	$8, %rsp
-	movq	%rsp, %rdx
-	pushq	%rdx
+	movq	%rsp, %rsi
+	pushq	%rsi
 	pushq	$-3
 	pushq	$-4
 	movq	$-5, %r9 
@@ -98,14 +98,14 @@ program:
 	movq	$1, %rdi
 	callq	f
 	addq	$16, %rsp
-	popq	%rdx
-	movq	%rax, %rsi
-	movq	%rsi, (%rdx)
-	movq	(%rdx), %rdx
-	pushq	%rdx
-	movq	%rdx, %rdi
+	popq	%rsi
+	movq	%rax, %rdi
+	movq	%rdi, (%rsi)
+	movq	(%rsi), %rsi
+	pushq	%rsi
+	movq	%rsi, %rdi
 	callq	print_int
-	popq	%rdx
+	popq	%rsi
 	movq	$41, %rax
 	movq	%rbp, %rsp
 	popq	%rbp

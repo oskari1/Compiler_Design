@@ -5,24 +5,24 @@ program:
 	movq	%rsp, %rbp
 	subq	$16, %rsp
 	subq	$8, %rsp
-	movq	%rsp, %rsi
+	movq	%rsp, %rdi
 	subq	$8, %rsp
 	movq	%rsp, %r10
 	subq	$8, %rsp
-	movq	%rsp, %rdx
+	movq	%rsp, %rsi
 	movq	$0, %rax
-	movq	%rsi, %rcx
+	movq	%rdi, %rcx
 	movq	%rax, (%rcx)
 	pushq	%r10
+	pushq	%rdi
 	pushq	%rsi
-	pushq	%rdx
 	movq	$3, %rdi
 	callq	oat_alloc_array
-	popq	%rdx
 	popq	%rsi
+	popq	%rdi
 	popq	%r10
-	movq	%rax, %rdi
-	movq	%rdi, %rax
+	movq	%rax, %rdx
+	movq	%rdx, %rax
 	movq	%rax, -8(%rbp)
 	subq	$8, %rsp
 	movq	%rsp, %r11
@@ -45,7 +45,7 @@ _body7234:
 	movq	%rax, -16(%rbp)
 	movq	(%r10), %r9 
 	movq	-16(%rbp), %rax
-	movq	%rax, %rdi
+	movq	%rax, %rdx
 	pushq	%r11
 	pushq	%r10
 	pushq	%r9 
@@ -54,6 +54,7 @@ _body7234:
 	pushq	%rsi
 	pushq	%rdx
 	movq	%r9 , %rsi
+	movq	%rdx, %rdi
 	callq	oat_assert_array_length
 	popq	%rdx
 	popq	%rsi
@@ -69,55 +70,55 @@ _body7234:
 	movq	%r9 , %rax
 	imulq	$8, %rax
 	addq	%rcx, %rax
-	movq	%rax, %rdi
+	movq	%rax, %rdx
 	movq	$0, %rax
-	movq	%rdi, %rcx
+	movq	%rdx, %rcx
 	movq	%rax, (%rcx)
-	movq	(%r10), %rdi
-	addq	$1, %rdi
-	movq	%rdi, (%r10)
+	movq	(%r10), %rdx
+	addq	$1, %rdx
+	movq	%rdx, (%r10)
 	jmp	_cond7235
 	.text
 _cond7235:
-	movq	(%r10), %rdi
+	movq	(%r10), %rdx
 	movq	(%r11), %r9 
-	cmpq	%r9 , %rdi
-	setl	%dil
-	andq	$1, %rdi
-	cmpq	$0, %rdi
+	cmpq	%r9 , %rdx
+	setl	%dl
+	andq	$1, %rdx
+	cmpq	$0, %rdx
 	jne	_body7234
 	jmp	_post7233
 	.text
 _merge7255:
-	movq	(%rdx), %rdx
-	movq	%rdx, %rax
+	movq	(%rsi), %rsi
+	movq	%rsi, %rax
 	movq	%rbp, %rsp
 	popq	%rbp
 	retq	
 	.text
 _notnull7256:
 	movq	$4, %rax
-	movq	%rdx, %rcx
+	movq	%rsi, %rcx
 	movq	%rax, (%rcx)
 	jmp	_merge7255
 	.text
 _null7257:
 	movq	$5, %rax
-	movq	%rdx, %rcx
+	movq	%rsi, %rcx
 	movq	%rax, (%rcx)
 	jmp	_merge7255
 	.text
 _post7233:
 	movq	-8(%rbp), %rax
-	movq	%rsi, %rcx
+	movq	%rdi, %rcx
 	movq	%rax, (%rcx)
 	movq	$0, %rax
-	movq	%rdx, %rcx
+	movq	%rsi, %rcx
 	movq	%rax, (%rcx)
-	movq	(%rsi), %rsi
-	cmpq	$0, %rsi
-	sete	%sil
-	andq	$1, %rsi
-	cmpq	$0, %rsi
+	movq	(%rdi), %rdi
+	cmpq	$0, %rdi
+	sete	%dil
+	andq	$1, %rdi
+	cmpq	$0, %rdi
 	jne	_null7257
 	jmp	_notnull7256

@@ -11,36 +11,34 @@ run2:
 	movq	%rsi, %rdi
 	popq	%rsi
 	subq	$8, %rsp
-	movq	%rsp, %r8 
+	movq	%rsp, %rdx
 	subq	$8, %rsp
-	movq	%rsp, %r9 
-	movq	%rsi, (%r8 )
-	movq	%rdi, (%r9 )
-	movq	(%r8 ), %rdx
-	movq	(%r9 ), %rsi
+	movq	%rsp, %r8 
+	movq	%rsi, (%rdx)
+	movq	%rdi, (%r8 )
+	movq	(%rdx), %rsi
+	movq	(%r8 ), %rdi
 	pushq	%r15
-	movq	%rdx, %r15
-	pushq	%r9 
+	movq	%rsi, %r15
 	pushq	%r8 
+	pushq	%rdi
 	pushq	%rsi
 	pushq	%rdx
-	movq	%rsi, %rdi
 	callq	*%r15
 	popq	%rdx
 	popq	%rsi
+	popq	%rdi
 	popq	%r8 
-	popq	%r9 
 	popq	%r15
-	movq	(%r8 ), %rdx
-	movq	(%r9 ), %rsi
+	movq	(%rdx), %rsi
+	movq	(%r8 ), %rdi
 	pushq	%r15
-	movq	%rdx, %r15
+	movq	%rsi, %r15
+	pushq	%rdi
 	pushq	%rsi
-	pushq	%rdx
-	movq	%rsi, %rdi
 	callq	*%r15
-	popq	%rdx
 	popq	%rsi
+	popq	%rdi
 	popq	%r15
 	movq	%rbp, %rsp
 	popq	%rbp
@@ -53,12 +51,11 @@ program:
 	leaq	_str_arr7201(%rip), %rax
 	addq	$0, %rax
 	addq	$0, %rax
-	movq	%rax, %rdx
-	pushq	%rdx
-	movq	%rdx, %rsi
+	movq	%rax, %rsi
+	pushq	%rsi
 	leaq	print_string(%rip), %rdi
 	callq	run2
-	popq	%rdx
+	popq	%rsi
 	movq	$0, %rax
 	movq	%rbp, %rsp
 	popq	%rbp

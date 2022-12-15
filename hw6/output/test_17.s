@@ -7,16 +7,16 @@ main:
 	movq	%rsi, %rdi
 	popq	%rsi
 	subq	$8, %rsp
-	movq	%rsp, %rsi
+	movq	%rsp, %rdi
 	movq	$17, %rax
-	movq	%rsi, %rcx
+	movq	%rdi, %rcx
 	movq	%rax, (%rcx)
 	subq	$8, %rsp
-	movq	%rsp, %rdx
-	movq	%rsi, (%rdx)
-	movq	(%rdx), %rdx
-	movq	(%rdx), %rdx
-	movq	%rdx, %rax
+	movq	%rsp, %rsi
+	movq	%rdi, (%rsi)
+	movq	(%rsi), %rsi
+	movq	(%rsi), %rsi
+	movq	%rsi, %rax
 	movq	%rbp, %rsp
 	popq	%rbp
 	retq	

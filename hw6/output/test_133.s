@@ -13,10 +13,10 @@ add:
 	movq	%rsp, %rdx
 	movq	%rdi, (%r8 )
 	movq	%rsi, (%rdx)
-	movq	(%r8 ), %rsi
-	movq	(%rdx), %rdx
-	addq	%rsi, %rdx
-	movq	%rdx, %rax
+	movq	(%r8 ), %rdi
+	movq	(%rdx), %rsi
+	addq	%rdi, %rsi
+	movq	%rsi, %rax
 	movq	%rbp, %rsp
 	popq	%rbp
 	retq	
@@ -27,15 +27,15 @@ program:
 	movq	%rsp, %rbp
 	leaq	x(%rip), %rax
 	movq	(%rax), %rax
-	movq	%rax, %rdx
+	movq	%rax, %rsi
 	pushq	%r15
-	movq	%rdx, %r15
+	movq	%rsi, %r15
 	movq	$4, %rsi
 	movq	$3, %rdi
 	callq	*%r15
 	popq	%r15
-	movq	%rax, %rdx
-	movq	%rdx, %rax
+	movq	%rax, %rsi
+	movq	%rsi, %rax
 	movq	%rbp, %rsp
 	popq	%rbp
 	retq	

@@ -17,23 +17,23 @@ program:
 	movq	%rsp, %rbp
 	leaq	arr(%rip), %rax
 	movq	(%rax), %rax
+	movq	%rax, %rdi
+	movq	%rdi, %rax
 	movq	%rax, %rsi
-	movq	%rsi, %rax
-	movq	%rax, %rdx
+	pushq	%rdi
 	pushq	%rsi
-	pushq	%rdx
+	movq	%rsi, %rdi
 	movq	$2, %rsi
-	movq	%rdx, %rdi
 	callq	oat_assert_array_length
-	popq	%rdx
 	popq	%rsi
-	movq	%rsi, %rax
+	popq	%rdi
+	movq	%rdi, %rax
 	addq	$0, %rax
 	addq	$8, %rax
 	addq	$16, %rax
-	movq	%rax, %rdx
-	movq	(%rdx), %rdx
-	movq	%rdx, %rax
+	movq	%rax, %rsi
+	movq	(%rsi), %rsi
+	movq	%rsi, %rax
 	movq	%rbp, %rsp
 	popq	%rbp
 	retq	

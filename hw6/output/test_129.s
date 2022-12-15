@@ -9,10 +9,10 @@ add:
 	movq	%rsp, %rdx
 	movq	%rdi, (%r8 )
 	movq	%rsi, (%rdx)
-	movq	(%r8 ), %rsi
-	movq	(%rdx), %rdx
-	addq	%rsi, %rdx
-	movq	%rdx, %rax
+	movq	(%r8 ), %rdi
+	movq	(%rdx), %rsi
+	addq	%rdi, %rsi
+	movq	%rsi, %rax
 	movq	%rbp, %rsp
 	popq	%rbp
 	retq	
@@ -22,66 +22,66 @@ program:
 	pushq	%rbp
 	movq	%rsp, %rbp
 	subq	$8, %rsp
-	movq	%rsp, %rsi
-	pushq	%rsi
+	movq	%rsp, %rdi
+	pushq	%rdi
 	movq	$24, %rdi
 	callq	oat_malloc
-	popq	%rsi
-	movq	%rax, %rdx
-	movq	%rdx, %rax
-	movq	%rax, %rdx
-	movq	%rdx, %rax
+	popq	%rdi
+	movq	%rax, %rsi
+	movq	%rsi, %rax
+	movq	%rax, %rsi
+	movq	%rsi, %rax
 	addq	$0, %rax
 	addq	$0, %rax
-	movq	%rax, %rdi
+	movq	%rax, %rdx
 	movq	$3, %rax
-	movq	%rdi, %rcx
+	movq	%rdx, %rcx
 	movq	%rax, (%rcx)
-	movq	%rdx, %rax
+	movq	%rsi, %rax
 	addq	$0, %rax
 	addq	$8, %rax
-	movq	%rax, %rdi
+	movq	%rax, %rdx
 	movq	$4, %rax
-	movq	%rdi, %rcx
+	movq	%rdx, %rcx
 	movq	%rax, (%rcx)
-	movq	%rdx, %rax
-	addq	$0, %rax
-	addq	$16, %rax
-	movq	%rax, %rdi
-	leaq	add(%rip), %rax
-	movq	%rdi, %rcx
-	movq	%rax, (%rcx)
-	movq	%rdx, (%rsi)
-	movq	(%rsi), %rdx
-	movq	%rdx, %rax
+	movq	%rsi, %rax
 	addq	$0, %rax
 	addq	$16, %rax
 	movq	%rax, %rdx
-	movq	(%rdx), %r8 
-	movq	(%rsi), %rdx
-	movq	%rdx, %rax
+	leaq	add(%rip), %rax
+	movq	%rdx, %rcx
+	movq	%rax, (%rcx)
+	movq	%rsi, (%rdi)
+	movq	(%rdi), %rsi
+	movq	%rsi, %rax
+	addq	$0, %rax
+	addq	$16, %rax
+	movq	%rax, %rsi
+	movq	(%rsi), %r8 
+	movq	(%rdi), %rsi
+	movq	%rsi, %rax
 	addq	$0, %rax
 	addq	$8, %rax
-	movq	%rax, %rdx
-	movq	(%rdx), %rdi
+	movq	%rax, %rsi
 	movq	(%rsi), %rdx
-	movq	%rdx, %rax
+	movq	(%rdi), %rsi
+	movq	%rsi, %rax
 	addq	$0, %rax
 	addq	$0, %rax
-	movq	%rax, %rdx
-	movq	(%rdx), %rdx
+	movq	%rax, %rsi
+	movq	(%rsi), %rsi
 	pushq	%r15
 	movq	%r8 , %r15
 	pushq	%r8 
-	pushq	%rdi
-	movq	%rdi, %rsi
-	movq	%rdx, %rdi
+	pushq	%rdx
+	movq	%rsi, %rdi
+	movq	%rdx, %rsi
 	callq	*%r15
-	popq	%rdi
+	popq	%rdx
 	popq	%r8 
 	popq	%r15
-	movq	%rax, %rdx
-	movq	%rdx, %rax
+	movq	%rax, %rsi
+	movq	%rsi, %rax
 	movq	%rbp, %rsp
 	popq	%rbp
 	retq	

@@ -18,8 +18,8 @@ recurse:
 	callq	factorial
 	popq	%rdi
 	movq	%rax, %rdx
-	imulq	%rdi, %rdx
-	movq	%rdx, %rax
+	imulq	%rdx, %rdi
+	movq	%rdi, %rax
 	movq	%rbp, %rsp
 	popq	%rbp
 	retq	
@@ -39,8 +39,8 @@ main:
 	popq	%rsi
 	movq	$5, %rdi
 	callq	factorial
-	movq	%rax, %rdx
-	movq	%rdx, %rax
+	movq	%rax, %rsi
+	movq	%rsi, %rax
 	movq	%rbp, %rsp
 	popq	%rbp
 	retq	

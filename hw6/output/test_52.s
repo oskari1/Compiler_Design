@@ -20,28 +20,25 @@ eq0:
 	retq	
 	.text
 neq0:
-	movq	(%r8 ), %rdx
-	movq	%rdx, %rdi
-	subq	%rsi, %rdi
-	movq	%rdi, (%r8 )
-	cmpq	%rsi, %rdi
-	setg	%dl
-	andq	$1, %rdx
-	cmpq	$0, %rdx
+	movq	(%r8 ), %rdi
+	movq	%rdi, %rdx
+	subq	%rsi, %rdx
+	movq	%rdx, (%r8 )
+	cmpq	%rsi, %rdx
+	setg	%dil
+	andq	$1, %rdi
+	cmpq	$0, %rdi
 	jne	neq0
 	jmp	recurse
 	.text
 recurse:
-	pushq	%rdi
-	pushq	%rsi
-	pushq	%rdi
+	pushq	%rdx
 	movq	%rsi, %rdi
-	popq	%rsi
+	movq	%rdx, %rsi
 	callq	gcd_rec
-	popq	%rsi
-	popq	%rdi
-	movq	%rax, %rdx
-	movq	%rdx, %rax
+	popq	%rdx
+	movq	%rax, %rsi
+	movq	%rsi, %rax
 	movq	%rbp, %rsp
 	popq	%rbp
 	retq	
@@ -56,8 +53,8 @@ main:
 	movq	$34, %rsi
 	movq	$424, %rdi
 	callq	gcd_rec
-	movq	%rax, %rdx
-	movq	%rdx, %rax
+	movq	%rax, %rsi
+	movq	%rsi, %rax
 	movq	%rbp, %rsp
 	popq	%rbp
 	retq	

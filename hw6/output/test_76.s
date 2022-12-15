@@ -4,37 +4,37 @@ fact:
 	pushq	%rbp
 	movq	%rsp, %rbp
 	subq	$8, %rsp
-	movq	%rsp, %rsi
+	movq	%rsp, %rdx
 	subq	$8, %rsp
-	movq	%rsp, %r8 
-	movq	%rdi, (%rsi)
+	movq	%rsp, %rsi
+	movq	%rdi, (%rdx)
 	movq	$1, %rax
-	movq	%r8 , %rcx
+	movq	%rsi, %rcx
 	movq	%rax, (%rcx)
 	jmp	_cond793
 	.text
 _body792:
-	movq	(%r8 ), %rdi
-	movq	(%rsi), %rdx
-	imulq	%rdi, %rdx
-	movq	%rdx, (%r8 )
-	movq	(%rsi), %rdx
-	subq	$1, %rdx
-	movq	%rdx, (%rsi)
+	movq	(%rsi), %r8 
+	movq	(%rdx), %rdi
+	imulq	%r8 , %rdi
+	movq	%rdi, (%rsi)
+	movq	(%rdx), %rdi
+	subq	$1, %rdi
+	movq	%rdi, (%rdx)
 	jmp	_cond793
 	.text
 _cond793:
-	movq	(%rsi), %rdx
-	cmpq	$0, %rdx
-	setg	%dl
-	andq	$1, %rdx
-	cmpq	$0, %rdx
+	movq	(%rdx), %rdi
+	cmpq	$0, %rdi
+	setg	%dil
+	andq	$1, %rdi
+	cmpq	$0, %rdi
 	jne	_body792
 	jmp	_post791
 	.text
 _post791:
-	movq	(%r8 ), %rdx
-	movq	%rdx, %rax
+	movq	(%rsi), %rdi
+	movq	%rdi, %rax
 	movq	%rbp, %rsp
 	popq	%rbp
 	retq	
@@ -45,14 +45,14 @@ program:
 	movq	%rsp, %rbp
 	movq	$5, %rdi
 	callq	fact
-	movq	%rax, %rdx
-	movq	%rdx, %rdi
+	movq	%rax, %rsi
+	movq	%rsi, %rdi
 	callq	string_of_int
-	movq	%rax, %rdx
-	pushq	%rdx
-	movq	%rdx, %rdi
+	movq	%rax, %rsi
+	pushq	%rsi
+	movq	%rsi, %rdi
 	callq	print_string
-	popq	%rdx
+	popq	%rsi
 	movq	$0, %rax
 	movq	%rbp, %rsp
 	popq	%rbp

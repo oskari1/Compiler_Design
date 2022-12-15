@@ -6,32 +6,32 @@ program:
 	subq	$8, %rsp
 	movq	%rsp, %r8 
 	subq	$8, %rsp
-	movq	%rsp, %rsi
+	movq	%rsp, %rdi
 	movq	$12, %rax
 	movq	%r8 , %rcx
 	movq	%rax, (%rcx)
 	movq	$800, %rax
-	movq	%rsi, %rcx
+	movq	%rdi, %rcx
 	movq	%rax, (%rcx)
-	movq	(%r8 ), %rdi
-	movq	(%rsi), %rdx
-	movq	%rdi, %rax
-	subq	%rdx, %rax
-	movq	%rax, %rdx
-	cmpq	$0, %rdx
-	setle	%dl
-	andq	$1, %rdx
-	cmpq	$0, %rdx
+	movq	(%r8 ), %rdx
+	movq	(%rdi), %rsi
+	movq	%rdx, %rax
+	subq	%rsi, %rax
+	movq	%rax, %rsi
+	cmpq	$0, %rsi
+	setle	%sil
+	andq	$1, %rsi
+	cmpq	$0, %rsi
 	jne	_then8224
 	jmp	_else8223
 	.text
 _else8223:
-	movq	(%r8 ), %rdi
-	movq	(%rsi), %rdx
-	movq	%rdi, %rax
-	subq	%rdx, %rax
-	movq	%rax, %rdx
+	movq	(%r8 ), %rdx
+	movq	(%rdi), %rsi
 	movq	%rdx, %rax
+	subq	%rsi, %rax
+	movq	%rax, %rsi
+	movq	%rsi, %rax
 	movq	%rbp, %rsp
 	popq	%rbp
 	retq	
@@ -43,14 +43,14 @@ _merge8222:
 	retq	
 	.text
 _then8224:
-	movq	(%r8 ), %rdx
-	movq	$0, %rdi
-	subq	%rdx, %rdi
-	movq	(%rsi), %rdx
-	movq	%rdi, %rax
-	subq	%rdx, %rax
-	movq	%rax, %rdx
+	movq	(%r8 ), %rsi
+	movq	$0, %rdx
+	subq	%rsi, %rdx
+	movq	(%rdi), %rsi
 	movq	%rdx, %rax
+	subq	%rsi, %rax
+	movq	%rax, %rsi
+	movq	%rsi, %rax
 	movq	%rbp, %rsp
 	popq	%rbp
 	retq	

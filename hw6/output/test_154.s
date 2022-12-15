@@ -9,8 +9,8 @@ program:
 	movq	%rsp, %rbp
 	leaq	y(%rip), %rax
 	movq	(%rax), %rax
-	movq	%rax, %rdx
-	cmpq	$0, %rdx
+	movq	%rax, %rsi
+	cmpq	$0, %rsi
 	jne	_then8155
 	jmp	_else8154
 	.text

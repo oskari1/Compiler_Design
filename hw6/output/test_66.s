@@ -6,36 +6,36 @@ program:
 	subq	$8, %rsp
 	movq	%rsp, %r9 
 	subq	$8, %rsp
-	movq	%rsp, %rdx
+	movq	%rsp, %rsi
 	movq	$9, %rax
 	movq	%r9 , %rcx
 	movq	%rax, (%rcx)
+	movq	(%r9 ), %rdx
 	movq	(%r9 ), %rdi
-	movq	(%r9 ), %rsi
-	addq	%rdi, %rsi
-	movq	%rsi, (%rdx)
+	addq	%rdx, %rdi
+	movq	%rdi, (%rsi)
 	movq	(%r9 ), %r8 
+	movq	(%r9 ), %rdx
 	movq	(%r9 ), %rdi
-	movq	(%r9 ), %rsi
-	imulq	%rdi, %rsi
-	addq	%r8 , %rsi
-	movq	(%rdx), %rdx
+	imulq	%rdx, %rdi
+	addq	%r8 , %rdi
+	movq	(%rsi), %rsi
+	movq	%rdi, %rax
+	subq	%rsi, %rax
+	movq	%rax, %rsi
 	movq	%rsi, %rax
-	subq	%rdx, %rax
-	movq	%rax, %rdx
-	movq	%rdx, %rax
 	movq	$2, %rcx
 	shrq	%cl, %rax
-	movq	%rax, %rdx
-	movq	%rdx, %rax
+	movq	%rax, %rsi
+	movq	%rsi, %rax
 	movq	$2, %rcx
 	shlq	%cl, %rax
-	movq	%rax, %rdx
-	movq	%rdx, %rax
+	movq	%rax, %rsi
+	movq	%rsi, %rax
 	movq	$2, %rcx
 	sarq	%cl, %rax
-	movq	%rax, %rdx
-	movq	%rdx, %rax
+	movq	%rax, %rsi
+	movq	%rsi, %rax
 	movq	%rbp, %rsp
 	popq	%rbp
 	retq	

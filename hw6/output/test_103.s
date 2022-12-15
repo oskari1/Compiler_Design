@@ -6,44 +6,43 @@ f:
 	subq	$8, %rsp
 	movq	%rsp, %r8 
 	subq	$8, %rsp
-	movq	%rsp, %rsi
+	movq	%rsp, %rdx
 	movq	%rdi, (%r8 )
 	movq	$0, %rax
-	movq	%rsi, %rcx
+	movq	%rdx, %rcx
 	movq	%rax, (%rcx)
-	movq	(%r8 ), %rdx
-	cmpq	$0, %rdx
-	sete	%dl
-	andq	$1, %rdx
-	cmpq	$0, %rdx
+	movq	(%r8 ), %rdi
+	cmpq	$0, %rdi
+	sete	%dil
+	andq	$1, %rdi
+	cmpq	$0, %rdi
 	jne	_then2792
 	jmp	_else2791
 	.text
 _else2791:
+	movq	(%r8 ), %rsi
 	movq	(%r8 ), %rdi
-	movq	(%r8 ), %rdx
-	subq	$1, %rdx
-	pushq	%rdi
+	subq	$1, %rdi
 	pushq	%rsi
-	movq	%rdx, %rdi
+	pushq	%rdx
 	callq	f
+	popq	%rdx
 	popq	%rsi
-	popq	%rdi
-	movq	%rax, %rdx
-	imulq	%rdi, %rdx
-	movq	%rdx, (%rsi)
+	movq	%rax, %rdi
+	imulq	%rsi, %rdi
+	movq	%rdi, (%rdx)
 	jmp	_merge2790
 	.text
 _merge2790:
-	movq	(%rsi), %rdx
-	movq	%rdx, %rax
+	movq	(%rdx), %rdi
+	movq	%rdi, %rax
 	movq	%rbp, %rsp
 	popq	%rbp
 	retq	
 	.text
 _then2792:
 	movq	$1, %rax
-	movq	%rsi, %rcx
+	movq	%rdx, %rcx
 	movq	%rax, (%rcx)
 	jmp	_merge2790
 	.text
@@ -53,8 +52,8 @@ program:
 	movq	%rsp, %rbp
 	movq	$5, %rdi
 	callq	f
-	movq	%rax, %rdx
-	movq	%rdx, %rax
+	movq	%rax, %rsi
+	movq	%rsi, %rax
 	movq	%rbp, %rsp
 	popq	%rbp
 	retq	

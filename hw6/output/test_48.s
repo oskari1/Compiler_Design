@@ -70,8 +70,8 @@ main:
 	leaq	glist(%rip), %rsi
 	movq	$3, %rdi
 	callq	search
-	movq	%rax, %rdx
-	movq	%rdx, %rax
+	movq	%rax, %rsi
+	movq	%rsi, %rax
 	movq	%rbp, %rsp
 	popq	%rbp
 	retq	

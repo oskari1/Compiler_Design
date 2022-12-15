@@ -27,7 +27,6 @@ foo:
 	movq	%rsp, %rbp
 	pushq	%rdi
 	pushq	%rdi
-	pushq	%rdi
 	movq	%rdi, %r9 
 	movq	%rdi, %r8 
 	movq	%rdi, %rcx
@@ -35,9 +34,8 @@ foo:
 	movq	%rdi, %rsi
 	callq	bar
 	addq	$16, %rsp
-	popq	%rdi
-	movq	%rax, %rdx
-	movq	%rdx, %rax
+	movq	%rax, %rdi
+	movq	%rdi, %rax
 	movq	%rbp, %rsp
 	popq	%rbp
 	retq	
@@ -51,8 +49,8 @@ main:
 	popq	%rsi
 	movq	$3, %rdi
 	callq	foo
-	movq	%rax, %rdx
-	movq	%rdx, %rax
+	movq	%rax, %rsi
+	movq	%rsi, %rax
 	movq	%rbp, %rsp
 	popq	%rbp
 	retq	

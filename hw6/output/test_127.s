@@ -4,33 +4,33 @@ create_pair:
 	pushq	%rbp
 	movq	%rsp, %rbp
 	subq	$8, %rsp
-	movq	%rsp, %r9 
-	subq	$8, %rsp
 	movq	%rsp, %r8 
-	movq	%rdi, (%r9 )
-	movq	%rsi, (%r8 )
-	pushq	%r9 
+	subq	$8, %rsp
+	movq	%rsp, %rdx
+	movq	%rdi, (%r8 )
+	movq	%rsi, (%rdx)
 	pushq	%r8 
+	pushq	%rdx
 	movq	$16, %rdi
 	callq	oat_malloc
+	popq	%rdx
 	popq	%r8 
-	popq	%r9 
-	movq	%rax, %rdx
-	movq	%rdx, %rax
-	movq	%rax, %rdx
-	movq	(%r9 ), %rdi
-	movq	%rdx, %rax
-	addq	$0, %rax
-	addq	$0, %rax
 	movq	%rax, %rsi
-	movq	%rdi, (%rsi)
-	movq	(%r8 ), %rdi
-	movq	%rdx, %rax
+	movq	%rsi, %rax
+	movq	%rax, %rsi
+	movq	(%r8 ), %r8 
+	movq	%rsi, %rax
+	addq	$0, %rax
+	addq	$0, %rax
+	movq	%rax, %rdi
+	movq	%r8 , (%rdi)
+	movq	(%rdx), %rdx
+	movq	%rsi, %rax
 	addq	$0, %rax
 	addq	$8, %rax
-	movq	%rax, %rsi
-	movq	%rdi, (%rsi)
-	movq	%rdx, %rax
+	movq	%rax, %rdi
+	movq	%rdx, (%rdi)
+	movq	%rsi, %rax
 	movq	%rbp, %rsp
 	popq	%rbp
 	retq	
@@ -40,28 +40,28 @@ program:
 	pushq	%rbp
 	movq	%rsp, %rbp
 	subq	$8, %rsp
-	movq	%rsp, %rdi
-	pushq	%rdi
+	movq	%rsp, %rdx
+	pushq	%rdx
 	movq	$0, %rsi
 	movq	$1, %rdi
 	callq	create_pair
-	popq	%rdi
-	movq	%rax, %rdx
-	movq	%rdx, (%rdi)
-	movq	(%rdi), %rdx
-	movq	%rdx, %rax
-	addq	$0, %rax
-	addq	$0, %rax
-	movq	%rax, %rdx
+	popq	%rdx
+	movq	%rax, %rsi
+	movq	%rsi, (%rdx)
 	movq	(%rdx), %rsi
-	movq	(%rdi), %rdx
-	movq	%rdx, %rax
+	movq	%rsi, %rax
+	addq	$0, %rax
+	addq	$0, %rax
+	movq	%rax, %rsi
+	movq	(%rsi), %rdi
+	movq	(%rdx), %rsi
+	movq	%rsi, %rax
 	addq	$0, %rax
 	addq	$8, %rax
-	movq	%rax, %rdx
-	movq	(%rdx), %rdx
-	andq	%rsi, %rdx
-	cmpq	$0, %rdx
+	movq	%rax, %rsi
+	movq	(%rsi), %rsi
+	andq	%rdi, %rsi
+	cmpq	$0, %rsi
 	jne	_then6802
 	jmp	_else6801
 	.text

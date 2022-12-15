@@ -211,11 +211,11 @@ _merge8676:
 	movq	%rax, (%rcx)
 	movq	-64(%rbp), %rax
 	movq	(%rax), %rax
-	movq	%rax, %rsi
+	movq	%rax, %rdx
 	movq	-72(%rbp), %rax
 	movq	(%rax), %rax
-	movq	%rax, %rdx
-	cmpq	%rdx, %rsi
+	movq	%rax, %rsi
+	cmpq	%rsi, %rdx
 	sete	%dl
 	andq	$1, %rdx
 	cmpq	$0, %rdx
@@ -257,24 +257,26 @@ _merge8733:
 	movq	%rax, (%rcx)
 	movq	-40(%rbp), %rax
 	movq	(%rax), %rax
-	movq	%rax, %rdx
+	movq	%rax, %rsi
 	movq	-32(%rbp), %rax
 	movq	(%rax), %rax
-	movq	%rax, %r10
+	movq	%rax, %rdi
 	movq	-24(%rbp), %rax
 	movq	(%rax), %rax
-	movq	%rax, %rsi
+	movq	%rax, %rdx
 	movq	-16(%rbp), %rax
 	movq	(%rax), %rax
-	movq	%rax, %rdi
-	subq	$1, %rdi
+	movq	%rax, %r10
+	subq	$1, %r10
 	pushq	%r10
 	pushq	%r9 
 	pushq	%r8 
 	pushq	%rdi
 	pushq	%rsi
-	movq	%rdx, %rcx
-	movq	%r10, %rdx
+	movq	%rsi, %rcx
+	movq	%rdx, %rsi
+	movq	%rdi, %rdx
+	movq	%r10, %rdi
 	callq	lcs
 	popq	%rsi
 	popq	%rdi
@@ -338,12 +340,12 @@ _then8735:
 	movq	%rax, %rsi
 	movq	-32(%rbp), %rax
 	movq	(%rax), %rax
-	movq	%rax, %r8 
+	movq	%rax, %rdi
 	movq	-24(%rbp), %rax
 	movq	(%rax), %rax
 	movq	%rax, %rdx
-	movq	%rdx, %rdi
-	subq	$1, %rdi
+	movq	%rdx, %r8 
+	subq	$1, %r8 
 	movq	-16(%rbp), %rax
 	movq	(%rax), %rax
 	movq	%rax, %rdx
@@ -354,9 +356,10 @@ _then8735:
 	pushq	%rdi
 	pushq	%rsi
 	movq	%rsi, %rcx
-	movq	%rdi, %rsi
+	movq	%r8 , %rsi
+	pushq	%rdi
 	movq	%rdx, %rdi
-	movq	%r8 , %rdx
+	popq	%rdx
 	callq	lcs
 	popq	%rsi
 	popq	%rdi
@@ -454,32 +457,33 @@ program:
 	pushq	%rbp
 	movq	%rsp, %rbp
 	subq	$8, %rsp
-	movq	%rsp, %rdx
+	movq	%rsp, %rsi
 	subq	$8, %rsp
-	movq	%rsp, %rdi
+	movq	%rsp, %rdx
 	leaq	_str_arr8645(%rip), %rax
 	addq	$0, %rax
 	addq	$0, %rax
-	movq	%rax, %rsi
-	movq	%rsi, (%rdx)
+	movq	%rax, %rdi
+	movq	%rdi, (%rsi)
 	leaq	_str_arr8649(%rip), %rax
 	addq	$0, %rax
 	addq	$0, %rax
-	movq	%rax, %rsi
-	movq	%rsi, (%rdi)
-	movq	(%rdi), %rsi
-	movq	(%rdx), %rdx
-	pushq	%rsi
-	movq	%rsi, %rcx
-	movq	$5, %rdi
+	movq	%rax, %rdi
+	movq	%rdi, (%rdx)
+	movq	(%rdx), %rdi
+	movq	(%rsi), %rsi
+	pushq	%rdi
+	movq	%rdi, %rcx
+	movq	%rsi, %rdx
 	movq	$6, %rsi
+	movq	$5, %rdi
 	callq	lcs
-	popq	%rsi
-	movq	%rax, %rdx
-	pushq	%rdx
-	movq	%rdx, %rdi
+	popq	%rdi
+	movq	%rax, %rsi
+	pushq	%rsi
+	movq	%rsi, %rdi
 	callq	print_string
-	popq	%rdx
+	popq	%rsi
 	movq	$0, %rax
 	movq	%rbp, %rsp
 	popq	%rbp

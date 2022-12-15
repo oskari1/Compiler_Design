@@ -9,15 +9,15 @@ program:
 	subq	$8, %rsp
 	movq	%rsp, -8(%rbp)
 	subq	$8, %rsp
-	movq	%rsp, %rsi
+	movq	%rsp, %rdi
 	pushq	%r9 
-	pushq	%rsi
+	pushq	%rdi
 	movq	$3, %rdi
 	callq	oat_alloc_array
-	popq	%rsi
+	popq	%rdi
 	popq	%r9 
-	movq	%rax, %rdx
-	movq	%rdx, %rax
+	movq	%rax, %rsi
+	movq	%rsi, %rax
 	movq	%rax, %r11
 	subq	$8, %rsp
 	movq	%rsp, %r10
@@ -25,20 +25,20 @@ program:
 	movq	%r10, %rcx
 	movq	%rax, (%rcx)
 	subq	$8, %rsp
-	movq	%rsp, %rdi
-	movq	%r11, (%rdi)
+	movq	%rsp, %rdx
+	movq	%r11, (%rdx)
 	movq	$0, %rax
 	movq	%r9 , %rcx
 	movq	%rax, (%rcx)
 	jmp	_cond1788
 	.text
 _body1787:
-	movq	%rdi, %rax
+	movq	%rdx, %rax
 	movq	(%rax), %rax
 	movq	%rax, -16(%rbp)
 	movq	(%r9 ), %r8 
 	movq	-16(%rbp), %rax
-	movq	%rax, %rdx
+	movq	%rax, %rsi
 	pushq	%r11
 	pushq	%r10
 	pushq	%r9 
@@ -46,8 +46,8 @@ _body1787:
 	pushq	%rdi
 	pushq	%rsi
 	pushq	%rdx
+	movq	%rsi, %rdi
 	movq	%r8 , %rsi
-	movq	%rdx, %rdi
 	callq	oat_assert_array_length
 	popq	%rdx
 	popq	%rsi
@@ -63,22 +63,22 @@ _body1787:
 	movq	%r8 , %rax
 	imulq	$8, %rax
 	addq	%rcx, %rax
-	movq	%rax, %rdx
+	movq	%rax, %rsi
 	movq	$110, %rax
-	movq	%rdx, %rcx
+	movq	%rsi, %rcx
 	movq	%rax, (%rcx)
-	movq	(%r9 ), %rdx
-	addq	$1, %rdx
-	movq	%rdx, (%r9 )
+	movq	(%r9 ), %rsi
+	addq	$1, %rsi
+	movq	%rsi, (%r9 )
 	jmp	_cond1788
 	.text
 _cond1788:
-	movq	(%r9 ), %rdx
+	movq	(%r9 ), %rsi
 	movq	(%r10), %r8 
-	cmpq	%r8 , %rdx
-	setl	%dl
-	andq	$1, %rdx
-	cmpq	$0, %rdx
+	cmpq	%r8 , %rsi
+	setl	%sil
+	andq	$1, %rsi
+	cmpq	$0, %rsi
 	jne	_body1787
 	jmp	_post1786
 	.text
@@ -88,18 +88,18 @@ _post1786:
 	movq	%rax, (%rcx)
 	movq	-8(%rbp), %rax
 	movq	(%rax), %rax
-	movq	%rax, %rdx
-	pushq	%rsi
-	movq	%rdx, %rdi
+	movq	%rax, %rsi
+	pushq	%rdi
+	movq	%rsi, %rdi
 	callq	string_of_array
-	popq	%rsi
-	movq	%rax, %rdx
-	movq	%rdx, (%rsi)
-	movq	(%rsi), %rdx
-	pushq	%rdx
-	movq	%rdx, %rdi
+	popq	%rdi
+	movq	%rax, %rsi
+	movq	%rsi, (%rdi)
+	movq	(%rdi), %rsi
+	pushq	%rsi
+	movq	%rsi, %rdi
 	callq	print_string
-	popq	%rdx
+	popq	%rsi
 	movq	$0, %rax
 	movq	%rbp, %rsp
 	popq	%rbp

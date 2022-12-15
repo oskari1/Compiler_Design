@@ -8,17 +8,17 @@ program:
 	pushq	%rbp
 	movq	%rsp, %rbp
 	subq	$8, %rsp
-	movq	%rsp, %rdx
+	movq	%rsp, %rsi
 	leaq	_str_arr2339(%rip), %rax
 	addq	$0, %rax
 	addq	$0, %rax
-	movq	%rax, %rsi
-	movq	%rsi, (%rdx)
-	movq	(%rdx), %rdx
-	pushq	%rdx
-	movq	%rdx, %rdi
+	movq	%rax, %rdi
+	movq	%rdi, (%rsi)
+	movq	(%rsi), %rsi
+	pushq	%rsi
+	movq	%rsi, %rdi
 	callq	print_string
-	popq	%rdx
+	popq	%rsi
 	movq	$0, %rax
 	movq	%rbp, %rsp
 	popq	%rbp

@@ -159,27 +159,29 @@ program:
 	pushq	%rbp
 	movq	%rsp, %rbp
 	subq	$8, %rsp
-	movq	%rsp, %rdx
+	movq	%rsp, %rsi
 	movq	$1, %rax
-	movq	%rdx, %rcx
+	movq	%rsi, %rcx
 	movq	%rax, (%rcx)
 	leaq	arr2(%rip), %rax
 	movq	(%rax), %rax
-	movq	%rax, %rsi
+	movq	%rax, %rdi
 	leaq	arr1(%rip), %rax
 	movq	(%rax), %rax
-	movq	%rax, %rdi
-	pushq	%rdi
+	movq	%rax, %rdx
+	pushq	%rsi
 	pushq	%rdx
+	movq	%rdi, %rsi
+	movq	%rdx, %rdi
 	movq	$4, %rdx
 	callq	arrcheck
 	popq	%rdx
-	popq	%rdi
-	movq	%rax, %rsi
-	cmpq	$1, %rsi
-	sete	%sil
-	andq	$1, %rsi
-	cmpq	$0, %rsi
+	popq	%rsi
+	movq	%rax, %rdi
+	cmpq	$1, %rdi
+	sete	%dil
+	andq	$1, %rdi
+	cmpq	$0, %rdi
 	jne	_then5314
 	jmp	_else5313
 	.text
@@ -187,14 +189,14 @@ _else5313:
 	jmp	_merge5312
 	.text
 _merge5312:
-	movq	(%rdx), %rdx
-	movq	%rdx, %rax
+	movq	(%rsi), %rsi
+	movq	%rsi, %rax
 	movq	%rbp, %rsp
 	popq	%rbp
 	retq	
 	.text
 _then5314:
 	movq	$0, %rax
-	movq	%rdx, %rcx
+	movq	%rsi, %rcx
 	movq	%rax, (%rcx)
 	jmp	_merge5312

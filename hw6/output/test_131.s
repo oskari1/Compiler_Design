@@ -9,10 +9,10 @@ add:
 	movq	%rsp, %rdx
 	movq	%rdi, (%r8 )
 	movq	%rsi, (%rdx)
-	movq	(%r8 ), %rsi
-	movq	(%rdx), %rdx
-	addq	%rsi, %rdx
-	movq	%rdx, %rax
+	movq	(%r8 ), %rdi
+	movq	(%rdx), %rsi
+	addq	%rdi, %rsi
+	movq	%rsi, %rax
 	movq	%rbp, %rsp
 	popq	%rbp
 	retq	
@@ -27,12 +27,12 @@ sub:
 	movq	%rsp, %rdx
 	movq	%rdi, (%r8 )
 	movq	%rsi, (%rdx)
-	movq	(%r8 ), %rsi
-	movq	(%rdx), %rdx
+	movq	(%r8 ), %rdi
+	movq	(%rdx), %rsi
+	movq	%rdi, %rax
+	subq	%rsi, %rax
+	movq	%rax, %rsi
 	movq	%rsi, %rax
-	subq	%rdx, %rax
-	movq	%rax, %rdx
-	movq	%rdx, %rax
 	movq	%rbp, %rsp
 	popq	%rbp
 	retq	
@@ -42,55 +42,55 @@ program:
 	pushq	%rbp
 	movq	%rsp, %rbp
 	subq	$8, %rsp
-	movq	%rsp, %rsi
-	pushq	%rsi
+	movq	%rsp, %rdi
+	pushq	%rdi
 	movq	$2, %rdi
 	callq	oat_alloc_array
-	popq	%rsi
+	popq	%rdi
+	movq	%rax, %rsi
+	movq	%rsi, %rax
 	movq	%rax, %rdx
 	movq	%rdx, %rax
-	movq	%rax, %rdi
-	movq	%rdi, %rax
 	addq	$0, %rax
 	addq	$8, %rax
 	addq	$0, %rax
-	movq	%rax, %rdx
+	movq	%rax, %rsi
 	leaq	add(%rip), %rax
-	movq	%rdx, %rcx
+	movq	%rsi, %rcx
 	movq	%rax, (%rcx)
+	movq	%rdx, %rax
+	addq	$0, %rax
+	addq	$8, %rax
+	addq	$8, %rax
+	movq	%rax, %rsi
+	leaq	sub(%rip), %rax
+	movq	%rsi, %rcx
+	movq	%rax, (%rcx)
+	movq	%rdx, (%rdi)
+	movq	(%rdi), %rdi
+	movq	%rdi, %rax
+	movq	%rax, %rsi
+	pushq	%rdi
+	pushq	%rsi
+	movq	%rsi, %rdi
+	movq	$0, %rsi
+	callq	oat_assert_array_length
+	popq	%rsi
+	popq	%rdi
 	movq	%rdi, %rax
 	addq	$0, %rax
 	addq	$8, %rax
-	addq	$8, %rax
-	movq	%rax, %rdx
-	leaq	sub(%rip), %rax
-	movq	%rdx, %rcx
-	movq	%rax, (%rcx)
-	movq	%rdi, (%rsi)
+	addq	$0, %rax
+	movq	%rax, %rsi
 	movq	(%rsi), %rsi
-	movq	%rsi, %rax
-	movq	%rax, %rdx
-	pushq	%rsi
-	pushq	%rdx
-	movq	$0, %rsi
-	movq	%rdx, %rdi
-	callq	oat_assert_array_length
-	popq	%rdx
-	popq	%rsi
-	movq	%rsi, %rax
-	addq	$0, %rax
-	addq	$8, %rax
-	addq	$0, %rax
-	movq	%rax, %rdx
-	movq	(%rdx), %rdx
 	pushq	%r15
-	movq	%rdx, %r15
+	movq	%rsi, %r15
 	movq	$1, %rsi
 	movq	$1, %rdi
 	callq	*%r15
 	popq	%r15
-	movq	%rax, %rdx
-	movq	%rdx, %rax
+	movq	%rax, %rsi
+	movq	%rsi, %rax
 	movq	%rbp, %rsp
 	popq	%rbp
 	retq	
