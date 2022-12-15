@@ -1,9 +1,12 @@
 	.text
-	.globl	program
-program:
+	.globl	main
+main:
 	pushq	%rbp
 	movq	%rsp, %rbp
-	movq	$35, %rax
+	pushq	%rdi
+	movq	%rsi, %rdi
+	popq	%rsi
+	movq	$0, %rax
 	movq	%rbp, %rsp
 	popq	%rbp
 	retq	

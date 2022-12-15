@@ -1,76 +1,87 @@
 	.data
-	.globl	glist
-glist:
-	.quad	1
-	.quad	2
-	.quad	3
-	.quad	4
-	.quad	5
+	.globl	i
+i:
+	.quad	0
 	.text
-	.globl	search
-search:
+	.globl	f
+f:
 	pushq	%rbp
 	movq	%rsp, %rbp
-	pushq	%rdi
-	movq	%rsi, %rdi
-	popq	%rsi
 	subq	$8, %rsp
 	movq	%rsp, %r9 
+	subq	$8, %rsp
+	movq	%rsp, %rdx
+	subq	$8, %rsp
+	movq	%rsp, %r8 
+	movq	%rdi, (%r9 )
+	movq	%rsi, (%rdx)
 	movq	$0, %rax
-	movq	%r9 , %rcx
+	movq	%r8 , %rcx
 	movq	%rax, (%rcx)
-	jmp	loop
+	movq	(%r9 ), %rsi
+	cmpq	$1, %rsi
+	setge	%sil
+	andq	$1, %rsi
+	cmpq	$0, %rsi
+	jne	_then930
+	jmp	_else929
 	.text
-check:
-	movq	%rdi, %rax
-	addq	$0, %rax
-	movq	%rax, %rcx
-	movq	%r8 , %rax
-	imulq	$8, %rax
-	addq	%rcx, %rax
-	movq	%rax, %rdx
+_else929:
+	movq	(%r9 ), %rsi
 	movq	(%rdx), %rdx
-	cmpq	%rdx, %rsi
-	sete	%dl
-	andq	$1, %rdx
-	addq	$1, %r8 
-	movq	%r8 , (%r9 )
-	cmpq	$0, %rdx
-	jne	true
-	jmp	loop
+	addq	%rsi, %rdx
+	movq	%rdx, (%r8 )
+	jmp	_merge928
 	.text
-false:
-	movq	$0, %rax
+_merge928:
+	movq	(%r8 ), %rdx
+	movq	%rdx, %rax
 	movq	%rbp, %rsp
 	popq	%rbp
 	retq	
 	.text
-loop:
-	movq	(%r9 ), %r8 
-	cmpq	$5, %r8 
-	sete	%dl
-	andq	$1, %rdx
-	cmpq	$0, %rdx
-	jne	false
-	jmp	check
+_then930:
+	movq	(%rdx), %rdx
+	movq	(%r9 ), %rsi
+	subq	$1, %rsi
+	pushq	%r8 
+	pushq	%rsi
+	movq	%rsi, %rdi
+	movq	%rdx, %rsi
+	callq	f
+	popq	%rsi
+	popq	%r8 
+	movq	%rax, %rdx
+	addq	$1, %rdx
+	movq	%rdx, (%r8 )
+	jmp	_merge928
 	.text
-true:
-	movq	$1, %rax
-	movq	%rbp, %rsp
-	popq	%rbp
-	retq	
-	.text
-	.globl	main
-main:
+	.globl	program
+program:
 	pushq	%rbp
 	movq	%rsp, %rbp
-	pushq	%rdi
+	subq	$8, %rsp
+	movq	%rsp, %rsi
+	subq	$8, %rsp
+	movq	%rsp, %rdx
+	movq	$3, %rax
+	movq	%rsi, %rcx
+	movq	%rax, (%rcx)
+	movq	$3, %rax
+	movq	%rdx, %rcx
+	movq	%rax, (%rcx)
+	movq	(%rdx), %rdx
+	movq	(%rsi), %rsi
+	pushq	%rsi
 	movq	%rsi, %rdi
+	movq	%rdx, %rsi
+	callq	f
 	popq	%rsi
-	leaq	glist(%rip), %rsi
-	movq	$3, %rdi
-	callq	search
 	movq	%rax, %rdx
+	leaq	i(%rip), %rax
+	movq	(%rax), %rax
+	movq	%rax, %rsi
+	addq	%rsi, %rdx
 	movq	%rdx, %rax
 	movq	%rbp, %rsp
 	popq	%rbp

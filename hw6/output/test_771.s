@@ -1,13 +1,40 @@
-	.data
-	.globl	_str_arr8182
-_str_arr8182:
-	.asciz	"hello!"
 	.text
-	.globl	program
-program:
+	.globl	bar
+bar:
 	pushq	%rbp
 	movq	%rsp, %rbp
-	movq	$15, %rax
+	movq	%rdi, %rdx
+	addq	%rsi, %rdx
+	movq	%rdx, %rax
+	movq	%rbp, %rsp
+	popq	%rbp
+	retq	
+	.text
+	.globl	foo
+foo:
+	pushq	%rbp
+	movq	%rsp, %rbp
+	pushq	%rdi
+	movq	%rdi, %rsi
+	callq	bar
+	popq	%rdi
+	movq	%rax, %rdx
+	movq	%rdx, %rax
+	movq	%rbp, %rsp
+	popq	%rbp
+	retq	
+	.text
+	.globl	main
+main:
+	pushq	%rbp
+	movq	%rsp, %rbp
+	pushq	%rdi
+	movq	%rsi, %rdi
+	popq	%rsi
+	movq	$17, %rdi
+	callq	foo
+	movq	%rax, %rdx
+	movq	%rdx, %rax
 	movq	%rbp, %rsp
 	popq	%rbp
 	retq	

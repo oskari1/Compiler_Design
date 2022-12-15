@@ -5,38 +5,38 @@ program:
 	movq	%rsp, %rbp
 	subq	$8, %rsp
 	subq	$8, %rsp
-	movq	%rsp, %r9 
+	movq	%rsp, %r10
 	subq	$8, %rsp
-	movq	%rsp, %rdx
-	pushq	%r9 
-	pushq	%rdx
+	movq	%rsp, %r8 
+	pushq	%r10
+	pushq	%r8 
 	movq	$3, %rdi
 	callq	oat_alloc_array
-	popq	%rdx
-	popq	%r9 
-	movq	%rax, %rsi
-	movq	%rsi, %rax
+	popq	%r8 
+	popq	%r10
+	movq	%rax, %rdx
+	movq	%rdx, %rax
 	movq	%rax, %r11
 	subq	$8, %rsp
-	movq	%rsp, %r10
+	movq	%rsp, %rdi
 	movq	$3, %rax
-	movq	%r10, %rcx
+	movq	%rdi, %rcx
 	movq	%rax, (%rcx)
 	subq	$8, %rsp
-	movq	%rsp, %rdi
-	movq	%r11, (%rdi)
+	movq	%rsp, %r9 
+	movq	%r11, (%r9 )
 	movq	$0, %rax
-	movq	%r9 , %rcx
+	movq	%r10, %rcx
 	movq	%rax, (%rcx)
 	jmp	_cond7350
 	.text
 _body7349:
-	movq	%rdi, %rax
+	movq	%r9 , %rax
 	movq	(%rax), %rax
 	movq	%rax, -8(%rbp)
-	movq	(%r9 ), %r8 
+	movq	(%r10), %rsi
 	movq	-8(%rbp), %rax
-	movq	%rax, %rsi
+	movq	%rax, %rdx
 	pushq	%r11
 	pushq	%r10
 	pushq	%r9 
@@ -44,8 +44,7 @@ _body7349:
 	pushq	%rdi
 	pushq	%rsi
 	pushq	%rdx
-	movq	%rsi, %rdi
-	movq	%r8 , %rsi
+	movq	%rdx, %rdi
 	callq	oat_assert_array_length
 	popq	%rdx
 	popq	%rsi
@@ -58,31 +57,31 @@ _body7349:
 	addq	$0, %rax
 	addq	$8, %rax
 	movq	%rax, %rcx
-	movq	%r8 , %rax
+	movq	%rsi, %rax
 	imulq	$8, %rax
 	addq	%rcx, %rax
-	movq	%rax, %rsi
+	movq	%rax, %rdx
 	movq	$2, %rax
-	movq	%rsi, %rcx
+	movq	%rdx, %rcx
 	movq	%rax, (%rcx)
-	movq	(%r9 ), %rsi
-	addq	$1, %rsi
-	movq	%rsi, (%r9 )
+	movq	(%r10), %rdx
+	addq	$1, %rdx
+	movq	%rdx, (%r10)
 	jmp	_cond7350
 	.text
 _cond7350:
-	movq	(%r9 ), %rsi
-	movq	(%r10), %r8 
-	cmpq	%r8 , %rsi
-	setl	%sil
-	andq	$1, %rsi
-	cmpq	$0, %rsi
+	movq	(%r10), %rdx
+	movq	(%rdi), %rsi
+	cmpq	%rsi, %rdx
+	setl	%dl
+	andq	$1, %rdx
+	cmpq	$0, %rdx
 	jne	_body7349
 	jmp	_post7348
 	.text
 _post7348:
-	movq	%r11, (%rdx)
-	movq	(%rdx), %rdx
+	movq	%r11, (%r8 )
+	movq	(%r8 ), %rdx
 	movq	%rdx, %rax
 	movq	%rax, %rsi
 	pushq	%rsi

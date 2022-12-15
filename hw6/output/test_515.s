@@ -3,49 +3,49 @@
 program:
 	pushq	%rbp
 	movq	%rsp, %rbp
-	subq	$24, %rsp
+	subq	$16, %rsp
 	subq	$8, %rsp
-	movq	%rsp, %rsi
+	movq	%rsp, %r9 
 	subq	$8, %rsp
-	movq	%rsp, %r10
+	movq	%rsp, %r11
 	subq	$8, %rsp
 	movq	%rsp, %rdx
 	movq	$0, %rax
-	movq	%rsi, %rcx
+	movq	%r9 , %rcx
 	movq	%rax, (%rcx)
-	pushq	%r10
-	pushq	%rsi
+	pushq	%r11
+	pushq	%r9 
 	pushq	%rdx
 	movq	$3, %rdi
 	callq	oat_alloc_array
 	popq	%rdx
-	popq	%rsi
-	popq	%r10
-	movq	%rax, %rdi
-	movq	%rdi, %rax
+	popq	%r9 
+	popq	%r11
+	movq	%rax, %rsi
+	movq	%rsi, %rax
 	movq	%rax, -8(%rbp)
 	subq	$8, %rsp
-	movq	%rsp, %r11
-	movq	$3, %rax
-	movq	%r11, %rcx
-	movq	%rax, (%rcx)
-	subq	$8, %rsp
 	movq	%rsp, %r8 
-	movq	-8(%rbp), %rax
+	movq	$3, %rax
 	movq	%r8 , %rcx
 	movq	%rax, (%rcx)
-	movq	$0, %rax
+	subq	$8, %rsp
+	movq	%rsp, %r10
+	movq	-8(%rbp), %rax
 	movq	%r10, %rcx
+	movq	%rax, (%rcx)
+	movq	$0, %rax
+	movq	%r11, %rcx
 	movq	%rax, (%rcx)
 	jmp	_cond7235
 	.text
 _body7234:
-	movq	%r8 , %rax
+	movq	%r10, %rax
 	movq	(%rax), %rax
 	movq	%rax, -16(%rbp)
-	movq	(%r10), %r9 
+	movq	(%r11), %rdi
 	movq	-16(%rbp), %rax
-	movq	%rax, %rdi
+	movq	%rax, %rsi
 	pushq	%r11
 	pushq	%r10
 	pushq	%r9 
@@ -53,7 +53,9 @@ _body7234:
 	pushq	%rdi
 	pushq	%rsi
 	pushq	%rdx
-	movq	%r9 , %rsi
+	pushq	%rdi
+	movq	%rsi, %rdi
+	popq	%rsi
 	callq	oat_assert_array_length
 	popq	%rdx
 	popq	%rsi
@@ -66,27 +68,25 @@ _body7234:
 	addq	$0, %rax
 	addq	$8, %rax
 	movq	%rax, %rcx
-	movq	%r9 , %rax
+	movq	%rdi, %rax
 	imulq	$8, %rax
 	addq	%rcx, %rax
-	movq	%rax, %rdi
+	movq	%rax, %rsi
 	movq	$0, %rax
-	movq	%rdi, %rcx
+	movq	%rsi, %rcx
 	movq	%rax, (%rcx)
-	movq	(%r10), %rdi
-	addq	$1, %rdi
-	movq	%rdi, (%r10)
+	movq	(%r11), %rsi
+	addq	$1, %rsi
+	movq	%rsi, (%r11)
 	jmp	_cond7235
 	.text
 _cond7235:
-	movq	(%r10), %rdi
-	movq	%r11, %rax
-	movq	(%rax), %rax
-	movq	%rax, -24(%rbp)
-	cmpq	-24(%rbp), %rdi
-	setl	%dil
-	andq	$1, %rdi
-	cmpq	$0, %rdi
+	movq	(%r11), %rsi
+	movq	(%r8 ), %rdi
+	cmpq	%rdi, %rsi
+	setl	%sil
+	andq	$1, %rsi
+	cmpq	$0, %rsi
 	jne	_body7234
 	jmp	_post7233
 	.text
@@ -111,12 +111,12 @@ _null7257:
 	.text
 _post7233:
 	movq	-8(%rbp), %rax
-	movq	%rsi, %rcx
+	movq	%r9 , %rcx
 	movq	%rax, (%rcx)
 	movq	$0, %rax
 	movq	%rdx, %rcx
 	movq	%rax, (%rcx)
-	movq	(%rsi), %rsi
+	movq	(%r9 ), %rsi
 	cmpq	$0, %rsi
 	sete	%sil
 	andq	$1, %rsi

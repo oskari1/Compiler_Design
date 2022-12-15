@@ -3,7 +3,7 @@
 getminindex:
 	pushq	%rbp
 	movq	%rsp, %rbp
-	subq	$24, %rsp
+	subq	$16, %rsp
 	pushq	%rsi
 	movq	%rdx, %rsi
 	popq	%rdx
@@ -30,25 +30,27 @@ getminindex:
 	movq	%rdx, (%r11)
 	movq	-8(%rbp), %rax
 	movq	(%rax), %rax
-	movq	%rax, -24(%rbp)
+	movq	%rax, %rdi
 	movq	(%r8 ), %rsi
-	movq	-24(%rbp), %rax
+	movq	%rdi, %rax
 	movq	%rax, %rdx
 	pushq	%r11
 	pushq	%r10
 	pushq	%r9 
 	pushq	%r8 
+	pushq	%rdi
 	pushq	%rsi
 	pushq	%rdx
 	movq	%rdx, %rdi
 	callq	oat_assert_array_length
 	popq	%rdx
 	popq	%rsi
+	popq	%rdi
 	popq	%r8 
 	popq	%r9 
 	popq	%r10
 	popq	%r11
-	movq	-24(%rbp), %rax
+	movq	%rdi, %rax
 	addq	$0, %rax
 	addq	$8, %rax
 	movq	%rax, %rcx

@@ -4,25 +4,26 @@ inc_first:
 	pushq	%rbp
 	movq	%rsp, %rbp
 	subq	$8, %rsp
-	movq	%rsp, %rsi
-	movq	%rdi, (%rsi)
-	movq	(%rsi), %rdx
+	movq	%rsp, %r8 
+	movq	%rdi, (%r8 )
+	movq	(%r8 ), %rdx
 	movq	%rdx, %rax
-	movq	%rax, %rdi
-	pushq	%rdi
+	movq	%rax, %rsi
+	pushq	%r8 
 	pushq	%rsi
 	pushq	%rdx
+	movq	%rsi, %rdi
 	movq	$0, %rsi
 	callq	oat_assert_array_length
 	popq	%rdx
 	popq	%rsi
-	popq	%rdi
+	popq	%r8 
 	movq	%rdx, %rax
 	addq	$0, %rax
 	addq	$8, %rax
 	addq	$0, %rax
 	movq	%rax, %rdi
-	movq	(%rsi), %rdx
+	movq	(%r8 ), %rdx
 	movq	%rdx, %rax
 	movq	%rax, %rsi
 	pushq	%rdi

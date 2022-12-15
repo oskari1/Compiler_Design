@@ -178,11 +178,11 @@ _else5297:
 	movq	%rsi, %rax
 	imulq	$8, %rax
 	addq	%rcx, %rax
-	movq	%rax, %rsi
+	movq	%rax, %rdi
 	movq	-8(%rbp), %rax
 	movq	(%rax), %rax
 	movq	%rax, -24(%rbp)
-	movq	(%r11), %rdi
+	movq	(%r11), %rsi
 	movq	-24(%rbp), %rax
 	movq	%rax, %rdx
 	pushq	%r11
@@ -192,7 +192,6 @@ _else5297:
 	pushq	%rdi
 	pushq	%rsi
 	pushq	%rdx
-	movq	%rdi, %rsi
 	movq	%rdx, %rdi
 	callq	oat_assert_array_length
 	popq	%rdx
@@ -206,12 +205,12 @@ _else5297:
 	addq	$0, %rax
 	addq	$8, %rax
 	movq	%rax, %rcx
-	movq	%rdi, %rax
+	movq	%rsi, %rax
 	imulq	$8, %rax
 	addq	%rcx, %rax
 	movq	%rax, %rdx
 	movq	(%rdx), %rdx
-	movq	%rdx, (%rsi)
+	movq	%rdx, (%rdi)
 	movq	-8(%rbp), %rax
 	movq	(%rax), %rax
 	movq	%rax, %rdi

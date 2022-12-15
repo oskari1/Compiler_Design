@@ -7,14 +7,14 @@ naive_mod:
 	movq	%rsi, %rdi
 	popq	%rsi
 	subq	$8, %rsp
-	movq	%rsp, %rdx
+	movq	%rsp, %r8 
 	movq	$0, %rax
-	movq	%rdx, %rcx
+	movq	%r8 , %rcx
 	movq	%rax, (%rcx)
 	jmp	start
 	.text
 final:
-	movq	(%rdx), %rdx
+	movq	(%r8 ), %rdx
 	subq	%rdi, %rdx
 	movq	%rsi, %rax
 	subq	%rdx, %rax
@@ -25,13 +25,13 @@ final:
 	retq	
 	.text
 start:
-	movq	(%rdx), %r8 
-	addq	%rdi, %r8 
-	movq	%r8 , (%rdx)
-	cmpq	%rsi, %r8 
-	setg	%r8b
-	andq	$1, %r8 
-	cmpq	$0, %r8 
+	movq	(%r8 ), %rdx
+	addq	%rdi, %rdx
+	movq	%rdx, (%r8 )
+	cmpq	%rsi, %rdx
+	setg	%dl
+	andq	$1, %rdx
+	cmpq	$0, %rdx
 	jne	final
 	jmp	start
 	.text
@@ -59,18 +59,15 @@ final_true:
 	retq	
 	.text
 inc:
-	movq	(%rsi), %r8 
-	movq	$1, %rdx
-	addq	%r9 , %rdx
-	movq	%rdx, (%rsi)
-	pushq	%r8 
+	movq	(%rsi), %rdx
+	addq	$1, %r8 
+	movq	%r8 , (%rsi)
 	pushq	%rdi
 	pushq	%rsi
-	movq	%r8 , %rsi
+	movq	%rdx, %rsi
 	callq	naive_mod
 	popq	%rsi
 	popq	%rdi
-	popq	%r8 
 	movq	%rax, %rdx
 	movq	$0, %rax
 	cmpq	%rdx, %rax
@@ -81,9 +78,9 @@ inc:
 	jmp	loop
 	.text
 loop:
-	movq	(%rsi), %r9 
-	movq	%r9 , %rdx
-	imulq	%r9 , %rdx
+	movq	(%rsi), %r8 
+	movq	%r8 , %rdx
+	imulq	%r8 , %rdx
 	cmpq	%rdi, %rdx
 	setg	%dl
 	andq	$1, %rdx

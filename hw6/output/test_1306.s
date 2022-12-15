@@ -1,30 +1,49 @@
-	.data
-	.globl	y
-y:
-	.quad	1
+	.text
+	.globl	f
+f:
+	pushq	%rbp
+	movq	%rsp, %rbp
+	subq	$24, %rsp
+	movq	%rcx, -8(%rbp)
+	pushq	16(%rbp)
+	popq	-16(%rbp)
+	pushq	24(%rbp)
+	popq	-24(%rbp)
+	subq	$8, %rsp
+	movq	%rsp, %r10
+	subq	$8, %rsp
+	movq	%rsp, %r9 
+	subq	$8, %rsp
+	movq	%rsp, %r8 
+	movq	%rdi, (%r10)
+	movq	%rsi, (%r9 )
+	movq	%rdx, (%r8 )
+	movq	(%r10), %rsi
+	movq	(%r9 ), %rdx
+	addq	%rdx, %rsi
+	movq	(%r8 ), %rdx
+	addq	%rsi, %rdx
+	movq	%rdx, %rax
+	movq	%rbp, %rsp
+	popq	%rbp
+	retq	
 	.text
 	.globl	program
 program:
 	pushq	%rbp
 	movq	%rsp, %rbp
-	leaq	y(%rip), %rax
-	movq	(%rax), %rax
-	movq	%rax, %rdx
-	cmpq	$0, %rdx
-	jne	_then8155
-	jmp	_else8154
-	.text
-_else8154:
-	jmp	_merge8153
-	.text
-_merge8153:
-	movq	$15, %rax
-	movq	%rbp, %rsp
-	popq	%rbp
-	retq	
-	.text
-_then8155:
-	movq	$17, %rax
+	pushq	$-3
+	pushq	$-4
+	movq	$-5, %r9 
+	movq	$5, %r8 
+	movq	$4, %rcx
+	movq	$3, %rdx
+	movq	$2, %rsi
+	movq	$1, %rdi
+	callq	f
+	addq	$16, %rsp
+	movq	%rax, %rsi
+	movq	%rsi, %rax
 	movq	%rbp, %rsp
 	popq	%rbp
 	retq	

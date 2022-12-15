@@ -3,7 +3,7 @@
 program:
 	pushq	%rbp
 	movq	%rsp, %rbp
-	subq	$112, %rsp
+	subq	$80, %rsp
 	subq	$8, %rsp
 	movq	%rsp, %rsi
 	subq	$8, %rsp
@@ -42,14 +42,13 @@ program:
 	jmp	_cond1649
 	.text
 _body1648:
-	movq	%r8 , %rax
-	movq	(%rax), %rax
-	movq	%rax, -48(%rbp)
+	movq	(%r8 ), %r10
 	movq	-8(%rbp), %rax
 	movq	(%rax), %rax
 	movq	%rax, %rdi
-	movq	-48(%rbp), %rax
+	movq	%r10, %rax
 	movq	%rax, %rdx
+	pushq	%r10
 	pushq	%r9 
 	pushq	%r8 
 	pushq	%rdi
@@ -63,7 +62,8 @@ _body1648:
 	popq	%rdi
 	popq	%r8 
 	popq	%r9 
-	movq	-48(%rbp), %rax
+	popq	%r10
+	movq	%r10, %rax
 	addq	$0, %rax
 	addq	$8, %rax
 	movq	%rax, %rcx
@@ -83,15 +83,15 @@ _body1648:
 	popq	%r11
 	movq	%rax, %rdx
 	movq	%rdx, %rax
-	movq	%rax, -56(%rbp)
+	movq	%rax, -48(%rbp)
 	subq	$8, %rsp
-	movq	%rsp, -64(%rbp)
+	movq	%rsp, -56(%rbp)
 	movq	$3, %rax
-	movq	-64(%rbp), %rcx
+	movq	-56(%rbp), %rcx
 	movq	%rax, (%rcx)
 	subq	$8, %rsp
 	movq	%rsp, %rdi
-	movq	-56(%rbp), %rax
+	movq	-48(%rbp), %rax
 	movq	%rdi, %rcx
 	movq	%rax, (%rcx)
 	movq	$0, %rax
@@ -102,9 +102,9 @@ _body1648:
 _body1665:
 	movq	%rdi, %rax
 	movq	(%rax), %rax
-	movq	%rax, -72(%rbp)
+	movq	%rax, -64(%rbp)
 	movq	(%r9 ), %r10
-	movq	-72(%rbp), %rax
+	movq	-64(%rbp), %rax
 	movq	%rax, %rdx
 	pushq	%r11
 	pushq	%r10
@@ -123,7 +123,7 @@ _body1665:
 	popq	%r9 
 	popq	%r10
 	popq	%r11
-	movq	-72(%rbp), %rax
+	movq	-64(%rbp), %rax
 	addq	$0, %rax
 	addq	$8, %rax
 	movq	%rax, %rcx
@@ -134,17 +134,13 @@ _body1665:
 	movq	(%rsi), %rdx
 	movq	-8(%rbp), %rax
 	movq	(%rax), %rax
-	movq	%rax, -80(%rbp)
+	movq	%rax, -72(%rbp)
 	movq	%rdx, %rax
-	addq	-80(%rbp), %rax
-	movq	%rax, -88(%rbp)
+	addq	-72(%rbp), %rax
+	movq	%rax, -80(%rbp)
 	movq	(%r9 ), %rdx
-	movq	-88(%rbp), %rax
-	addq	%rdx, %rax
-	movq	%rax, -96(%rbp)
-	movq	-96(%rbp), %rax
-	movq	%r10, %rcx
-	movq	%rax, (%rcx)
+	addq	-80(%rbp), %rdx
+	movq	%rdx, (%r10)
 	movq	(%r9 ), %rdx
 	addq	$1, %rdx
 	movq	%rdx, (%r9 )
@@ -156,8 +152,8 @@ _cond1649:
 	movq	%rax, %rdx
 	movq	-40(%rbp), %rax
 	movq	(%rax), %rax
-	movq	%rax, -104(%rbp)
-	cmpq	-104(%rbp), %rdx
+	movq	%rax, %rdi
+	cmpq	%rdi, %rdx
 	setl	%dl
 	andq	$1, %rdx
 	cmpq	$0, %rdx
@@ -166,10 +162,10 @@ _cond1649:
 	.text
 _cond1666:
 	movq	(%r9 ), %rdx
-	movq	-64(%rbp), %rax
+	movq	-56(%rbp), %rax
 	movq	(%rax), %rax
-	movq	%rax, -112(%rbp)
-	cmpq	-112(%rbp), %rdx
+	movq	%rax, %r10
+	cmpq	%r10, %rdx
 	setl	%dl
 	andq	$1, %rdx
 	cmpq	$0, %rdx
@@ -225,7 +221,7 @@ _post1647:
 	retq	
 	.text
 _post1664:
-	movq	-56(%rbp), %rax
+	movq	-48(%rbp), %rax
 	movq	%r11, %rcx
 	movq	%rax, (%rcx)
 	movq	-8(%rbp), %rax

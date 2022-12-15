@@ -23,7 +23,7 @@ neg:
 program:
 	pushq	%rbp
 	movq	%rsp, %rbp
-	subq	$24, %rsp
+	subq	$16, %rsp
 	subq	$8, %rsp
 	movq	%rsp, %r10
 	subq	$8, %rsp
@@ -128,10 +128,8 @@ _body6913:
 	.text
 _cond6914:
 	movq	(%r10), %rdx
-	movq	%r11, %rax
-	movq	(%rax), %rax
-	movq	%rax, -24(%rbp)
-	cmpq	-24(%rbp), %rdx
+	movq	(%r11), %r9 
+	cmpq	%r9 , %rdx
 	setl	%dl
 	andq	$1, %rdx
 	cmpq	$0, %rdx

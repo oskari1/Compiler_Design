@@ -3,7 +3,7 @@
 program:
 	pushq	%rbp
 	movq	%rsp, %rbp
-	subq	$24, %rsp
+	subq	$16, %rsp
 	subq	$8, %rsp
 	movq	%rsp, %rsi
 	subq	$8, %rsp
@@ -80,10 +80,8 @@ _body7234:
 	.text
 _cond7235:
 	movq	(%r10), %rdi
-	movq	%r11, %rax
-	movq	(%rax), %rax
-	movq	%rax, -24(%rbp)
-	cmpq	-24(%rbp), %rdi
+	movq	(%r11), %r9 
+	cmpq	%r9 , %rdi
 	setl	%dil
 	andq	$1, %rdi
 	cmpq	$0, %rdi

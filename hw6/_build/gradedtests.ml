@@ -465,7 +465,7 @@ let new_tests = [
 
 let oat_regalloc_quality_tests =
   hw4_easiest_tests
-  @ hw4_path_tests
+  @ hw4_path_tests 
   @ hw4_easy_tests
   @ hw4_medium_tests
   @ hw4_hard_tests
@@ -473,7 +473,7 @@ let oat_regalloc_quality_tests =
   @ struct_tests
   @ fptr_tests
   @ new_tests
-  @ regalloc_challenge_tests
+  @ regalloc_challenge_tests 
 
 
 let oat_correctness_tests =

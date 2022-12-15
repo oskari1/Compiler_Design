@@ -1,17 +1,12 @@
-	.data
-	.globl	s
-s:
-	.quad	_str8175
-	.data
-	.globl	_str8175
-_str8175:
-	.asciz	"hello!"
 	.text
-	.globl	program
-program:
+	.globl	main
+main:
 	pushq	%rbp
 	movq	%rsp, %rbp
-	movq	$17, %rax
+	pushq	%rdi
+	movq	%rsi, %rdi
+	popq	%rsi
+	movq	$14, %rax
 	movq	%rbp, %rsp
 	popq	%rbp
 	retq	

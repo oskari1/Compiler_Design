@@ -1,28 +1,54 @@
 	.data
-	.globl	gbl
-gbl:
-	.quad	1
-	.quad	2
-	.quad	3
-	.quad	4
-	.quad	5
-	.quad	6
-	.quad	7
+	.globl	i
+i:
+	.quad	11
 	.text
-	.globl	main
-main:
+	.globl	f
+f:
 	pushq	%rbp
 	movq	%rsp, %rbp
-	pushq	%rdi
-	movq	%rsi, %rdi
-	popq	%rsi
-	leaq	gbl(%rip), %rax
-	addq	$0, %rax
-	addq	$8, %rax
-	addq	$24, %rax
-	movq	%rax, %rdx
+	subq	$8, %rsp
+	movq	%rsp, %rdx
+	movq	$12, %rax
+	movq	%rdx, %rcx
+	movq	%rax, (%rcx)
 	movq	(%rdx), %rdx
 	movq	%rdx, %rax
+	movq	%rbp, %rsp
+	popq	%rbp
+	retq	
+	.text
+	.globl	g
+g:
+	pushq	%rbp
+	movq	%rsp, %rbp
+	subq	$8, %rsp
+	movq	%rsp, %rdx
+	movq	$10, %rax
+	movq	%rdx, %rcx
+	movq	%rax, (%rcx)
+	movq	(%rdx), %rdx
+	movq	%rdx, %rax
+	movq	%rbp, %rsp
+	popq	%rbp
+	retq	
+	.text
+	.globl	program
+program:
+	pushq	%rbp
+	movq	%rsp, %rbp
+	callq	f
+	movq	%rax, %rdi
+	pushq	%rdi
+	callq	g
+	popq	%rdi
+	movq	%rax, %rsi
+	addq	%rsi, %rdi
+	leaq	i(%rip), %rax
+	movq	(%rax), %rax
+	movq	%rax, %rsi
+	addq	%rdi, %rsi
+	movq	%rsi, %rax
 	movq	%rbp, %rsp
 	popq	%rbp
 	retq	

@@ -15,9 +15,9 @@ search:
 	movq	%rsi, %rdi
 	popq	%rsi
 	subq	$8, %rsp
-	movq	%rsp, %r8 
+	movq	%rsp, %r9 
 	movq	$0, %rax
-	movq	%r8 , %rcx
+	movq	%r9 , %rcx
 	movq	%rax, (%rcx)
 	jmp	loop
 	.text
@@ -25,7 +25,7 @@ check:
 	movq	%rdi, %rax
 	addq	$0, %rax
 	movq	%rax, %rcx
-	movq	%r9 , %rax
+	movq	%r8 , %rax
 	imulq	$8, %rax
 	addq	%rcx, %rax
 	movq	%rax, %rdx
@@ -33,8 +33,8 @@ check:
 	cmpq	%rdx, %rsi
 	sete	%dl
 	andq	$1, %rdx
-	addq	$1, %r9 
-	movq	%r9 , (%r8 )
+	addq	$1, %r8 
+	movq	%r8 , (%r9 )
 	cmpq	$0, %rdx
 	jne	true
 	jmp	loop
@@ -46,8 +46,8 @@ false:
 	retq	
 	.text
 loop:
-	movq	(%r8 ), %r9 
-	cmpq	$5, %r9 
+	movq	(%r9 ), %r8 
+	cmpq	$5, %r8 
 	sete	%dl
 	andq	$1, %rdx
 	cmpq	$0, %rdx

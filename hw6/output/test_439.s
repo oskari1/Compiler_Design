@@ -13,21 +13,21 @@ program:
 	movq	%rdx, %rax
 	movq	%rax, %rdx
 	subq	$8, %rsp
-	movq	%rsp, %r9 
+	movq	%rsp, %rdi
 	movq	$3, %rax
-	movq	%r9 , %rcx
+	movq	%rdi, %rcx
 	movq	%rax, (%rcx)
 	subq	$8, %rsp
-	movq	%rsp, %rsi
-	movq	%rdx, (%rsi)
+	movq	%rsp, %r9 
+	movq	%rdx, (%r9 )
 	movq	$0, %rax
 	movq	%r8 , %rcx
 	movq	%rax, (%rcx)
 	jmp	_cond254
 	.text
 _body253:
-	movq	(%rsi), %r10
-	movq	(%r8 ), %rdi
+	movq	(%r9 ), %r10
+	movq	(%r8 ), %rsi
 	movq	%r10, %rax
 	movq	%rax, %rdx
 	pushq	%r10
@@ -36,7 +36,6 @@ _body253:
 	pushq	%rdi
 	pushq	%rsi
 	pushq	%rdx
-	movq	%rdi, %rsi
 	movq	%rdx, %rdi
 	callq	oat_assert_array_length
 	popq	%rdx
@@ -49,7 +48,7 @@ _body253:
 	addq	$0, %rax
 	addq	$8, %rax
 	movq	%rax, %rcx
-	movq	%rdi, %rax
+	movq	%rsi, %rax
 	imulq	$8, %rax
 	addq	%rcx, %rax
 	movq	%rax, %rdx
@@ -63,8 +62,8 @@ _body253:
 	.text
 _cond254:
 	movq	(%r8 ), %rdx
-	movq	(%r9 ), %rdi
-	cmpq	%rdi, %rdx
+	movq	(%rdi), %rsi
+	cmpq	%rsi, %rdx
 	setl	%dl
 	andq	$1, %rdx
 	cmpq	$0, %rdx

@@ -163,13 +163,13 @@ _then4152:
 binary_search:
 	pushq	%rbp
 	movq	%rsp, %rbp
-	subq	$24, %rsp
+	subq	$16, %rsp
 	movq	%rdx, -8(%rbp)
 	movq	%rcx, %rdx
 	subq	$8, %rsp
 	movq	%rsp, -16(%rbp)
 	subq	$8, %rsp
-	movq	%rsp, -24(%rbp)
+	movq	%rsp, %r11
 	subq	$8, %rsp
 	movq	%rsp, %r8 
 	subq	$8, %rsp
@@ -179,9 +179,7 @@ binary_search:
 	movq	%rdi, %rax
 	movq	-16(%rbp), %rcx
 	movq	%rax, (%rcx)
-	movq	%rsi, %rax
-	movq	-24(%rbp), %rcx
-	movq	%rax, (%rcx)
+	movq	%rsi, (%r11)
 	movq	-8(%rbp), %rax
 	movq	%r8 , %rcx
 	movq	%rax, (%rcx)
@@ -211,6 +209,7 @@ _merge4058:
 	movq	(%r10), %rsi
 	movq	(%r8 ), %rdx
 	addq	%rsi, %rdx
+	pushq	%r11
 	pushq	%r10
 	pushq	%r9 
 	pushq	%r8 
@@ -220,6 +219,7 @@ _merge4058:
 	popq	%r8 
 	popq	%r9 
 	popq	%r10
+	popq	%r11
 	movq	%rax, %rdx
 	movq	%rdx, (%r9 )
 	movq	-16(%rbp), %rax
@@ -228,6 +228,7 @@ _merge4058:
 	movq	(%r9 ), %rsi
 	movq	%rdi, %rax
 	movq	%rax, %rdx
+	pushq	%r11
 	pushq	%r10
 	pushq	%r9 
 	pushq	%r8 
@@ -242,6 +243,7 @@ _merge4058:
 	popq	%r8 
 	popq	%r9 
 	popq	%r10
+	popq	%r11
 	movq	%rdi, %rax
 	addq	$0, %rax
 	addq	$8, %rax
@@ -251,9 +253,7 @@ _merge4058:
 	addq	%rcx, %rax
 	movq	%rax, %rdx
 	movq	(%rdx), %rsi
-	movq	-24(%rbp), %rax
-	movq	(%rax), %rax
-	movq	%rax, %rdx
+	movq	(%r11), %rdx
 	cmpq	%rdx, %rsi
 	setg	%dl
 	andq	$1, %rdx
@@ -268,6 +268,7 @@ _merge4081:
 	movq	(%r9 ), %rsi
 	movq	%rdi, %rax
 	movq	%rax, %rdx
+	pushq	%r11
 	pushq	%r10
 	pushq	%r9 
 	pushq	%rdi
@@ -280,6 +281,7 @@ _merge4081:
 	popq	%rdi
 	popq	%r9 
 	popq	%r10
+	popq	%r11
 	movq	%rdi, %rax
 	addq	$0, %rax
 	addq	$8, %rax
@@ -289,9 +291,7 @@ _merge4081:
 	addq	%rcx, %rax
 	movq	%rax, %rdx
 	movq	(%rdx), %rsi
-	movq	-24(%rbp), %rax
-	movq	(%rax), %rax
-	movq	%rax, %rdx
+	movq	(%r11), %rdx
 	cmpq	%rdx, %rsi
 	setl	%dl
 	andq	$1, %rdx
@@ -316,9 +316,7 @@ _then4083:
 	movq	%rdx, %r9 
 	subq	$1, %r9 
 	movq	(%r8 ), %rdx
-	movq	-24(%rbp), %rax
-	movq	(%rax), %rax
-	movq	%rax, %rsi
+	movq	(%r11), %rsi
 	movq	-16(%rbp), %rax
 	movq	(%rax), %rax
 	movq	%rax, %rdi
@@ -341,9 +339,7 @@ _then4100:
 	movq	(%r9 ), %rdx
 	movq	%rdx, %r8 
 	addq	$1, %r8 
-	movq	-24(%rbp), %rax
-	movq	(%rax), %rax
-	movq	%rax, %rdx
+	movq	(%r11), %rdx
 	movq	-16(%rbp), %rax
 	movq	(%rax), %rax
 	movq	%rax, %rdi
@@ -367,7 +363,7 @@ _then4100:
 program:
 	pushq	%rbp
 	movq	%rsp, %rbp
-	subq	$40, %rsp
+	subq	$32, %rsp
 	subq	$8, %rsp
 	movq	%rsp, %r11
 	subq	$8, %rsp
@@ -487,8 +483,8 @@ _cond3988:
 	movq	(%r11), %rdx
 	movq	-24(%rbp), %rax
 	movq	(%rax), %rax
-	movq	%rax, -40(%rbp)
-	cmpq	-40(%rbp), %rdx
+	movq	%rax, %r10
+	cmpq	%r10, %rdx
 	setl	%dl
 	andq	$1, %rdx
 	cmpq	$0, %rdx

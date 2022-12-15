@@ -216,11 +216,11 @@ _then2946:
 	movq	%rdi, %rax
 	imulq	$8, %rax
 	addq	%rcx, %rax
-	movq	%rax, %rdi
+	movq	%rax, %r11
 	movq	(%r9 ), %rsi
 	movq	-8(%rbp), %rax
 	movq	(%rax), %rax
-	movq	%rax, %r11
+	movq	%rax, %rdi
 	movq	%rsi, %rax
 	movq	%rax, %rdx
 	pushq	%r11
@@ -230,7 +230,7 @@ _then2946:
 	pushq	%rdi
 	pushq	%rsi
 	pushq	%rdx
-	movq	%r11, %rsi
+	movq	%rdi, %rsi
 	movq	%rdx, %rdi
 	callq	oat_assert_array_length
 	popq	%rdx
@@ -244,12 +244,12 @@ _then2946:
 	addq	$0, %rax
 	addq	$8, %rax
 	movq	%rax, %rcx
-	movq	%r11, %rax
+	movq	%rdi, %rax
 	imulq	$8, %rax
 	addq	%rcx, %rax
 	movq	%rax, %rdx
 	movq	(%rdx), %rdx
-	movq	%rdx, (%rdi)
+	movq	%rdx, (%r11)
 	movq	(%r9 ), %rsi
 	movq	-8(%rbp), %rax
 	movq	(%rax), %rax
@@ -289,36 +289,36 @@ program:
 	movq	%rsp, %rbp
 	subq	$8, %rsp
 	subq	$8, %rsp
-	movq	%rsp, %r8 
+	movq	%rsp, %r9 
 	subq	$8, %rsp
 	movq	%rsp, %r11
 	pushq	%r11
-	pushq	%r8 
+	pushq	%r9 
 	movq	$8, %rdi
 	callq	oat_alloc_array
-	popq	%r8 
+	popq	%r9 
 	popq	%r11
 	movq	%rax, %rdx
 	movq	%rdx, %rax
 	movq	%rax, %r10
 	subq	$8, %rsp
-	movq	%rsp, %r9 
+	movq	%rsp, %rdi
 	movq	$8, %rax
-	movq	%r9 , %rcx
+	movq	%rdi, %rcx
 	movq	%rax, (%rcx)
 	subq	$8, %rsp
-	movq	%rsp, %rsi
-	movq	%r10, (%rsi)
+	movq	%rsp, %r8 
+	movq	%r10, (%r8 )
 	movq	$0, %rax
-	movq	%r8 , %rcx
+	movq	%r9 , %rcx
 	movq	%rax, (%rcx)
 	jmp	_cond2811
 	.text
 _body2810:
-	movq	%rsi, %rax
+	movq	%r8 , %rax
 	movq	(%rax), %rax
 	movq	%rax, -8(%rbp)
-	movq	(%r8 ), %rdi
+	movq	(%r9 ), %rsi
 	movq	-8(%rbp), %rax
 	movq	%rax, %rdx
 	pushq	%r11
@@ -328,7 +328,6 @@ _body2810:
 	pushq	%rdi
 	pushq	%rsi
 	pushq	%rdx
-	movq	%rdi, %rsi
 	movq	%rdx, %rdi
 	callq	oat_assert_array_length
 	popq	%rdx
@@ -342,22 +341,22 @@ _body2810:
 	addq	$0, %rax
 	addq	$8, %rax
 	movq	%rax, %rcx
-	movq	%rdi, %rax
+	movq	%rsi, %rax
 	imulq	$8, %rax
 	addq	%rcx, %rax
 	movq	%rax, %rdx
 	movq	$0, %rax
 	movq	%rdx, %rcx
 	movq	%rax, (%rcx)
-	movq	(%r8 ), %rdx
+	movq	(%r9 ), %rdx
 	addq	$1, %rdx
-	movq	%rdx, (%r8 )
+	movq	%rdx, (%r9 )
 	jmp	_cond2811
 	.text
 _cond2811:
-	movq	(%r8 ), %rdx
-	movq	(%r9 ), %rdi
-	cmpq	%rdi, %rdx
+	movq	(%r9 ), %rdx
+	movq	(%rdi), %rsi
+	cmpq	%rsi, %rdx
 	setl	%dl
 	andq	$1, %rdx
 	cmpq	$0, %rdx

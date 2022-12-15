@@ -79,7 +79,7 @@ matmul:
 	subq	$8, %rsp
 	movq	%rsp, -8(%rbp)
 	subq	$8, %rsp
-	movq	%rsp, %r10
+	movq	%rsp, %r11
 	movq	$0, %rax
 	movq	-8(%rbp), %rcx
 	movq	%rax, (%rcx)
@@ -91,7 +91,7 @@ endi:
 	retq	
 	.text
 endj:
-	movq	%r11, %r8 
+	movq	%r10, %r8 
 	addq	$1, %r8 
 	movq	%r8 , %rax
 	movq	-8(%rbp), %rcx
@@ -101,8 +101,8 @@ endj:
 starti:
 	movq	-8(%rbp), %rax
 	movq	(%rax), %rax
-	movq	%rax, %r11
-	cmpq	$2, %r11
+	movq	%rax, %r10
+	cmpq	$2, %r10
 	setl	%r8b
 	andq	$1, %r8 
 	cmpq	$0, %r8 
@@ -110,17 +110,17 @@ starti:
 	jmp	endi
 	.text
 startj:
-	movq	(%r10), %r9 
-	cmpq	$2, %r9 
-	setl	%r8b
-	andq	$1, %r8 
-	cmpq	$0, %r8 
+	movq	(%r11), %r8 
+	cmpq	$2, %r8 
+	setl	%r9b
+	andq	$1, %r9 
+	cmpq	$0, %r9 
 	jne	thenj
 	jmp	endj
 	.text
 theni:
 	movq	$0, %rax
-	movq	%r10, %rcx
+	movq	%r11, %rcx
 	movq	%rax, (%rcx)
 	jmp	startj
 	.text
@@ -128,18 +128,18 @@ thenj:
 	movq	%rdx, %rax
 	addq	$0, %rax
 	movq	%rax, %rcx
-	movq	%r11, %rax
+	movq	%r10, %rax
 	imulq	$16, %rax
 	addq	%rcx, %rax
 	movq	%rax, %rcx
-	movq	%r9 , %rax
+	movq	%r8 , %rax
 	imulq	$8, %rax
 	addq	%rcx, %rax
-	movq	%rax, %r8 
+	movq	%rax, %r9 
 	movq	%rdi, %rax
 	addq	$0, %rax
 	movq	%rax, %rcx
-	movq	%r11, %rax
+	movq	%r10, %rax
 	imulq	$16, %rax
 	addq	%rcx, %rax
 	addq	$0, %rax
@@ -148,14 +148,14 @@ thenj:
 	addq	$0, %rax
 	addq	$0, %rax
 	movq	%rax, %rcx
-	movq	%r9 , %rax
+	movq	%r8 , %rax
 	imulq	$8, %rax
 	addq	%rcx, %rax
 	movq	%rax, -24(%rbp)
 	movq	%rdi, %rax
 	addq	$0, %rax
 	movq	%rax, %rcx
-	movq	%r11, %rax
+	movq	%r10, %rax
 	imulq	$16, %rax
 	addq	%rcx, %rax
 	addq	$8, %rax
@@ -164,7 +164,7 @@ thenj:
 	addq	$0, %rax
 	addq	$16, %rax
 	movq	%rax, %rcx
-	movq	%r9 , %rax
+	movq	%r8 , %rax
 	imulq	$8, %rax
 	addq	%rcx, %rax
 	movq	%rax, -40(%rbp)
@@ -190,41 +190,40 @@ thenj:
 	addq	-88(%rbp), %rax
 	movq	%rax, -96(%rbp)
 	movq	-96(%rbp), %rax
-	movq	%r8 , %rcx
+	movq	%r9 , %rcx
 	movq	%rax, (%rcx)
-	movq	%r9 , %r8 
 	addq	$1, %r8 
-	movq	%r8 , (%r10)
+	movq	%r8 , (%r11)
 	jmp	startj
 	.text
 	.globl	mateq
 mateq:
 	pushq	%rbp
 	movq	%rsp, %rbp
-	subq	$48, %rsp
+	subq	$32, %rsp
 	subq	$8, %rsp
-	movq	%rsp, %r8 
+	movq	%rsp, %r10
 	movq	$0, %rax
-	movq	%r8 , %rcx
+	movq	%r10, %rcx
 	movq	%rax, (%rcx)
 	subq	$8, %rsp
 	movq	%rsp, -8(%rbp)
 	subq	$8, %rsp
-	movq	%rsp, %r10
+	movq	%rsp, %r11
 	movq	$0, %rax
 	movq	-8(%rbp), %rcx
 	movq	%rax, (%rcx)
 	jmp	starti1
 	.text
 endi1:
-	movq	(%r8 ), %rdx
+	movq	(%r10), %rdx
 	movq	%rdx, %rax
 	movq	%rbp, %rsp
 	popq	%rbp
 	retq	
 	.text
 endj1:
-	movq	%r11, %rdx
+	movq	%r9 , %rdx
 	addq	$1, %rdx
 	movq	%rdx, %rax
 	movq	-8(%rbp), %rcx
@@ -234,8 +233,8 @@ endj1:
 starti1:
 	movq	-8(%rbp), %rax
 	movq	(%rax), %rax
-	movq	%rax, %r11
-	cmpq	$2, %r11
+	movq	%rax, %r9 
+	cmpq	$2, %r9 
 	setl	%dl
 	andq	$1, %rdx
 	cmpq	$0, %rdx
@@ -243,8 +242,8 @@ starti1:
 	jmp	endi1
 	.text
 startj1:
-	movq	(%r10), %r9 
-	cmpq	$2, %r9 
+	movq	(%r11), %r8 
+	cmpq	$2, %r8 
 	setl	%dl
 	andq	$1, %rdx
 	cmpq	$0, %rdx
@@ -253,7 +252,7 @@ startj1:
 	.text
 theni1:
 	movq	$0, %rax
-	movq	%r10, %rcx
+	movq	%r11, %rcx
 	movq	%rax, (%rcx)
 	jmp	startj1
 	.text
@@ -261,38 +260,36 @@ thenj1:
 	movq	%rdi, %rax
 	addq	$0, %rax
 	movq	%rax, %rcx
-	movq	%r11, %rax
+	movq	%r9 , %rax
 	imulq	$16, %rax
 	addq	%rcx, %rax
 	movq	%rax, %rcx
-	movq	%r9 , %rax
+	movq	%r8 , %rax
 	imulq	$8, %rax
 	addq	%rcx, %rax
 	movq	%rax, -16(%rbp)
 	movq	%rsi, %rax
 	addq	$0, %rax
 	movq	%rax, %rcx
-	movq	%r11, %rax
+	movq	%r9 , %rax
 	imulq	$16, %rax
 	addq	%rcx, %rax
 	movq	%rax, %rcx
-	movq	%r9 , %rax
+	movq	%r8 , %rax
 	imulq	$8, %rax
 	addq	%rcx, %rax
-	movq	%rax, -24(%rbp)
+	movq	%rax, %rdx
 	movq	-16(%rbp), %rax
 	movq	(%rax), %rax
-	movq	%rax, -32(%rbp)
+	movq	%rax, -24(%rbp)
+	movq	(%rdx), %rdx
 	movq	-24(%rbp), %rax
-	movq	(%rax), %rax
-	movq	%rax, -40(%rbp)
-	movq	-32(%rbp), %rax
-	xorq	-40(%rbp), %rax
-	movq	%rax, -48(%rbp)
-	movq	(%r8 ), %rdx
-	orq	-48(%rbp), %rdx
-	movq	%rdx, (%r8 )
-	movq	%r9 , %rdx
-	addq	$1, %rdx
+	xorq	%rdx, %rax
+	movq	%rax, -32(%rbp)
+	movq	(%r10), %rdx
+	orq	-32(%rbp), %rdx
 	movq	%rdx, (%r10)
+	movq	%r8 , %rdx
+	addq	$1, %rdx
+	movq	%rdx, (%r11)
 	jmp	startj1

@@ -1,18 +1,43 @@
 	.text
-	.globl	bar
-bar:
+	.globl	factorial
+factorial:
 	pushq	%rbp
 	movq	%rsp, %rbp
-	subq	$24, %rsp
-	movq	%rcx, -8(%rbp)
-	pushq	16(%rbp)
-	popq	-16(%rbp)
-	pushq	24(%rbp)
-	popq	-24(%rbp)
-	movq	-16(%rbp), %rax
+	subq	$8, %rsp
+	movq	%rsp, %rsi
+	subq	$8, %rsp
+	movq	%rsp, %rdx
+	movq	%rdi, (%rsi)
+	movq	$1, %rax
+	movq	%rdx, %rcx
+	movq	%rax, (%rcx)
+	jmp	start
+	.text
+end:
+	movq	(%rdx), %rdi
+	movq	%rdi, %rax
 	movq	%rbp, %rsp
 	popq	%rbp
 	retq	
+	.text
+start:
+	movq	(%rsi), %rdi
+	cmpq	$0, %rdi
+	setg	%dil
+	andq	$1, %rdi
+	cmpq	$0, %rdi
+	jne	then
+	jmp	end
+	.text
+then:
+	movq	(%rdx), %r8 
+	movq	(%rsi), %rdi
+	imulq	%r8 , %rdi
+	movq	%rdi, (%rdx)
+	movq	(%rsi), %rdi
+	subq	$1, %rdi
+	movq	%rdi, (%rsi)
+	jmp	start
 	.text
 	.globl	main
 main:
@@ -21,18 +46,10 @@ main:
 	pushq	%rdi
 	movq	%rsi, %rdi
 	popq	%rsi
-	pushq	$8
-	pushq	$7
-	movq	$6, %r9 
-	movq	$5, %r8 
-	movq	$4, %rcx
-	movq	$3, %rdx
-	movq	$2, %rsi
-	movq	$1, %rdi
-	callq	bar
-	addq	$16, %rsp
-	movq	%rax, %rdx
-	movq	%rdx, %rax
+	movq	$5, %rdi
+	callq	factorial
+	movq	%rax, %rsi
+	movq	%rsi, %rax
 	movq	%rbp, %rsp
 	popq	%rbp
 	retq	

@@ -6,7 +6,7 @@ main:
 	pushq	%rdi
 	movq	%rsi, %rdi
 	popq	%rsi
-	movq	$0, %rax
+	movq	$29, %rax
 	movq	%rbp, %rsp
 	popq	%rbp
 	retq	

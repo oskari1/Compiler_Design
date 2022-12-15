@@ -1,69 +1,51 @@
 	.text
-	.globl	one_iteration
-one_iteration:
+	.globl	program
+program:
 	pushq	%rbp
 	movq	%rsp, %rbp
-	movq	%rdi, %rax
-	movq	$1, %rcx
-	shlq	%cl, %rax
-	movq	%rax, %rdx
-	movq	%rdi, %rsi
-	xorq	%rdx, %rsi
-	movq	%rdx, %rax
-	movq	$2, %rcx
-	shlq	%cl, %rax
-	movq	%rax, %rdx
-	xorq	%rdx, %rsi
-	movq	%rdx, %rax
-	movq	$1, %rcx
-	shlq	%cl, %rax
-	movq	%rax, %rdx
-	xorq	%rdx, %rsi
-	movq	%rsi, %rax
-	movq	$63, %rcx
-	shrq	%cl, %rax
-	movq	%rax, %rdx
-	andq	$1, %rdx
-	orq	%rsi, %rdx
-	movq	%rdx, %rax
-	movq	%rbp, %rsp
-	popq	%rbp
-	retq	
-	.text
-	.globl	main
-main:
-	pushq	%rbp
-	movq	%rsp, %rbp
-	pushq	%rdi
-	movq	%rsi, %rdi
-	popq	%rsi
 	subq	$8, %rsp
 	movq	%rsp, %rdx
-	movq	$1, %rax
-	movq	%rdx, %rcx
-	movq	%rax, (%rcx)
-	jmp	loop
-	.text
-end:
+	pushq	%rdx
+	movq	$2, %rdi
+	callq	oat_alloc_array
+	popq	%rdx
+	movq	%rax, %rsi
+	movq	%rsi, %rax
+	movq	%rax, %rdi
 	movq	%rdi, %rax
+	addq	$0, %rax
+	addq	$8, %rax
+	addq	$0, %rax
+	movq	%rax, %rsi
+	movq	$1, %rax
+	movq	%rsi, %rcx
+	movq	%rax, (%rcx)
+	movq	%rdi, %rax
+	addq	$0, %rax
+	addq	$8, %rax
+	addq	$8, %rax
+	movq	%rax, %rsi
+	movq	$2, %rax
+	movq	%rsi, %rcx
+	movq	%rax, (%rcx)
+	movq	%rdi, (%rdx)
+	movq	(%rdx), %rdi
+	movq	%rdi, %rax
+	movq	%rax, %rsi
+	pushq	%rdi
+	pushq	%rsi
+	movq	%rsi, %rdi
+	movq	$1, %rsi
+	callq	oat_assert_array_length
+	popq	%rsi
+	popq	%rdi
+	movq	%rdi, %rax
+	addq	$0, %rax
+	addq	$8, %rax
+	addq	$8, %rax
+	movq	%rax, %rsi
+	movq	(%rsi), %rsi
+	movq	%rsi, %rax
 	movq	%rbp, %rsp
 	popq	%rbp
 	retq	
-	.text
-loop:
-	movq	(%rdx), %rdi
-	movq	%rdi, %rsi
-	addq	$1, %rsi
-	movq	%rsi, (%rdx)
-	pushq	%rsi
-	pushq	%rdx
-	callq	one_iteration
-	popq	%rdx
-	popq	%rsi
-	movq	%rax, %rdi
-	cmpq	$5, %rsi
-	sete	%sil
-	andq	$1, %rsi
-	cmpq	$0, %rsi
-	jne	end
-	jmp	loop

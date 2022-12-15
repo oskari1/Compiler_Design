@@ -38,32 +38,35 @@ main:
 	movq	%rsi, %rdi
 	popq	%rsi
 	subq	$8, %rsp
-	movq	%rsp, %rdx
+	movq	%rsp, %rdi
 	movq	$1, %rax
-	movq	%rdx, %rcx
+	movq	%rdi, %rcx
 	movq	%rax, (%rcx)
 	jmp	loop
 	.text
 end:
-	movq	%rdi, %rax
+	movq	%rsi, %rax
 	movq	%rbp, %rsp
 	popq	%rbp
 	retq	
 	.text
 loop:
-	movq	(%rdx), %rdi
-	movq	%rdi, %rsi
-	addq	$1, %rsi
-	movq	%rsi, (%rdx)
-	pushq	%rsi
+	movq	(%rdi), %rdx
+	movq	%rdx, %r8 
+	addq	$1, %r8 
+	movq	%r8 , (%rdi)
+	pushq	%r8 
+	pushq	%rdi
 	pushq	%rdx
+	movq	%rdx, %rdi
 	callq	one_iteration
 	popq	%rdx
-	popq	%rsi
-	movq	%rax, %rdi
-	cmpq	$5, %rsi
-	sete	%sil
-	andq	$1, %rsi
-	cmpq	$0, %rsi
+	popq	%rdi
+	popq	%r8 
+	movq	%rax, %rsi
+	cmpq	$5, %r8 
+	sete	%dl
+	andq	$1, %rdx
+	cmpq	$0, %rdx
 	jne	end
 	jmp	loop

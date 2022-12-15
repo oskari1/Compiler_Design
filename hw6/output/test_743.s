@@ -3,7 +3,7 @@
 f:
 	pushq	%rbp
 	movq	%rsp, %rbp
-	subq	$48, %rsp
+	subq	$40, %rsp
 	movq	%rcx, -8(%rbp)
 	pushq	16(%rbp)
 	popq	-16(%rbp)
@@ -14,7 +14,7 @@ f:
 	subq	$8, %rsp
 	movq	%rsp, -40(%rbp)
 	subq	$8, %rsp
-	movq	%rsp, -48(%rbp)
+	movq	%rsp, %r11
 	subq	$8, %rsp
 	movq	%rsp, %r10
 	subq	$8, %rsp
@@ -25,9 +25,7 @@ f:
 	movq	%rsi, %rax
 	movq	-40(%rbp), %rcx
 	movq	%rax, (%rcx)
-	movq	%rdx, %rax
-	movq	-48(%rbp), %rcx
-	movq	%rax, (%rcx)
+	movq	%rdx, (%r11)
 	movq	-8(%rbp), %rax
 	movq	%r10, %rcx
 	movq	%rax, (%rcx)
@@ -39,9 +37,7 @@ f:
 	movq	(%rax), %rax
 	movq	%rax, %rdx
 	addq	%rdx, %rsi
-	movq	-48(%rbp), %rax
-	movq	(%rax), %rax
-	movq	%rax, %rdx
+	movq	(%r11), %rdx
 	addq	%rdx, %rsi
 	movq	(%r10), %rdx
 	addq	%rdx, %rsi

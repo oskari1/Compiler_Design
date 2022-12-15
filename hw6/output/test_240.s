@@ -201,7 +201,7 @@ thenj:
 mateq:
 	pushq	%rbp
 	movq	%rsp, %rbp
-	subq	$48, %rsp
+	subq	$32, %rsp
 	subq	$8, %rsp
 	movq	%rsp, %r8 
 	movq	$0, %rax
@@ -279,18 +279,16 @@ thenj1:
 	movq	%r9 , %rax
 	imulq	$8, %rax
 	addq	%rcx, %rax
-	movq	%rax, -24(%rbp)
+	movq	%rax, %rdx
 	movq	-16(%rbp), %rax
 	movq	(%rax), %rax
-	movq	%rax, -32(%rbp)
+	movq	%rax, -24(%rbp)
+	movq	(%rdx), %rdx
 	movq	-24(%rbp), %rax
-	movq	(%rax), %rax
-	movq	%rax, -40(%rbp)
-	movq	-32(%rbp), %rax
-	xorq	-40(%rbp), %rax
-	movq	%rax, -48(%rbp)
+	xorq	%rdx, %rax
+	movq	%rax, -32(%rbp)
 	movq	(%r8 ), %rdx
-	orq	-48(%rbp), %rdx
+	orq	-32(%rbp), %rdx
 	movq	%rdx, (%r8 )
 	movq	%r9 , %rdx
 	addq	$1, %rdx

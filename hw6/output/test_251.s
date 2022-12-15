@@ -45,7 +45,7 @@ _then236:
 program:
 	pushq	%rbp
 	movq	%rsp, %rbp
-	subq	$56, %rsp
+	subq	$40, %rsp
 	subq	$8, %rsp
 	movq	%rsp, %r11
 	subq	$8, %rsp
@@ -164,8 +164,8 @@ _cond171:
 	movq	(%r11), %rdi
 	movq	-16(%rbp), %rax
 	movq	(%rax), %rax
-	movq	%rax, -40(%rbp)
-	cmpq	-40(%rbp), %rdi
+	movq	%rax, %r10
+	cmpq	%r10, %rdi
 	setl	%dil
 	andq	$1, %rdi
 	cmpq	$0, %rdi
@@ -174,10 +174,8 @@ _cond171:
 	.text
 _cond196:
 	movq	(%r9 ), %rdi
-	movq	%r11, %rax
-	movq	(%rax), %rax
-	movq	%rax, -48(%rbp)
-	cmpq	-48(%rbp), %rdi
+	movq	(%r11), %r10
+	cmpq	%r10, %rdi
 	setl	%dil
 	andq	$1, %rdi
 	cmpq	$0, %rdi
@@ -198,7 +196,7 @@ _post169:
 	popq	%r9 
 	movq	%rax, %rdi
 	movq	%rdi, %rax
-	movq	%rax, -56(%rbp)
+	movq	%rax, -40(%rbp)
 	subq	$8, %rsp
 	movq	%rsp, %r11
 	movq	$3, %rax
@@ -206,7 +204,7 @@ _post169:
 	movq	%rax, (%rcx)
 	subq	$8, %rsp
 	movq	%rsp, %r8 
-	movq	-56(%rbp), %rax
+	movq	-40(%rbp), %rax
 	movq	%r8 , %rcx
 	movq	%rax, (%rcx)
 	movq	$0, %rax
@@ -215,7 +213,7 @@ _post169:
 	jmp	_cond196
 	.text
 _post194:
-	movq	-56(%rbp), %rax
+	movq	-40(%rbp), %rax
 	movq	%rdx, %rcx
 	movq	%rax, (%rcx)
 	movq	(%rdx), %rdx
